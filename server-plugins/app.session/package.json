@@ -1,0 +1,16 @@
+{
+    "name": "app.session",
+    "version": "0.0.1",
+
+    "main": "./session.js",
+
+    "plugin": {
+        "provides": [
+            "session"
+        ],
+        "consumes":[
+            "welder",
+            "db-mongoose-session"
+        ]
+    }
+}

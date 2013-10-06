@@ -1,0 +1,14 @@
+{
+    "name": "db.mongoose",
+    "version": "0.0.1",
+
+    "main": "./mongoose.js",
+    "private": true,
+
+    "plugin": {
+        "provides": [
+            "db-mongoose",
+            "db-mongoose-session"
+        ]
+    }
+}

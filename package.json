@@ -1,0 +1,9 @@
+{
+    "name": "welder-pos",
+    "version": "1.0.0",
+    "dependencies": {
+        "express": "*",
+        "architect": "*",
+        "mongoose": "*"
+    }
+}
