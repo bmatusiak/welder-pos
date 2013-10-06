@@ -4,6 +4,8 @@ module.exports = function(passConfig){
         
         "./app.main",
         
+        "./lib.ejs",
+        
         {
             packagePath: "./db.mongoose",
             HOST:  "mongodb://"+process.env.IP+":27017/welder"

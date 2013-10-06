@@ -1,0 +1,12 @@
+{
+    "name": "lib.ejs",
+    "version": "0.0.1",
+
+    "main": "./plugin.js",
+
+    "plugin": {
+        "provides": [
+            "ejs"
+        ]
+    }
+}
