@@ -1,0 +1,15 @@
+{
+    "name": "app.settings",
+    "version": "0.0.1",
+
+    "main": "./plugin.js",
+
+    "plugin": {
+        "provides": [
+            "settings"
+        ],
+        "consumes": [
+            "db-mongoose"
+        ]
+    }
+}

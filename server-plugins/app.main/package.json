@@ -10,7 +10,8 @@
         ],
         "consumes":[
             "welder",
-            "ejs"
+            "ejs",
+            "settings"
         ]
     }
 }

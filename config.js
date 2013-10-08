@@ -4,6 +4,8 @@ module.exports = function(passConfig){
         
         "./app.main",
         
+        "./app.settings",
+        
         "./app.setup",
         
         "./pos.employees",

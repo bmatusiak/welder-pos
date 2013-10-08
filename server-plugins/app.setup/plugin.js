@@ -4,29 +4,19 @@ module.exports = function(options, imports, register) {
     
     var main = imports.main;
     
-    
-    var dbSettings = require("./db.settings.js")(imports["db-mongoose"]);
-    
-    var appSetup = {
-        db:{settings:dbSettings},
-        settings:{}
-    };
-    //appSetup.isSetup;
-    
     function renderSetupApp(req,res,error){
         res.writeHead(200, {
             'Content-Type': 'text/html'
         });
-        main.ejs.renderFile(__dirname + "/setup.html",{appSetup:appSetup,error:error,req:req},function(err,data){
+        main.ejs.renderFile(__dirname + "/setup.html",{error:error,req:req,settings:main.settings},function(err,data){
             res.end(data);
         });
     }
     
     imports.main.welder.addRequestParser(function(http){
         
-        
         http.app.get('/setup', function(req, res, next) {
-            if(appSetup.settings.isSetup) res.redirect("/"); else
+            if(main.settings.isSetup) res.redirect("/"); else
             renderSetupApp(req,res);
         });
         
@@ -37,15 +27,14 @@ module.exports = function(options, imports, register) {
                         if(!err){
                             req.session.user = req.body.userlogin;
                             
-                            appSetup.settings.isUsersSetup = "true";
-                            dbSettings.setSetting("isUsersSetup","true",function(){
+                            main.settings.set("isUsersSetup","true",function(){
                                 res.writeHead(200, {
                                     'Content-Type': 'text/html'
                                 });
                                 main.ejs.renderFile(main.dir.template + "/redirect.html",{redirect:{path:"/setup"}},function(err,data){
                                     res.end(data);
                                 });
-                            })
+                            });
                         }else renderSetupApp(req,res,err.toString());
                     });
                 }else{
@@ -63,9 +52,7 @@ module.exports = function(options, imports, register) {
                 }
             }
             if(req.body.formid == "appSetupPOS"){
-                appSetup.settings.isSetup = "true";
-                
-                dbSettings.setSetting("isSetup","true",function(){
+                main.settings.set("isSetup","true",function(){
                     res.writeHead(200, {
                         'Content-Type': 'text/html'
                     });
@@ -78,12 +65,7 @@ module.exports = function(options, imports, register) {
         
     });
     
-    appSetup.db.settings.getSettingsList(function($settings){
-        for(var i in $settings){
-            appSetup.settings[$settings[i].name] = $settings[i].value;
-        }
-        register(null, {
-            "appSetup": appSetup
-        });
+    register(null, {
+        "appSetup": {}
     });
 };

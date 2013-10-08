@@ -5,6 +5,7 @@ module.exports = function(options, imports, register) {
     var main = {
         welder:imports.welder,
         ejs:imports.ejs,
+        settings:imports.settings,
         dir:{
             template: __dirname+"/template"
         }
@@ -23,31 +24,27 @@ module.exports = function(options, imports, register) {
         });
         http.app.get('/', function(req, res, next) {
             if(!req.session.user){
-                imports.welder.architect.services.appSetup.db.settings.getSetting("isUsersSetup",function(err,isUsersSetup){
-                    if(isUsersSetup){
-                        res.writeHead(200, {
-                            'Content-Type': 'text/html'
-                        });
-                        main.ejs.renderFile(main.dir.template + "/login.html",req,function(err,data){
-                            res.end(data);
-                        });
-                    }else{
-                        res.redirect("/setup");
-                    }
-                });
+                if(main.settings.isUsersSetup){
+                    res.writeHead(200, {
+                        'Content-Type': 'text/html'
+                    });
+                    main.ejs.renderFile(main.dir.template + "/login.html",req,function(err,data){
+                        res.end(data);
+                    });
+                }else{
+                    res.redirect("/setup");
+                }
             }else{
-                imports.welder.architect.services.appSetup.db.settings.getSetting("isSetup",function(err,isSetup){
-                    if(!isSetup){ 
-                        res.redirect("/setup");
-                    }else{
-                        res.writeHead(200, {
-                            'Content-Type': 'text/html'
-                        });
-                        main.ejs.renderFile(main.dir.template + "/page.html",{req:req},function(err,data){
-                            res.end(data);
-                        }); 
-                    }
-                });
+                if(!main.settings.isSetup){ 
+                    res.redirect("/setup");
+                }else{
+                    res.writeHead(200, {
+                        'Content-Type': 'text/html'
+                    });
+                    main.ejs.renderFile(main.dir.template + "/page.html",{req:req},function(err,data){
+                        res.end(data);
+                    }); 
+                }
             }
         });
         

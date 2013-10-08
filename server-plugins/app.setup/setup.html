@@ -52,7 +52,7 @@
 <div class="account-container stacked">
 	
 	<div class="content clearfix">
-		<% if(!appSetup.settings.isUsersSetup) {%>
+		<% if(!settings.isUsersSetup) {%>
 		<form action="/setup" method="post" />
 		    <input name="formid" value="appSetupUser" type="hidden" />
 			<h1>First Time Login</h1>		
@@ -97,7 +97,7 @@
 		</form>
 		<% } %>
 		
-		<% if(appSetup.settings.isUsersSetup && !appSetup.settings.isSetup) {%>
+		<% if(settings.isUsersSetup && !settings.isSetup) {%>
 		<form action="/setup" method="post" />
 		    <input name="formid" value="appSetupPOS" type="hidden" />
 			<h1>Business Setup</h1>		

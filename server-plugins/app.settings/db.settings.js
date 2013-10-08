@@ -31,6 +31,7 @@ module.exports = function(db) {
         });
     };
     
+    /*
     var getSetting = function(name,callback){
          Settings.findOne({name: name}, function(err,setting){
             if(!err && !setting){
@@ -40,7 +41,7 @@ module.exports = function(db) {
             }
         });
     };
-    
+    */
     var getSettingsList = function(callback){
         Settings.find(function(err, settings) {
             if(err) 
@@ -52,7 +53,7 @@ module.exports = function(db) {
     
     return {
         setSetting:setSetting,
-        getSetting:getSetting,
+        //getSetting:getSetting,
         getSettingsList:getSettingsList
     };
 };
