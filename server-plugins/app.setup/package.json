@@ -1,0 +1,17 @@
+{
+    "name": "app.setup",
+    "version": "0.0.1",
+
+    "main": "./plugin.js",
+
+    "plugin": {
+        "provides": [
+            "appSetup"
+        ],
+        "consumes": [
+            "main",
+            "db-mongoose",
+            "posEmployees"
+        ]
+    }
+}

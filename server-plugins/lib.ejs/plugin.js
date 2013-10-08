@@ -9,6 +9,9 @@ module.exports = function(options, imports, register) {
     ejs.renderFile = function(filename,options,callback){
         if(!callback) callback = options;
         fs.readFile(filename, function(err, data) {
+            if(err){
+                callback(err,err.toString());
+            }else
             callback(err,ejs.render(data.toString(),options));
         });
     };

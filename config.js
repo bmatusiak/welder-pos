@@ -4,6 +4,10 @@ module.exports = function(passConfig){
         
         "./app.main",
         
+        "./app.setup",
+        
+        "./pos.employees",
+        
         "./lib.ejs",
         
         {

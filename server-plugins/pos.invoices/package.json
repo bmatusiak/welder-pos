@@ -1,0 +1,12 @@
+{
+    "name": "plugin.template",
+    "version": "0.0.1",
+
+    "main": "./plugin.js",
+
+    "plugin": {
+        "provides": [
+            "pluginTemplate"
+        ]
+    }
+}

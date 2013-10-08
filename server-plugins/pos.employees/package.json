@@ -1,0 +1,17 @@
+{
+    "name": "pos.employees",
+    "version": "0.0.1",
+
+    "main": "./plugin.js",
+
+    "plugin": {
+        "provides": [
+            "posEmployees"
+        ],
+        "consumes":[
+            "main",
+            "session",
+            "db-mongoose"
+        ]
+    }
+}

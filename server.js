@@ -3,7 +3,7 @@ var Architect = require("architect");
 var configPath = __dirname+"/config.js";
 
 require(configPath)(function(plugins){
-
+    
     Architect.createApp(Architect.resolveConfig(plugins, __dirname + "/server-plugins"), function(err, architect) {
         if (err) {
             console.error("While compiling app config '%s':", configPath);
@@ -11,6 +11,7 @@ require(configPath)(function(plugins){
             throw err;
         }else{
             var welder = architect.services.welder;
+            welder.architect = architect;
             welder.start(function(err){
                 if(err){
                     console.error("While Starting app '%s'", err);

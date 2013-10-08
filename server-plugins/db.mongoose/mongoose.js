@@ -9,6 +9,7 @@ module.exports = function(options, imports, register) {
     var db = mongoose.connection;
     
     var MongooseSession = require("./mongooseSession.js")(mongoose,mongoose.Schema);
+    mongoose.counter = require("./indexCounter.js")(mongoose);
     
     var MongoosePlugin = {
         "db-mongoose": mongoose,
