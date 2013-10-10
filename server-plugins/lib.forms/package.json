@@ -1,17 +1,15 @@
 {
-    "name": "pos.customers",
+    "name": "lib.forms",
     "version": "0.0.1",
 
     "main": "./plugin.js",
 
     "plugin": {
         "provides": [
-            "posCustomers"
+            "Form"
         ],
         "consumes":[
-            "main",
-            "db-mongoose",
-            "posEmployees"
+            "ejs"    
         ]
     }
 }

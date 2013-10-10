@@ -11,7 +11,9 @@
         "consumes":[
             "welder",
             "ejs",
-            "settings"
+            "settings",
+            "session",
+            "Form"
         ]
     }
 }

@@ -1,12 +1,17 @@
 {
-    "name": "plugin.template",
+    "name": "pos.invoices",
     "version": "0.0.1",
 
     "main": "./plugin.js",
 
     "plugin": {
         "provides": [
-            "pluginTemplate"
+            "posInvoices"
+        ],
+        "consumes":[
+            "main",
+            "db-mongoose",
+            "posEmployees"
         ]
     }
 }

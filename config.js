@@ -10,6 +10,12 @@ module.exports = function(passConfig){
         
         "./pos.employees",
         
+        "./pos.customers",
+        
+        "./pos.invoices",
+        
+        "./lib.forms",
+        
         "./lib.ejs",
         
         {

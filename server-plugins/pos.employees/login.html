@@ -16,10 +16,13 @@
             			<div class="login-fields">
             				
             				<p>Sign in using your registered account:</p>
-            				
+            				<div class="error" style="color:red;">
+                                <%- error || '' %>
+                            </div>
+                                    
             				<div class="field">
             					<label for="userlogin">Username:</label>
-            					<input type="text" id="username" name="userlogin" value="" placeholder="Username" class="login username-field" />
+            					<input type="text" id="username" name="userlogin" value="<%- req.body.userlogin || '' %>" placeholder="Username" class="login username-field" />
             				</div> <!-- /field -->
             				
             				<div class="field">

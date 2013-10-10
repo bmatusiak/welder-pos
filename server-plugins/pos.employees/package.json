@@ -10,7 +10,6 @@
         ],
         "consumes":[
             "main",
-            "session",
             "db-mongoose"
         ]
     }

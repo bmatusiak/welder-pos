@@ -35,7 +35,7 @@ module.exports = function(db) {
     var getEmployee = function(login,callback){
         Employees.findOne({userlogin: login}, function(err,employee){
             if(!err && !employee){
-                callback("not exist");
+                callback("UserName '"+login+"' does not exist");
             }else if(!err && employee !== null){
                 callback(null,employee);
             }

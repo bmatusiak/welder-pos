@@ -17,10 +17,14 @@ module.exports = function(db){
                 var new_counter = new Counter();
                 new_counter.name = name;
                 new_counter.count = startNumber || 1;
-                new_counter.save(callback);
+                new_counter.save(function(){
+                    callback(new_counter.count);
+                });
             }else if(!err && __Counter !== null){
                 ++__Counter.count;
-                __Counter.save(callback);
+                __Counter.save(function(){
+                    callback(__Counter.count);
+                });
             }
         });
     };
