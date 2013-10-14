@@ -16,8 +16,8 @@
                         <div class="widget stacked ">
                         
                             <div class="widget-header">
-                                <span class="pull-right"><a href="/invoices/wizard"><h3>New</h3></a></span>
-                                <h3>Invoices</h3>
+                                <span class="pull-right"><a href="/customers/new"><h3>New</h3></a></span>
+                                <h3>Customers</h3>
                             </div>
                             <!-- /widget-header -->
                             <div>
@@ -31,11 +31,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% for(var i in invoices.results){ %>
+                                        <% for(var i in customers.results){ %>
                                         <tr>
-                                            <td><%- invoices.results[i].name %></td>
-                                            <td><%- invoices.results[i].phone %></td>
-                                            <td><%- invoices.results[i].email %></td>
+                                            <td><%- customers.results[i].name %></td>
+                                            <td><%- customers.results[i].phone %></td>
+                                            <td><%- customers.results[i].email %></td>
                                         </tr>
                                         <% } %>
                                     </tbody>

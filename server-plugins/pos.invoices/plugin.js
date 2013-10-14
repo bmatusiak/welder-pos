@@ -31,7 +31,9 @@ module.exports = function(options, imports, register) {
         
         http.app.get('/invoices/new/:id?',
             imports.posEmployees.checkEmployeeAuth, 
-            main.Form.get(__dirname + "/newInvoice.html"));
+            main.Form.get(__dirname + "/newInvoice.html",{next:function(req,res,callback){
+                callback();
+            }}));
         
         http.app.post('/invoices/new/:id?', imports.posEmployees.checkEmployeeAuth, 
             main.Form.post(__dirname + "/newInvoice.html",'/invoices',{
@@ -56,7 +58,7 @@ module.exports = function(options, imports, register) {
                         req.body.zip,
                         req.body.email,
                         req.body.phone,
-                        req.session.user,
+                        req.session.user,//whoCreated
                         function(err){
                             if(!err){
                                 callback(null);

@@ -3,17 +3,53 @@
 module.exports = function(options, imports, register) {
     
     var Form = {};
-    Form.get = function(path,allow){//url path "/submit/form"
+    Form.get = function(path,$formObject){//url path "/submit/form"
+        var formObject = {};
+        
+        if(typeof($formObject) != "object"){
+            formObject.next = function(req,res,cb){
+                cb();
+            };
+            formObject.allow = $formObject || function(){return true;};
+        }else 
+            formObject = $formObject;
+        /*
+        var formObject = {
+            allow: function(req,res){//next will not be called if false,instead will do http.next()
+                return (req.session.user);
+            },
+            next : function(req,res,callback){//next is required in this object
+                callback(err,{someData:'template data object'})
+            }
+        };
+        */
         return function(req,res,next){
-            if(typeof(allow) == "function" && !allow(req,res))
+            
+            if(typeof(formObject.allow) == "function" && !formObject.allow(req,res))
                 return next();
-                    
-            res.writeHead(200, {
-                'Content-Type': 'text/html'
-            });
-            imports.ejs.renderFile(path,{error:'',req:req},function(err,data){
-                res.end(data);
-            });
+                
+            var templateData = {error:'',req:req};
+            
+            if(formObject.next){
+                formObject.next(req,res,function(err,data){
+                    for(var i in data){
+                        templateData[i] = data[i];
+                    }
+                    res.writeHead(200, {
+                        'Content-Type': 'text/html'
+                    });
+                    imports.ejs.renderFile(path,templateData,function(err,data){
+                        res.end(data);
+                    });
+                });
+            }else{
+                res.writeHead(200, {
+                    'Content-Type': 'text/html'
+                });
+                imports.ejs.renderFile(path,templateData,function(err,data){
+                    res.end(data);
+                });
+            }
         };
     };
     Form.condition = function(condition,callback){

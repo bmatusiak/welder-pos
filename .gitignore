@@ -16,3 +16,4 @@ node_modules
 .c9revisions/
 data/
 mongod*
+.c9

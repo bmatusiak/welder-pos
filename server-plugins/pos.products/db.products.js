@@ -4,7 +4,7 @@ module.exports = function(db) {
     
     var Schema = db.Schema;
     
-    var collection = "invoices";
+    var collection = "products";
     
     var modelSchema = new Schema({
         id : { type: Number, index: true, unique:true },
@@ -22,9 +22,9 @@ module.exports = function(db) {
         createdBy: String,
     });
     
-    var Invoices = db.model(collection, modelSchema);
+    var Products = db.model(collection, modelSchema);
     
-    var newInvoice = function(
+    var newProduct = function(
         name,
         address,
         city,
@@ -34,10 +34,10 @@ module.exports = function(db) {
         phone,
         whoCreatedLogin,
         callback){
-        Invoices.findOne({email: email}, function(err,employee){
+        Products.findOne({email: email}, function(err,employee){
             if(!err && !employee){
-                db.counter("Invoices",1000,function(count){
-                    employee = new Invoices();
+                db.counter("Products",1000,function(count){
+                    employee = new Products();
                     employee.id = count;
                     employee.name = name;
                     employee.address = address;
@@ -56,8 +56,8 @@ module.exports = function(db) {
         });
     };
     
-    var getInvoices = function(id,callback){
-        Invoices.findOne({id: id}, function(err,employee){
+    var getProducts = function(id,callback){
+        Products.findOne({id: id}, function(err,employee){
             if(!err && !employee){
                 callback("not exist");
             }else if(!err && employee !== null){
@@ -66,19 +66,19 @@ module.exports = function(db) {
         });
     };
     
-    var listInvoices = function(callback){
-        Invoices.find(function(err,employees){
+    var listProducts = function(callback){
+        Products.find(function(err,employees){
             callback(err,employees);
         });
     };
     
-    var invoicesPage = function(page,perPage,callback){
-        Invoices.find({})
+    var productsPage = function(page,perPage,callback){
+        Products.find({})
         .limit(perPage)
         .skip(perPage * page)
         .sort({date: 'desc'})
         .exec(function(err, blogs) {
-            Invoices.count().exec(function(err, count) {
+            Products.count().exec(function(err, count) {
                 callback(null,{
                     results: blogs,
                     page: page,
@@ -89,10 +89,10 @@ module.exports = function(db) {
     };
     
     return {
-        newInvoice:newInvoice,
-        getInvoices:getInvoices,
-        listInvoices:listInvoices,
-        invoicesPage:invoicesPage
+        newProduct:newProduct,
+        getProducts:getProducts,
+        listProducts:listProducts,
+        productsPage:productsPage
     };
 };
 

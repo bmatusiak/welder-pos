@@ -16,13 +16,14 @@ module.exports = function(options, imports, register) {
         else {
             this.options(options);
         }
-        fs.readFile(filename, function(err, data) {
+        fs.readFile(filename, function(fserr, data) {
+            if(fserr) throw fserr;
             try {
                 _self.render(data.toString(), options, callback);
             }
             catch (err) {
                 var e = new ReferenceError(err.toString().replace("ReferenceError: ejs:", filename + ":"));
-                console.log(filename);
+                console.log(err,filename);
                 throw e;
             }
     
@@ -42,6 +43,7 @@ module.exports = function(options, imports, register) {
             callback(null,ejsRender(str, options));
         }
         catch (err) {
+            
             throw err;
         }
     

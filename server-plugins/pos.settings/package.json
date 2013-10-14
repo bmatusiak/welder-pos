@@ -1,19 +1,19 @@
 {
-    "name": "pos.products",
+    "name": "pos.settings",
     "version": "0.0.1",
 
     "main": "./plugin.js",
 
     "plugin": {
         "provides": [
-            "posProducts"
+            "posSettings"
         ],
         "consumes":[
             "main",
-            "db-mongoose",
             "posEmployees",
+            "posProducts",
+            "posInvoices",
             "posCustomers"
-            
         ]
     }
 }

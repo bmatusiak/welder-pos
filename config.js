@@ -14,6 +14,8 @@ module.exports = function(passConfig){
         
         "./pos.invoices",
         
+        "./pos.products",
+        
         "./lib.forms",
         
         "./lib.ejs",

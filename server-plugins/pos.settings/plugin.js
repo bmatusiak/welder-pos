@@ -4,18 +4,18 @@ module.exports = function(options, imports, register) {
     
     var main = imports.main;
     
-    var db = require("./db.products.js")(imports["db-mongoose"]);
+    var db = require("./db.customers.js")(imports["db-mongoose"]);
     
     imports.main.welder.addRequestParser(function(http){
         
-        http.app.get('/products', imports.posEmployees.checkEmployeeAuth, function(req, res, next) {
-            db.productsPage(req.query.page-1 || 0,50,
-                function(err,products){
+        http.app.get('/customers', imports.posEmployees.checkEmployeeAuth, function(req, res, next) {
+            db.customersPage(req.query.page-1 || 0,50,
+                function(err,customers){
                     if(!err){
                         res.writeHead(200, {
                             'Content-Type': 'text/html'
                         });
-                        main.ejs.renderFile(__dirname + "/products.html",{products:products,req:req,settings:main.settings},function(err,data){
+                        main.ejs.renderFile(__dirname + "/customers.html",{customers:customers,req:req,settings:main.settings},function(err,data){
                             res.end(data);
                         });
                     }else {
@@ -29,12 +29,12 @@ module.exports = function(options, imports, register) {
                 });
         });
         
-        http.app.get('/products/new/:id?',
+        http.app.get('/customers/new',
             imports.posEmployees.checkEmployeeAuth, 
-            main.Form.get(__dirname + "/newProduct.html"));
+            main.Form.get(__dirname + "/newCustomer.html"));
         
-        http.app.post('/products/new/:id?', imports.posEmployees.checkEmployeeAuth, 
-            main.Form.post(__dirname + "/newProduct.html",'/products',{
+        http.app.post('/customers/new', imports.posEmployees.checkEmployeeAuth, 
+            main.Form.post(__dirname + "/newCustomer.html",'/customers',{
                 required : function(req,res){
                     return [
                         [req.body.name,"Name Must be Defined"],
@@ -68,7 +68,7 @@ module.exports = function(options, imports, register) {
     });
     
     register(null, {
-        "posProducts": {}
+        "posCustomers": {db:db}
     });
 
 };
