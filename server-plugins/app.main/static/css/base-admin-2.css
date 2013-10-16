@@ -16,6 +16,24 @@ upgrading in the future easier. ***
 /*------------------------------------------------------------------
 [ Global ]
 */
+.rotate {
+
+/* Safari */
+-webkit-transform: rotate(-90deg);
+
+/* Firefox */
+-moz-transform: rotate(-90deg);
+
+/* IE */
+-ms-transform: rotate(-90deg);
+
+/* Opera */
+-o-transform: rotate(-90deg);
+
+/* Internet Explorer */
+filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+
+}
 body {
   background: #e9e9e9 url(../img/tiny_grid.png) repeat 0 0;
   font: 13px/1.7em 'Open Sans';

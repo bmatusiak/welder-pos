@@ -3,7 +3,6 @@ var Architect = require("architect");
 var configPath = __dirname+"/config.js";
 
 require(configPath)(function(plugins){
-    
     var app = Architect.createApp(Architect.resolveConfig(plugins, __dirname + "/server-plugins"), function(err, architect) {
         if (err) {
             console.error("While compiling app config '%s':", configPath);

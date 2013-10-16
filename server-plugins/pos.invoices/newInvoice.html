@@ -73,13 +73,22 @@
                                         </thead>
                                         <form id="products">
                                             <tbody class="unit-container">
-                                                
+                                                <tr class="unit">
+                                                <td>
+                                                <a class="trash"><i class="icon-trash"></i></a> &nbsp; &nbsp;<input style="width:35px" value="1"  class="productQuanity" />&nbsp;x&nbsp;<input class="productName" />
+                                                </td>
+                                                <td><input class="productModel" /></td>
+                                                <td><input class="productPrice" value="0.00" /></td>
+                                                <td class="price"></td>
+                                                <td class="tax"></td>
+                                                <td class="tprice"></td>
+                                                </tr>
                                                 
                                             </tbody>
                                         </form>
                                     </table>
-                                    <!-- <a class="button btn btn-large" hidden>Add Product from Catalog</a> -->
-                                    <a class="button btn btn-large" id="addBlank">Add Blank Product</a>
+                                    <!-- <a class="button btn btn-large" hidden>Product Wizard</a> -->
+                                    <a class="button btn btn-large" id="addBlank">Add Product</a>
                                     <table class="pull-right">
                                         <tbody>
                                             <tr>
@@ -162,7 +171,8 @@
                 });
                 $(document).on('change','input',attachInputPrice);
                 $(document).on('keyup','input',attachInputPrice);
-                
+                $(document).find("input").change();
+                updateMainTotals();
                 function attachInputPrice(){
                     var unit = $(this).closest(".unit");
                     var upval = unit.find(".productPrice").val() !== "" ? unit.find(".productPrice").val() : "0.00";
