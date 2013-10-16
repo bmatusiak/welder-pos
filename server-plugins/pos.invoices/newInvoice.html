@@ -4,68 +4,126 @@
     <%- HEAD() %>
     
     <body>
-        
+    
+        <style>
+            .row-fluid hr{
+                margin: 0;    
+            }
+        </style>
         <%- NAVBAR(true) %>
 
         <div class="main">
             <div class="container">
                 <div class="row">
                 
-      	            <div class="span8 offset2">
+      	            <div class="span12">
       	            
                         <div class="widget stacked ">
                         
                             <div class="widget-header">
-                                <h3>New Customer</h3>
+                                <h3>New Invoice</h3>
                             </div>
                             <!-- /widget-header -->
                             <div class="widget-content">
-                                <form action="/customers/new" method="post" />
-                                    
-                                    <div class="error" style="color:red;">
-                                        <%- error || '' %>
+                            
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <table width="100%">
+                                            <tr>
+                                                <td>
+                                                    Customer: <%- customer.id %>
+                                                    <hr />
+                                                    <strong><%- customer.name %></strong><br />
+                                                    <%- customer.address %><br />
+                                                    <%- customer.city %>, <%- customer.state %> <%- customer.zip %> <br />
+                                                    <%- customer.phone %> - <%- customer.email %> <br />
+                                                    
+                                                </td>
+                                            </tr>
+                                        </table>
                                     </div>
-                                    
-                            		<div class="field">
-                            			<label for="name">Name:</label>
-                            			<input type="text" id="name" name="name" value="<%- req.body.name || '' %>" placeholder="Name" required="required" />
+                                    <!--
+                                    <div class="span6">
+                                        <table width="100%">
+                                            <tr>
+                                                <td>
+                                                    Billing:
+                                                    <hr />
+                                                    <strong><%- customer.name %></strong><br />
+                                                    <%- customer.address %><br />
+                                                    <%- customer.city %>, <%- customer.state %> <%- customer.zip %> <br />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    -->
+                                </div>
+                                <hr />
+                                <div class="row-fluid">
+                                    <table width="100%"  class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <td>Product</td>
+                                                <td>Model</td>
+                                                <td>Unit Price</td>
+                                                <td>Price</td>
+                                                <td>Tax</td>
+                                                <td>Total Price</td>
+                                            </tr>
+                                        </thead>
+                                        <form id="products">
+                                            <tbody class="unit-container">
+                                                
+                                                
+                                            </tbody>
+                                        </form>
+                                    </table>
+                                    <!-- <a class="button btn btn-large" hidden>Add Product from Catalog</a> -->
+                                    <a class="button btn btn-large" id="addBlank">Add Blank Product</a>
+                                    <table class="pull-right">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <b>Sub-Total</b>
+                                                </td>
+                                                <td class="sub-total">
+                                                    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <b>Tax</b>
+                                                </td>
+                                                <td class="ttax">
+                                                    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <b>Total</b>
+                                                </td>
+                                                <td class="total">
+                                                    
+                                                </td>
+                                            </tr>
+                                           
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <hr />
+                                    <div class="field">
+                            			<label for="invoiceStatus">Status:</label>
+                            			<select name="status" id="invoiceStatus">
+                                          <option value="open">Open</option>
+                                          <option value="closed">Closed</option>
+                                        </select>
                             		</div> <!-- /field -->
                             		
-                            		<div class="field">
-                            			<label for="address">Address:</label>
-                            		    <input type="text" id="address" name="address" value="<%- req.body.address || '' %>" placeholder="Address" />
-                            		</div> <!-- /field -->
-                            			
-                            		<div class="field">
-                            			<label for="city">City:</label>
-                            		    <input type="text" id="city" name="city" value="<%- req.body.city || '' %>" placeholder="City"  />
-                            		</div> <!-- /field -->
-                            			
-                            		<div class="field">
-                            			<label for="state">State:</label>
-                            		    <input type="text" id="state" name="state" value="<%- req.body.state || '' %>" placeholder="State"  />
-                            		</div> <!-- /field -->
-                            			
-                            		<div class="field">
-                            			<label for="zip">ZIP:</label>
-                            		    <input type="text" id="zip" name="zip" value="<%- req.body.zip || '' %>" placeholder="ZIP"  />
-                            		</div> <!-- /field -->
-                            			
-                            		<div class="field">
-                            			<label for="email">Email:</label>
-                            		    <input type="text" id="email" name="email" value="<%- req.body.email || '' %>" placeholder="Email"  />
-                            		</div> <!-- /field -->
-                            			
-                            		<div class="field">
-                            			<label for="phone">Phone:</label>
-                            		    <input type="text" id="phone" name="phone" value="<%- req.body.phone || '' %>" placeholder="Phone"  />
-                            		</div> <!-- /field -->
                             		
-                                	<hr />
-                                	<div class="login-actions">
-                                		<button class="button btn btn-warning btn-large pull-right">Create Invoice</button>
-                                	</div> <!-- .actions -->
-                                </form>
+                            	<hr />
+                            	<div class="login-actions">
+                            		<button class="button btn btn-warning btn-large pull-right">Create Invoice</button>
+                            	</div> <!-- .actions -->
                             </div>
                         </div>
                     </div>
@@ -76,6 +134,83 @@
         </div>
         <!-- /main -->
         
+        <script>
+            $(function(){
+                var template = '<tr class="unit">'
+                                +'<td>'
+                                +'<a class="trash"><i class="icon-trash"></i></a> &nbsp; &nbsp;<input style="width:35px" value="1"  class="productQuanity" />&nbsp;x&nbsp;<input class="productName" />'
+                                +'</td>'
+                                +'<td><input class="productModel" /></td>'
+                                +'<td><input class="productPrice" /></td>'
+                                +'<td class="price"></td>'
+                                +'<td class="tax"></td>'
+                                +'<td class="tprice"></td>'
+                                +'</tr>'; 
+                $("#addBlank").click(function(){
+                    var row = $(template);
+                    $(".unit-container").append(row);
+                    var inputs = row.find("input");
+                    
+                    //inputs.change(attachInputPrice);
+                    //inputs.keyup(attachInputPrice);
+                    inputs.change();
+                });
+                
+                $(document).on('click','a.trash',function(){
+                    $(this).closest(".unit").remove();
+                    updateMainTotals();
+                });
+                $(document).on('change','input',attachInputPrice);
+                $(document).on('keyup','input',attachInputPrice);
+                
+                function attachInputPrice(){
+                    var unit = $(this).closest(".unit");
+                    var upval = unit.find(".productPrice").val() !== "" ? unit.find(".productPrice").val() : "0.00";
+                    var unitPrice = parseFloat(upval).toFixed(2);
+                       
+                    var unitQuanity = parseFloat(unit.find(".productQuanity").val() !== "" ? unit.find(".productQuanity").val() : 0);
+                    
+                    var PriceEle = unit.find(".price");
+                    var taxEle = unit.find(".tax");
+                    var tPriceEle = unit.find(".tprice");
+                    
+                    var qPrice = parseFloat((unitPrice * unitQuanity).toFixed(2));
+                    PriceEle.text(qPrice.toFixed(2));
+                    
+                    var tPrice = parseFloat((Math.round((qPrice*0.06) * 100) / 100).toFixed(2));
+                    taxEle.text(tPrice.toFixed(2));
+                    
+                    tPriceEle.text((qPrice+tPrice).toFixed(2));
+                    
+                    updateMainTotals();
+                }
+                function updateMainTotals(){
+                    var subTotal = $(".sub-total");
+                    subTotal.text("0.00");
+                    var stotal = 0;
+                    $(".price").each(function(){
+                        stotal += parseFloat($(this).text());
+                        subTotal.text(stotal.toFixed(2) );
+                    })
+                    
+                    var TTax = $(".ttax");
+                    TTax.text("0.00");
+                    var ttotal = 0;
+                    $(".tax").each(function(){
+                        ttotal += parseFloat($(this).text());
+                        TTax.text(ttotal.toFixed(2) );
+                    });
+                
+                    var Total = $(".total");
+                    Total.text("0.00");
+                    var total = 0;
+                    $(".tprice").each(function(){
+                        total += parseFloat($(this).text());
+                        Total.text(total.toFixed(2) );
+                    });
+                }
+            });
+        </script>
         <script src="/js/libs/jquery-ui-1.10.0.custom.min.js"></script>
         <script src="/js/libs/bootstrap.min.js"></script>
     </body>

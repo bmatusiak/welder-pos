@@ -32,7 +32,9 @@ module.exports = function(options, imports, register) {
         http.app.get('/invoices/new/:id?',
             imports.posEmployees.checkEmployeeAuth, 
             main.Form.get(__dirname + "/newInvoice.html",{next:function(req,res,callback){
-                callback();
+                imports.posCustomers.db.getCustomer(req.params.id,function(err,customer){
+                    callback(err,{customer:customer});
+                })
             }}));
         
         http.app.post('/invoices/new/:id?', imports.posEmployees.checkEmployeeAuth, 
