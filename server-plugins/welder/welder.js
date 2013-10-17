@@ -69,6 +69,10 @@ module.exports = function(options, imports, register) {
         },
     };
     
+    imports.hub.on("service", function(name, plugin) {
+        if(!plugin.name)plugin.name = name;
+        console.log("Service loaded " + name);
+    });
     
     imports.hub.on("ready",function(app){
         welder.architect = app;
