@@ -4,6 +4,7 @@ module.exports = function(options, imports, register) {
     var welder;
     
     var http = imports.http = require("./plugins/web.http/http.js")();
+    http.cookieHandler = http.express.cookieParser(options.clientSecret);
     //compress everything
     http.app.use(http.express.compress());
     
@@ -36,7 +37,7 @@ module.exports = function(options, imports, register) {
     var __Middlewares = [];
     function _Middlewares(){
         http.app.use(http.express.bodyParser());
-        http.app.use(http.express.cookieParser(options.clientSecret));
+        http.app.use(http.cookieHandler);
         
         for(var i in __Middlewares){
             __Middlewares[i](http);
@@ -76,11 +77,9 @@ module.exports = function(options, imports, register) {
     
     imports.hub.on("ready",function(app){
         welder.architect = app;
-        beforeListen(function(){
-            http.listen();
-        });
+        beforeListen(http.listen);
     });
     
-    register(null,{"welder": welder});
+    register(null,{"welder": welder,"http":http});
     
 };

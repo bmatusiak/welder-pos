@@ -74,7 +74,7 @@ module.exports = function(options, imports, register) {
     EJSfile.prototype.elements = {};
     
     EJSfile.prototype.use = function(elementsDir) {
-    
+        var _self = this;
         var theEleFunction = function(str, filename) {
             return function() {
                 var oldArgs;
@@ -98,10 +98,17 @@ module.exports = function(options, imports, register) {
             };
         };
         var files = fs.readdirSync(elementsDir);
-    
+        
+        var setupElement = function(file){
+            _self.elements[file.replace(".html", "")] = theEleFunction(fs.readFileSync(elementsDir + "/" + file).toString(), elementsDir + "/" + file);
+            fs.watch(elementsDir + "/" + file, function(event) {
+                if(event == "change"){
+                    _self.elements[file.replace(".html", "")] = theEleFunction(fs.readFileSync(elementsDir + "/" + file).toString(), elementsDir + "/" + file);
+                }
+            });
+        };
         for (var i in files) {
-            this.elements[files[i].replace(".html", "")] = theEleFunction(fs.readFileSync(elementsDir + "/" + files[i]).toString(), elementsDir + "/" + files[i]);
-            //console.log("ejs:",files[i].replace(".html", "")+"()",files[i]);
+            setupElement(files[i]);
         }
     };
     

@@ -18,6 +18,8 @@ module.exports = function(passConfig){
         
         "./lib.forms",
         
+        "./socketio",
+        
         "./lib.ejs",
         
         {

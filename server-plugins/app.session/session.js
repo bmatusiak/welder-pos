@@ -1,11 +1,14 @@
 module.exports = function(options,imports,register){
     var MongooseSession = imports["db-mongoose-session"];
     
+    var cookieID = options.key || "session.key";
+    var secret = options.secret || process.env.SESSION_SECRET || "CHANGEME";
+    
     imports.welder.addMiddleWare(function(http){
          http.app.use(http.express.session(
             {
-                key: options.key || "session.key",   
-                secret: options.secret || process.env.SESSION_SECRET || "CHANGEME", 
+                key: cookieID,   
+                secret: secret, 
                 store: MongooseSession,
                 cookie: {
                     path: '/',
@@ -17,6 +20,6 @@ module.exports = function(options,imports,register){
     });
     
      register(null, {
-        "session": {}
+        "session": {store:MongooseSession,cookieID:cookieID,secret:secret}
     });
 };
