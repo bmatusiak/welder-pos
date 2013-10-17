@@ -1,29 +1,25 @@
 var Architect = require("architect");
 
 var configPath = __dirname+"/config.js";
+var app;
 
 require(configPath)(function(plugins){
-    var app = Architect.createApp(Architect.resolveConfig(plugins, __dirname + "/server-plugins"), function(err, architect) {
+    app = Architect.createApp(Architect.resolveConfig(plugins, __dirname + "/server-plugins"), function(err, architect) {
         if (err) {
             console.error("While compiling app config '%s':", configPath);
             console.log(err);
             throw err;
         }else{
-            var welder = architect.services.welder;
-            welder.architect = architect;
-            welder.start(function(err){
-                if(err){
-                    console.error("While Starting app '%s'", err);
-                }else{
-                    console.log("Started App!");
-                }
-            });
+            console.log("App Loaded!");
         }
     });
-    app.on("service", function(name, plugin) {
+    
+    app.services.hub.on("service", function(name, plugin) {
+        var app = this;
         if (!plugin.name)
             plugin.name = name;
             
         console.log("Service loaded " + name);
     });
+    
 });

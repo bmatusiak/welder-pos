@@ -61,7 +61,7 @@
                                         <% for(var i = 0; i < customers.length; i++){ %>
                                         <tr>
                                             <td><%- customers[i].id %></td>
-                                            <td><%- customers[i].name %></td>
+                                            <td><%- customers[i].name %><th>Name</th></td>
                                             <td><%- customers[i].phone %></td>
                                             <td><%- customers[i].email %></td>
                                             <td style="text-align:center;font-size:30px;"><a href="/invoices/new/<%- customers[i].id %>"><i class="icon-plus-sign-alt"></i></a></td>

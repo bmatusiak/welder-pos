@@ -8,6 +8,8 @@
     "plugin": {
         "provides": [
             "welder"
+        ],"consumes":[
+            "hub"    
         ]
     }
 }

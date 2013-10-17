@@ -54,19 +54,6 @@ module.exports = function(options, imports, register) {
     
     welder = {
         http:http,
-        start:function(callback){
-            this.listen(callback);
-        },
-        listen:function(callback){
-            beforeListen(function(){
-                try{
-                    http.listen();
-                    callback();
-                }catch(e){
-                    callback(e);
-                }
-            });
-        },
         addStatic:function(mount,dir,listDirAlso){
             if(options.listDirectories || listDirAlso)
                 http.app.use(mount, http.express.directory(dir));
@@ -81,6 +68,14 @@ module.exports = function(options, imports, register) {
             __RequestParsers.push(fn);
         },
     };
+    
+    
+    imports.hub.on("ready",function(app){
+        welder.architect = app;
+        beforeListen(function(){
+            http.listen();
+        });
+    });
     
     register(null,{"welder": welder});
     

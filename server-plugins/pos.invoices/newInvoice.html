@@ -6,8 +6,68 @@
     <body>
     
         <style>
+            .rotate-share-alt:before {
+                /* Safari */
+                -webkit-transform: rotate(-90deg);
+                /* Firefox */
+                -moz-transform: rotate(-90deg);
+                /* IE */
+                -ms-transform: rotate(-90deg);
+                /* Opera */
+                -o-transform: rotate(-90deg);
+                /* Internet Explorer */
+                filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+            }
+            
+            
             .row-fluid hr{
                 margin: 0;    
+            }
+            .productPrice{
+                width:40px;
+            }
+            .productNameRow{
+                white-space:nowrap;
+            }
+            @media 
+            (max-width: 767px){
+            }
+            @media 
+            only screen and (max-width: 760px),
+            (min-device-width: 768px) and (max-device-width: 1024px)  {
+                
+            	/* Force table to not be like tables anymore */
+            	table, thead, tbody, th, td, tr { 
+            	    border-color: gray;
+            		display: block; 
+            	}
+            	/* Hide table headers (but not display: none;, for accessibility) */
+            	.producttable thead { 
+            		display:none;
+            		
+            	}
+            	.table  th, .table td{
+            	    height:25px;
+            	}
+            	.producttable form{
+            	    margin: 0
+            	    
+            	}
+            	.producttable tr { 
+            	    margin-top:50px;
+            	}
+            	.producttable tr:nth-of-type(1) { 
+            	    margin-top:0px;
+            	}
+            	.producttable td:nth-of-type(1):after { content: "Product";}
+            	.producttable td:nth-of-type(2):after { content: "Model"; }
+            	.producttable td:nth-of-type(3):after { content: "Unit Price"; }
+            	.producttable td:nth-of-type(4):after { content: "Price"; }
+            	.producttable td:nth-of-type(5):after { content: "Tax"; }
+            	.producttable td:nth-of-type(6):after { content: "Total Price"; }
+                
+                .producttable td:after{  padding-left:10px; float:right;}
+            	
             }
         </style>
         <%- NAVBAR(true) %>
@@ -59,12 +119,13 @@
                                     -->
                                 </div>
                                 <hr />
+                                <br class="clear-fix" />
                                 <div class="row-fluid">
-                                    <table width="100%"  class="table table-bordered">
-                                        <thead>
+                                    <table width="100%"  class="table producttable">
+                                        <thead width="100%">
                                             <tr>
-                                                <td>Product</td>
-                                                <td>Model</td>
+                                                <td class="productNameRow">Product</td>
+                                                <td class="productModelRow">Model</td>
                                                 <td>Unit Price</td>
                                                 <td>Price</td>
                                                 <td>Tax</td>
@@ -73,17 +134,6 @@
                                         </thead>
                                         <form id="products">
                                             <tbody class="unit-container">
-                                                <tr class="unit">
-                                                <td>
-                                                <a class="trash"><i class="icon-trash"></i></a> &nbsp; &nbsp;<input style="width:35px" value="1"  class="productQuanity" />&nbsp;x&nbsp;<input class="productName" />
-                                                </td>
-                                                <td><input class="productModel" /></td>
-                                                <td><input class="productPrice" value="0.00" /></td>
-                                                <td class="price"></td>
-                                                <td class="tax"></td>
-                                                <td class="tprice"></td>
-                                                </tr>
-                                                
                                             </tbody>
                                         </form>
                                     </table>
@@ -145,36 +195,73 @@
         
         <script>
             $(function(){
+                var unitID = 0;
+                var unitObject = {};
                 var template = '<tr class="unit">'
-                                +'<td>'
-                                +'<a class="trash"><i class="icon-trash"></i></a> &nbsp; &nbsp;<input style="width:35px" value="1"  class="productQuanity" />&nbsp;x&nbsp;<input class="productName" />'
+                                +'<td class="productNameRow">'
+                                +'<a class="trash"><i class="icon-trash"></i></a> &nbsp; &nbsp;<input style="width:35px" value="1"  class="productQuanity" />&nbsp;x&nbsp;<input class="productName" /> <a class="addAttribute"><i class="icon-plus"></i></a>'
                                 +'</td>'
-                                +'<td><input class="productModel" /></td>'
+                                +'<td class="productModelRow"><input class="productModel" /></td>'
                                 +'<td><input class="productPrice" value="0.00" /></td>'
                                 +'<td class="price"></td>'
                                 +'<td class="tax"></td>'
                                 +'<td class="tprice"></td>'
-                                +'</tr>'; 
-                $("#addBlank").click(function(){
+                                +'</tr>';
+                var templateAtribute = '<tr class="unitAttribute">'
+                                +'<td class="productNameRow">'
+                                +'<a class="trash"><i class="icon-trash"></i></a> &nbsp; &nbsp; <i class="icon-share-alt rotate-share-alt"></i> &nbsp; &nbsp; <input style="width:35px" value="1"  class="productQuanity" />&nbsp;x&nbsp;<input class="productName" />'
+                                +'</td>'
+                                +'<td class="productModelRow"><input class="productModel" /></td>'
+                                +'<td><input class="productPrice" value="0.00" /></td>'
+                                +'<td><i class="icon-level-up rotate"></i></td>'
+                                +'<td><i class="icon-level-up rotate"></i></td>'
+                                +'<td><i class="icon-level-up rotate"></i></td>'
+                                +'</tr>';
+               function createUnit(){
                     var row = $(template);
-                    $(".unit-container").append(row);
-                    var inputs = row.find("input");
+                    var unit = row.closest(".unit");
+                    unit.data("id",++unitID);
+                    $(".unit-container").append(unit);
+                    unitObject[unitID] = [];
+                    return unit;
+                }
+                function createUnitAtribute(unit){
+                    var row = $(templateAtribute);
+                    var unitAtribute = row.closest(".unitAttribute");
+                    var unitID = unit.data("id");
+                    unitAtribute.data("unit-id",unitID);
+                    unit.after(unitAtribute);
+                    unitObject[unitID].push(unitAtribute)
+                    
+                    return unitAtribute;
+                }  
+                $("#addBlank").click(function(){
+                    var unit = createUnit();
+                    var inputs = unit.find("input");
                     
                     //inputs.change(attachInputPrice);
                     //inputs.keyup(attachInputPrice);
                     inputs.change();
                 });
                 
+                createUnit();
                 $(document).on('click','a.trash',function(){
                     $(this).closest(".unit").remove();
+                    updateMainTotals();
+                });
+                $(document).on('click','.addAttribute',function(){
+                    createUnitAtribute($(this).closest(".unit"));
                     updateMainTotals();
                 });
                 $(document).on('change','input',attachInputPrice);
                 $(document).on('keyup','input',attachInputPrice);
                 $(document).find("input").change();
                 updateMainTotals();
+                
                 function attachInputPrice(){
                     var unit = $(this).closest(".unit");
+                    var unitID = unit.data("id");
+                    
                     var upval = unit.find(".productPrice").val() !== "" ? unit.find(".productPrice").val() : "0.00";
                     var unitPrice = parseFloat(upval).toFixed(2);
                        

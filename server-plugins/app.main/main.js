@@ -17,12 +17,6 @@ module.exports = function(options, imports, register) {
     
     imports.welder.addRequestParser(function(http){
         
-        /*
-        http.app.post('/login', function(req, res, next) {
-            req.session.user = req.body.userlogin;
-            res.redirect("/");
-        });
-        */
         http.app.use('/index.html', function(req, res, next) {
             res.redirect("/");
         });
@@ -42,14 +36,6 @@ module.exports = function(options, imports, register) {
             if(!req.session.user){
                 if(main.settings.isUsersSetup){
                     res.redirect("/login");
-                    /*
-                    res.writeHead(200, {
-                        'Content-Type': 'text/html'
-                    });
-                    main.ejs.renderFile(main.dir.template + "/login.html",{req:req},function(err,data){
-                        res.end(data);
-                    });
-                    */
                 }else{
                     res.redirect("/setup");
                 }
