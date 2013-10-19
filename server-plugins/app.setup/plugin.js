@@ -18,12 +18,7 @@ module.exports = function(options, imports, register) {
         http.app.get('/setup',main.Form.get(__dirname + "/setup.html",function(){
                     return !main.settings.isSetup;
                 }));
-        /* 
-        http.app.get('/setup', function(req, res, next) {
-            if(main.settings.isSetup) next(); else
-            renderSetupApp(req,res);
-        });
-        */
+                
         http.app.post('/setup',  main.Form.post(__dirname + "/setup.html",'/setup',{
             "appSetupUser": {//req.body.formid
                 allow: function(){

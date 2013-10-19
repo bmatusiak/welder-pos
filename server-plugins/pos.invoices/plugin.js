@@ -37,38 +37,20 @@ module.exports = function(options, imports, register) {
                 })
             }}));
         
-        http.app.post('/invoices/new/:id?', imports.posEmployees.checkEmployeeAuth, 
-            main.Form.post(__dirname + "/newInvoice.html",'/invoices',{
-                required : function(req,res){
-                    return [
-                        [req.body.name,"Name Must be Defined"],
-                        [req.body.address,"Address Must be Defined"],
-                        [req.body.city,"City Must be Defined"],
-                        [req.body.state,"State Must be Defined"],
-                        [req.body.zip,"Zip Must be Defined"],
-                        [req.body.email,"Email Must be Defined"],
-                        [req.body.phone,"Phone Must be Defined"]
-                    ];
-                },
-                next : function(req,res,error,callback){
-                    if(!error)
-                    db.newCustomer(
-                        req.body.name,
-                        req.body.address,
-                        req.body.city,
-                        req.body.state,
-                        req.body.zip,
-                        req.body.email,
-                        req.body.phone,
-                        req.session.user,//whoCreated
-                        function(err){
-                            if(!err){
-                                callback(null);
-                            }else callback(err);
-                        });
-                    else callback();
-                }
-            }) );
+        
+    });
+    
+    imports.socketio.on("connection",function(socket){
+        socket.on("invoice-save-draft",function(customerID,data,callback){
+            db.updateDraft(customerID,data,function(){
+                if(callback) callback();    
+            });
+        });
+        socket.on("invoice-load-draft",function(customerID,callback){
+            db.getDraft(customerID,function(err,data){
+                if(callback) callback(err,data);    
+            });
+        });
     });
     
     register(null, {

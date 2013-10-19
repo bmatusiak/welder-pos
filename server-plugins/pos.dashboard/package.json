@@ -1,15 +1,16 @@
 {
-    "name": "app.settings",
+    "name": "pos.dashboard",
     "version": "0.0.1",
 
     "main": "./plugin.js",
 
     "plugin": {
         "provides": [
-            "posSettings"
+            "posDashboard"
         ],
-        "consumes": [
-            "db-mongoose"
+        "consumes":[
+            "main",
+            "socketio"
         ]
     }
 }

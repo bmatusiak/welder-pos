@@ -13,7 +13,8 @@
             "db-mongoose",
             "posEmployees",
             "posProducts",
-            "posCustomers"
+            "posCustomers",
+            "socketio"
         ]
     }
 }

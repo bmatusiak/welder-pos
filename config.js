@@ -3,23 +3,20 @@ module.exports = function(passConfig){
     passConfig([
         
         "./app.main",
-        
         "./app.settings",
-        
         "./app.setup",
+        "./app.session",
         
+        "./pos",
+        "./pos.dashboard",
         "./pos.employees",
-        
         "./pos.customers",
-        
         "./pos.invoices",
-        
         "./pos.products",
+        "./pos.settings",
         
         "./lib.forms",
-        
         "./socketio",
-        
         "./lib.ejs",
         
         {
@@ -27,7 +24,6 @@ module.exports = function(passConfig){
             HOST:  "mongodb://"+process.env.IP+":27017/welder"
         },
         
-        "./app.session",
         
         "./welder"
         

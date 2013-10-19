@@ -27,8 +27,8 @@ module.exports = function(options, imports, register) {
     }
     
     io.configure(function() {
-        //io.set("transports", ["xhr-polling"]);
-        //io.set("polling duration", 10);
+        io.set("transports", ["xhr-polling"]);
+        io.set("polling duration", 10);
         io.set("log level", 0);
         if(options.useRedis){
             io.set('store', new RedisStore({
@@ -83,7 +83,7 @@ module.exports = function(options, imports, register) {
         socketIO.emit("connection",$socket);
         
         $socket.on("test",function(){
-            console.log(arguments);
+            console.log($socket.session,arguments);
         });
     });
     

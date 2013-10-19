@@ -21,18 +21,6 @@ module.exports = function(options, imports, register) {
             res.redirect("/");
         });
         http.app.get('/', function(req, res, next) {
-            var options = {
-                req:req
-            }
-            function renderDashboard(){
-                
-                res.writeHead(200, {
-                    'Content-Type': 'text/html'
-                });
-                main.ejs.renderFile(main.dir.template + "/daskboard.html",options,function(err,data){
-                    res.end(data);
-                }); 
-            }
             if(!req.session.user){
                 if(main.settings.isUsersSetup){
                     res.redirect("/login");
@@ -43,14 +31,7 @@ module.exports = function(options, imports, register) {
                 if(!main.settings.isSetup){ 
                     res.redirect("/setup");
                 }else{
-                    main.welder.architect.services.posCustomers.db.customersPage(
-                        req.query.page-1 || 0,50,
-                        function(err,customers){
-                                options.customers = customers.results;
-                                renderDashboard();
-                        });
-                        
-                    
+                    res.redirect("/dashboard");
                 }
             }
         });

@@ -7,19 +7,23 @@ module.exports = function(db) {
     var collection = "invoices";
     
     var modelSchema = new Schema({
-        id : { type: Number, index: true, unique:true },
-        customer_id : String,
+        //id : { type: Number, index: true, unique:true },
+        cid : { type: String, index: true, unique:true },
         products:[{
-            id:Number,
+            unitid:Number,
             name:String,
             model:String,
             price:String,
-            quanity:Number,
-            applyTax:Boolean
+            quanity:Number
         }],
         
         created: Date,
         createdBy: String,
+    });
+    var draftSchema = new Schema({
+        //id : { type: Number, index: true, unique:true },
+        cid : { type: String, index: true, unique:true },
+        data: String
     });
     
     var Invoices = db.model(collection, modelSchema);
@@ -72,6 +76,7 @@ module.exports = function(db) {
         });
     };
     
+    
     var invoicesPage = function(page,perPage,callback){
         Invoices.find({})
         .limit(perPage)
@@ -88,9 +93,64 @@ module.exports = function(db) {
         });
     };
     
+    
+    //-------------------------------------------------------------
+    
+    
+    var Drafts = db.model("invoice-drafts", draftSchema);
+    var updateDraft = function(
+        customerID,
+        draftObject,
+        callback){
+        if(!callback) callback=function(){};
+        Drafts.findOne({cid: customerID}, function(err,draft){
+            if(!err && !draft){
+                draft = new Drafts();
+                draft.cid = customerID;
+                draft.data = JSON.stringify(draftObject);
+                draft.save(function(){
+                    callback(null,JSON.parse(draft.data));
+                });
+        
+            }else if(!err && draft !== null){
+                draft.data = JSON.stringify(draftObject);
+                draft.save(function(){
+                    callback(null,JSON.parse(draft.data));
+                });
+            }
+        });
+    };
+    
+    var getDraft = function(
+        customerID,
+        callback){
+        if(!callback) callback=function(){};
+        Drafts.findOne({cid: customerID}, function(err,draft){
+            if(!err && !draft){
+                draft = new Drafts();
+                draft.cid = customerID;
+                draft.data = JSON.stringify({});
+                draft.save(function(){
+                   callback(null,JSON.parse(draft.data)); 
+                });
+            }else if(!err && draft !== null){
+                if(!draft.data)
+                    draft.data = JSON.stringify({});
+                
+                draft.save(function(){
+                   callback(null,JSON.parse(draft.data)); 
+                });
+                    
+            }
+        });
+    };
+    
+    
     return {
         newInvoice:newInvoice,
         getInvoices:getInvoices,
+        updateDraft:updateDraft,
+        getDraft:getDraft,
         listInvoices:listInvoices,
         invoicesPage:invoicesPage
     };
