@@ -62,6 +62,13 @@ module.exports = function(options, imports, register) {
             http.app.use(mount, http.express.static(dir));
             console.log("Static Mounted",mount,"=",dir);
         },
+        addStaticFile:function(mountFile,File){
+            
+            http.app.use(mountFile, function(req,res){
+                res.sendfile(File);
+            });
+            console.log("Static Mounted",mountFile,"=",File);
+        },
         addMiddleWare:function(fn){
             __Middlewares.push(fn);
         },

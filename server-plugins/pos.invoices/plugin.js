@@ -54,7 +54,9 @@ module.exports = function(options, imports, register) {
     });
     
     register(null, {
-        "posInvoices": {}
+        "posInvoices": {
+            moduleDir:__dirname+"/static"
+        }
     });
 
 };

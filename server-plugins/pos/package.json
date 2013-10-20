@@ -9,12 +9,14 @@
             "pos"
         ],
         "consumes": [
+            "main",
             "posCustomers",
             "posDashboard",
             "posInvoices",
             "posEmployees",
             "posProducts",
-            "posSettings"
+            "posSettings",
+            "posSockets"
         ]
     }
 }
