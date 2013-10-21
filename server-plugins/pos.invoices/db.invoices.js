@@ -20,11 +20,6 @@ module.exports = function(db) {
         created: Date,
         createdBy: String,
     });
-    var draftSchema = new Schema({
-        //id : { type: Number, index: true, unique:true },
-        cid : { type: String, index: true, unique:true },
-        data: String
-    });
     
     var Invoices = db.model(collection, modelSchema);
     
@@ -96,6 +91,12 @@ module.exports = function(db) {
     
     //-------------------------------------------------------------
     
+    
+    var draftSchema = new Schema({
+        //id : { type: Number, index: true, unique:true },
+        cid : { type: Number, index: true, unique:true },
+        data: String
+    });
     
     var Drafts = db.model("invoice-drafts", draftSchema);
     var updateDraft = function(

@@ -29,12 +29,10 @@
             .productNameRow{
                 white-space:nowrap;
             }
+            
             @media 
-            (max-width: 767px){
-            }
-            @media 
-            only screen and (max-width: 760px),
-            (min-device-width: 768px) and (max-device-width: 1024px)  {
+            only screen and (max-width: 979px),
+            (min-device-width: 979px) and (max-device-width: 1024px)  {
                 
             	/* Force table to not be like tables anymore */
             	table, thead, tbody, th, td, tr { 
@@ -59,14 +57,19 @@
             	.producttable tr:nth-of-type(1) { 
             	    margin-top:0px;
             	}
-            	.producttable td:nth-of-type(1):after { content: "Product";}
-            	.producttable td:nth-of-type(2):after { content: "Model"; }
-            	.producttable td:nth-of-type(3):after { content: "Unit Price"; }
-            	.producttable td:nth-of-type(4):after { content: "Price"; }
-            	.producttable td:nth-of-type(5):after { content: "Tax"; }
-            	.producttable td:nth-of-type(6):after { content: "Total Price"; }
+            	.unit td:nth-of-type(1):after { content: "Product";}
+            	.unit td:nth-of-type(2):after { content: "Model"; }
+            	.unit td:nth-of-type(3):after { content: "Unit Price"; }
+            	.unit td:nth-of-type(4):after { content: "Price"; }
+            	.unit td:nth-of-type(5):after { content: "Tax"; }
+            	.unit td:nth-of-type(6):after { content: "Total Price"; }
                 
-                .producttable td:after{  padding-left:10px; float:right;}
+                .unit td:after{  padding-left:10px; float:right;}
+            	
+            	.unitTotals td:nth-of-type(2):after { content: "Sub-Total";}
+            	.unitTotals td:nth-of-type(3):after { content: "Tax"; }
+            	.unitTotals td:nth-of-type(4):after { content: "Total"; }
+            	.unitTotals td:after{  padding-left:10px; float:right;}
             	
             }
         </style>
@@ -121,7 +124,16 @@
                                 <hr />
                                 <br class="clear-fix" />
                                 <div class="row-fluid">
-                                    <table width="100%"  class="table producttable">
+                                    <div id="loadingUnits">
+                                        <div class='loading-tag' style="text-align:center;">
+                                            <a class='loading1 loading'>&nbsp;</a>
+                                            <a class='loading2 loading'>&nbsp;</a>
+                                            <a class='loading3 loading'>&nbsp;</a>
+                                            <div class='clearfix'></div>
+                                        </div>
+                                        <br />
+                                    </div>
+                                    <table width="100%"  class="table producttable hide">
                                         <thead width="100%">
                                             <tr>
                                                 <td class="productNameRow">Product</td>
@@ -133,43 +145,52 @@
                                             </tr>
                                         </thead>
                                         <tbody class="unit-container">
+                                        
                                         <tr class="unitsbottomRow">
                                             <td colspan="6">
                                                  <a class="button btn btn-small" id="addBlank"><i class="icon-plus"></i></a>
                                             </td>
                                         </tr>
-                                        </tbody>
-                                    </table>
-                                    <table class="pull-right">
-                                        <tbody>
+                                        <thead width="100%">
                                             <tr>
+                                                <td colspan="3"></td>
                                                 <td>
-                                                    <b>Sub-Total</b>
+                                                     <b>Sub-Total</b>
                                                 </td>
-                                                <td class="sub-total">
-                                                    
+                                                <td>
+                                                     <b>Tax</b>
+                                                </td>
+                                                <td>
+                                                     <b>Total</b>
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td>
-                                                    <b>Tax</b>
-                                                </td>
-                                                <td class="ttax">
-                                                    
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <b>Total</b>
-                                                </td>
-                                                <td class="total">
-                                                    
-                                                </td>
-                                            </tr>
-                                           
+                                        </thead>
+                                        <tr class="unitTotals">
+                                            <td colspan="3"></td>
+                                            <td class="sub-total"></td>
+                                            <td class="ttax"></td>
+                                            <td class="total"></td>
+                                        </tr>
+                                        <tr class="actions">
+                                            <td colspan="6">
+                                                <div class="page-actions pull-right">
+                                            		<i href="javascript:" class="saveDraftBtn button btn btn-success btn-large">
+                                                		<div class='loading-tag' style="text-align:center;">
+                                                            <a class='loading1 loading'>&nbsp;</a>
+                                                            <a class='loading2 loading'>&nbsp;</a>
+                                                            <a class='loading3 loading'>&nbsp;</a>
+                                                            <div class='clearfix'></div>
+                                                        </div>
+                                                        <span>Saved</span>
+                                                    </i>&nbsp;
+                                            		<button class="newInvoiceBtn button btn btn-warning btn-large">Create Invoice</button>&nbsp;
+                                            	</div> <!-- .actions -->
+                                            </td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
+                                <!--
                                 <hr />
                                     <div class="field">
                             			<label for="invoiceStatus">Status:</label>
@@ -177,13 +198,9 @@
                                           <option value="open">Open</option>
                                           <option value="closed">Closed</option>
                                         </select>
-                            		</div> <!-- /field -->
-                            		
-                            		
-                            	<hr />
-                            	<div class="login-actions">
-                            		<button class="button btn btn-warning btn-large pull-right">Create Invoice</button>
-                            	</div> <!-- .actions -->
+                            		</div>
+                            		-->
+                            	
                             </div>
                         </div>
                     </div>
@@ -193,14 +210,6 @@
             <!-- /container -->
         </div>
         <!-- /main -->
-        <script>
-        $(function(){
-            window.loadMod("invoices",function(invoices){
-                invoices(<%- customer.id %>);
-               //console.log(arguments);
-            });
-        });
-        </script>
         <script src="/js/libs/jquery-ui-1.10.3.custom.min.js"></script>
         <style>
             .ui-autocomplete{
@@ -213,7 +222,16 @@
                 list-style:none;
                 border:none;
             }
+            .saveDraftBtn.btn-success .loading-tag,.saveDraftBtn.btn-danger span {
+                display:none;
+            }
+            .saveDraftBtn.btn-danger .loading-tag,.saveDraftBtn.btn-success span {
+                display:block;
+            }
+            
         </style>
         <script src="/js/libs/bootstrap.min.js"></script>
+        
+        <autoload style="display:none" mod="invoices" modData="<%- customer.id %>"></autoload>
     </body>
 </html>

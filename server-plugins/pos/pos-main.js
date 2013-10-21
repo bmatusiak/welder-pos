@@ -10,7 +10,8 @@ module.exports = function(options, imports, register) {
             customers : imports.posCustomers,
             invoices : imports.posInvoices,
             products : imports.posProducts,
-            settings : imports.posSettings
+            settings : imports.posSettings,
+            sockets : imports.posSockets
         };
     
     main.welder.addStaticFile("/static/modules/main.js",__dirname+"/client.main.js",false);
@@ -18,6 +19,12 @@ module.exports = function(options, imports, register) {
     for(var i in pos){
         if(pos[i].moduleDir){
             main.welder.addStatic("/static/modules/"+i,pos[i].moduleDir,false);
+        }
+        if(pos[i].socketConnection){
+            pos.sockets.addSocketConnection(pos[i].socketConnection);
+        }
+        if(pos[i].httpConnection){
+            imports.main.welder.addRequestParser(pos[i].httpConnection);
         }
     }
         

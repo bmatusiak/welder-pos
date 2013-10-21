@@ -19,42 +19,36 @@
     <script src="/js/libs/jquery-1.8.3.min.js"></script>
     <script>$.holdReady( true );</script>
     <script data-main="/static/modules/main.js" src="/js/libs/require.js"></script>
-    <!--
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-        $(function(){ 
-            var $socket = window.io.connect();
-            
-            var connectedFns = [];
-            var socket = window.socket =  function(fn){
-                connectedFns.push(fn);
-                if(socket.connected === true)
-                    fn.call({},socket);
-            };
-            
-            socket.on = function(){
-                $socket.on.apply($socket,arguments);
-            };
-            
-            socket.emit = function(){
-                $socket.emit.apply($socket,arguments);
-            };
-            socket.connected = false;
-            
-            $socket.on('connect', function () {
-                socket.connected = true;
-                for (var i = 0; i < connectedFns.length; i++) {  
-                    connectedFns[i].call({},socket);
-                }
-            });
-            
-            $socket.on('disconnect', function () {
-                socket.connected = false;
-            });
-            socket(function(){
-                console.log("websocket connected");
-            }); 
-        });
-    </script>
-    -->
+    <style>
+    #loading{
+	    text-align:center;
+    }
+    .loading{
+    	background-color:#CCC;
+    	height:15px;
+    	width:15px;
+    	-webkit-animation-name: loading;
+     	-webkit-animation-duration: 1.5s;
+     	-webkit-animation-iteration-count: infinite;
+     	-webkit-animation-direction: linear;
+    	opacity:0.3;
+    }
+    .loading1{
+     	-webkit-animation-delay: .3s;
+     	
+     }
+    .loading2{
+     	-webkit-animation-delay: .7s;
+     	margin-left:8px;
+    }
+    .loading3{
+     	-webkit-animation-delay: .9s;
+     	margin-left:8px;
+    }
+    @-webkit-keyframes loading{
+    	0%{opacity:0.3;}
+    	50%{opacity:1;background-color:#111}
+    	100%{opacity:0.3;}
+    }
+    </style>
 </head>

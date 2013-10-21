@@ -43,7 +43,9 @@ module.exports = function(options, imports, register) {
     });
     
     register(null, {
-        "posDashboard": {}
+        "posDashboard": {
+            moduleDir:__dirname+"/static"
+        }
     });
 
 };

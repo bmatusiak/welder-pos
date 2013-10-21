@@ -48,4 +48,13 @@ window.requirejs(["require","socketio"],function(r,socketio){
     };
    //console.log("requirejs loaded");
    $.holdReady( false );
+   $(function(){
+       $("autoload").each(function(){
+           var mod = $(this).attr("mod");
+           var modData = $(this).attr("modData");
+           window.loadMod(mod,function(fn){
+               fn(modData);
+           });
+       });
+   });
 });

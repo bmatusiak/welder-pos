@@ -58,6 +58,16 @@
                                         </tr>
                                     </thead>
                                     <tbody class="customersList">
+                                        <tr class="loadingCustomersList">
+                                            <td colspan="5">
+                                                <div id='loading'>
+                                                    <a id='loading1' class='loading'>&nbsp;</a>
+                                                    <a id='loading2' class='loading'>&nbsp;</a>
+                                                    <a id='loading3' class='loading'>&nbsp;</a>
+                                                    <div class='clearfix'></div>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -69,28 +79,8 @@
             <!-- /container -->
         </div>
         <!-- /main -->
-        <script>
-        $(function(){
-            var loadedCustomers = false;
-            window.socket(function (socket) {
-                if(!loadedCustomers)
-                socket.emit("dashboard-customers",1,function(err,customers){
-                    loadedCustomers = true;
-                    for(var i in customers){
-                        var template = '<tr>'
-                            +'<td>'+customers[i].id+'</td>'
-                            +'<td>'+customers[i].name+'</td>'
-                            +'<td>'+customers[i].phone+'</td>'
-                            +'<td>'+customers[i].email+'</td>'
-                            +'<td style="text-align:center;font-size:30px;"><a href="/invoices/new/'+customers[i].id+'"><i class="icon-plus-sign-alt"></i></a></td>'
-                            +'</tr>';
-                        $(".customersList").append(template);
-                    }
-                }); 
-            });
-        });     
-        </script>
         <script src="/js/libs/jquery-ui-1.10.0.custom.min.js"></script>
         <script src="/js/libs/bootstrap.min.js"></script>
+        <autoload style="display:none" mod="dashboard"></autoload>
     </body>
 </html>
