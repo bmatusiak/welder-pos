@@ -9,15 +9,18 @@ module.exports = function(options, imports, register) {
     
     var db = mongoose.connection;
     
-    var MongooseSession = require("./mongooseSession.js")(mongoose,mongoose.Schema);
     mongoose.counter = require("./indexCounter.js")(mongoose);
+    mongoose.session = new (require("./mongooseSession.js")(mongoose,mongoose.Schema))({ interval: 120000 });
     
     var MongoosePlugin = {
-        "db-mongoose": mongoose,
-        "db-mongoose-session": new MongooseSession({ interval: 120000 })
+        "db-mongoose": mongoose
     };
     
-    db.on('error', console.error.bind(console, 'connection error:'));
+    db.on('error', function(err){
+        var cErr = console.error.bind(console, 'Mongoose Connection error:');
+        cErr(err);
+        register(err);
+    });
     db.once('open', function callback () {
         console.log("Mongoose Connected");
         register(null, MongoosePlugin);

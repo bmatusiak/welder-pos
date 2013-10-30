@@ -1,16 +1,15 @@
 {
-    "name": "pos",
+    "name": "dashboard",
     "version": "0.0.1",
 
     "main": "./plugin.js",
 
     "plugin": {
         "provides": [
-            "pos"
+            "dashboard"
         ],
-        "consumes": [
-            "app",
-            "hub"
+        "consumes":[
+            "pos"    
         ]
     }
 }

@@ -1,14 +1,14 @@
 {
-    "name": "plugin.template",
+    "name": "app.session",
     "version": "0.0.1",
 
-    "main": "./plugin.js",
+    "main": "./session.js",
 
     "plugin": {
         "provides": [
-            "pluginTemplate"
+            "session"
         ],
-        "consumes": [
+        "consumes":[
             "app"
         ]
     }

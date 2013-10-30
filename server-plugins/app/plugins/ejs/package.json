@@ -1,16 +1,15 @@
 {
-    "name": "pos",
+    "name": "lib.ejs",
     "version": "0.0.1",
 
     "main": "./plugin.js",
 
     "plugin": {
         "provides": [
-            "pos"
+            "ejs"
         ],
-        "consumes": [
-            "app",
-            "hub"
+        "consumes":[
+            "app"
         ]
     }
 }

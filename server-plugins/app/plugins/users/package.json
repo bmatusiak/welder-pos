@@ -1,16 +1,15 @@
 {
-    "name": "pos",
+    "name": "app.users",
     "version": "0.0.1",
 
     "main": "./plugin.js",
 
     "plugin": {
         "provides": [
-            "pos"
+            "users"
         ],
-        "consumes": [
-            "app",
-            "hub"
+        "consumes":[
+            "app"
         ]
     }
 }

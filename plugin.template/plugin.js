@@ -2,7 +2,7 @@
 
 module.exports = function(options, imports, register) {
     
-    var main = imports.main;
+    var app = imports.app;
     
     register(null, {
         "pluginTemplate": {}

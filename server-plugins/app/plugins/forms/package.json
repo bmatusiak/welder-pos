@@ -1,16 +1,16 @@
 {
-    "name": "pos",
+    "name": "lib.forms",
     "version": "0.0.1",
 
     "main": "./plugin.js",
 
     "plugin": {
         "provides": [
-            "pos"
+            "Form"
         ],
-        "consumes": [
-            "app",
-            "hub"
+        "consumes":[
+            "ejs",
+            "app"
         ]
     }
 }

@@ -7,8 +7,7 @@
 
     "plugin": {
         "provides": [
-            "db-mongoose",
-            "db-mongoose-session"
+            "db-mongoose"
         ]
     }
 }

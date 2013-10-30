@@ -18,3 +18,5 @@ data/
 mongod*
 .c9
 redisd*
+
+mongo*

@@ -2,27 +2,22 @@
 module.exports = function(passConfig){
     passConfig([
         
-        "./app.main",
-        "./app.settings",
-        "./app.setup",
-        "./app.session",
-        
         "./pos",
-        "./pos.dashboard",
-        "./pos.employees",
-        "./pos.customers",
-        "./pos.invoices",
-        "./pos.products",
-        "./pos.settings",
-        "./pos.sockets",
         
-        "./lib.forms",
-        "./socketio",
-        "./lib.ejs",
+        {
+            packagePath:"./app",
+            pluginOptions:{
+                session:{
+                    key:"session.key",
+                    secret:"CHANGEME"
+                }
+            }
+        },
+        
         
         {
             packagePath: "./db.mongoose",
-            HOST:  "mongodb://"+process.env.IP+":27017/welder"
+            HOST:  "mongodb://localhost:27017/welder"
         },
         
         

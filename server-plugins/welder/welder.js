@@ -3,6 +3,8 @@ module.exports = function(options, imports, register) {
     
     var welder;
     
+    var started = false;
+    
     var http = imports.http = require("./plugins/web.http/http.js")();
     http.cookieHandler = http.express.cookieParser(options.clientSecret);
     //compress everything
@@ -50,6 +52,8 @@ module.exports = function(options, imports, register) {
         _Middlewares();
         _RequestParsers();
         
+        started = true;
+        
         callback();
     }
     
@@ -63,23 +67,26 @@ module.exports = function(options, imports, register) {
             console.log("Static Mounted",mount,"=",dir);
         },
         addStaticFile:function(mountFile,File){
-            
             http.app.use(mountFile, function(req,res){
                 res.sendfile(File);
             });
             console.log("Static Mounted",mountFile,"=",File);
         },
         addMiddleWare:function(fn){
-            __Middlewares.push(fn);
+            if(!started)
+                __Middlewares.push(fn);
+            else fn(http);
         },
         addRequestParser:function(fn){
-            __RequestParsers.push(fn);
+            if(!started)
+                __RequestParsers.push(fn);
+            else fn(http);
         },
     };
     
     imports.hub.on("service", function(name, plugin) {
         if(!plugin.name)plugin.name = name;
-        console.log("Service loaded " + name);
+        //console.log("Service loaded " + name);
     });
     
     imports.hub.on("ready",function(app){

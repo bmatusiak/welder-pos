@@ -1,16 +1,15 @@
 {
-    "name": "pos",
+    "name": "pos.invoices",
     "version": "0.0.1",
 
     "main": "./plugin.js",
 
     "plugin": {
         "provides": [
-            "pos"
+            "invoices"
         ],
-        "consumes": [
-            "app",
-            "hub"
+        "consumes":[
+            "pos"
         ]
     }
 }

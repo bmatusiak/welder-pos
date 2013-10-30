@@ -1,15 +1,16 @@
 {
-    "name": "pos",
+    "name": "app.main",
     "version": "0.0.1",
 
     "main": "./plugin.js",
 
     "plugin": {
         "provides": [
-            "pos"
+            "app"
         ],
-        "consumes": [
-            "app",
+        "consumes":[
+            "welder",
+            "db-mongoose",
             "hub"
         ]
     }
