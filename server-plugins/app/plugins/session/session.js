@@ -5,7 +5,7 @@ module.exports = function(options,imports,register){
     var secret = options.secret || process.env.SESSION_SECRET || "CHANGEME";
     
     imports.app.welder.addMiddleWare(function(http){
-         http.app.use(http.express.session(
+         http.use(http.express.session(
             {
                 key: cookieID,   
                 secret: secret, 

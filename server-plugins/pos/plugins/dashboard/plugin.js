@@ -8,7 +8,7 @@ module.exports = function(options, imports, register) {
         "dashboard": {
             moduleDir:__dirname+"/static",
             httpConnection:function(http){
-                http.app.get('/home',pos.app.users.checkUserAuth, function(req, res, next) {
+                http.sub(pos.app.users.checkUserAuth()).get('/home', function(req, res, next) {
                     var options = {
                         req:req
                     };
@@ -24,15 +24,13 @@ module.exports = function(options, imports, register) {
                     renderDashboard();
                 });
             },
-            socketConnection:function(socket){
-                socket.on('dashboard-customers',function(page,callback){
+            socketUserConnection:function($socket){
+                $socket.on('dashboard-customers',function(page,callback){
                     if(!callback && page && typeof(page) == "function")callback = page;
-                    pos.customers.db.customersPage(
-                            page ? page-1 : 0 || 0,50,
+                    pos.customers.db.customersPage(page ? page-1 : 0 || 0,50,
                             function(err,customers){
                                 callback(err,customers.results);
                             });
-                    
                 });
             }
         }

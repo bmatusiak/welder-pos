@@ -9,24 +9,24 @@ module.exports = function(options, imports, register) {
     //db.listUsers(callback)
     
     app.welder.addMiddleWare(function(http){
-        http.app.use(function(req,res,next){
+        http.use(function(req,res,next){
             if(req.session.user)
                 req.user = req.session.user;
                 
             next();
         });
         
-        http.app.use("/logout",function(req,res,next){
+        http.use("/logout",function(req,res,next){
             delete req.session.user;
                 
             res.redirect("/");
         });
-        http.app.get("/login",app.Form.get(__dirname + "/login.html",function(req,res,redirectTo){
+        http.get("/login",app.Form.get(__dirname + "/login.html",function(req,res,redirectTo){
             redirectTo("/");
             return app.settings.isUsersSetup && !req.session.user;
         }));
             
-        http.app.post("/login",app.Form.post(__dirname + "/login.html",'/',{
+        http.post("/login",app.Form.post(__dirname + "/login.html",'/',{
                 required : function(req,res){
                     return [
                         [req.body.userlogin,"UserLogin Must be Defined"],
@@ -70,12 +70,23 @@ module.exports = function(options, imports, register) {
                     
                 });
             },
-            checkUserAuth:function(req,res,next){
-                if(!req.session.user) {
-                    res.redirect("/login");
-                }else{
-                    next();
+            checkUserAuth:function(type){
+                if(type == "http" || !type){
+                    return function(req,res,next){
+                        if(!req.session.user) {
+                            res.redirect("/login");
+                        }else{
+                            next();
+                        }
+                    };
+                }else if(type == "socket"){
+                    return function(socket,next){
+                        if(socket.session.user) {
+                            next(true);// true if users valid
+                        }else next();
+                    };
                 }
+                
             }
         }
     });

@@ -50,6 +50,9 @@ module.exports = function(options, imports, register) {
                     if(plugins[i].socketConnection){
                         POS.app.sockets.addSocketConnection(plugins[i].socketConnection);
                     }
+                    if(plugins[i].socketUserConnection){
+                        POS.app.sockets.addSocketUserConnection(plugins[i].socketUserConnection);
+                    }
                 }
             });
             $register(null, {

@@ -7,8 +7,8 @@ module.exports = function(options, imports, register) {
     var connectUtil = require('express/node_modules/connect/lib/utils.js');
     var Events = require('events');
     var EventEmitter = Events.EventEmitter;
-    var socketIO = new EventEmitter();
-    socketIO.io = io;
+    var $socketIO = new EventEmitter();
+    $socketIO.io = io;
     
     var http = app.welder.http;
     var io = require('socket.io').listen(http.server);
@@ -57,21 +57,19 @@ module.exports = function(options, imports, register) {
         
     });
     
-    
-    io.sockets.on('connection', function(socket) {
-        var $socket = {};
+    function AppSocket(__socket){
+        var _self = this;
+        this.session = __socket.handshake.session;
         
-        $socket.session = socket.handshake.session;
-        
-        $socket.emit = function(){//server -->> client
-            socket.emit.apply(socket,arguments);
-            $socket.session.touch().save();
+        this.emit = function(){//server -->> client
+            __socket.emit.apply(__socket,arguments);
+            _self.session.touch().save();
         };
         
-        $socket.on = function(){//server <<-- client
+        this.on = function(){//server <<-- client
             var overload = function(fn){
                 return function(){
-                    $socket.session.touch().save();
+                    _self.session.touch().save();
                     fn.apply({},arguments);
                 };
             };
@@ -79,30 +77,45 @@ module.exports = function(options, imports, register) {
                 if(typeof(arguments[i]) == "function")
                     arguments[i] = overload(arguments[i]);
             }
-            socket.on.apply(socket,arguments);
+            __socket.on.apply(__socket,arguments);
         };
         
-        $socket.session.touch().save();
+        this.session.touch().save();
+    }
+    
+    io.sockets.on('connection', function(__socket) {
+        var $socket = new AppSocket(__socket);
         
-        socketIO.emit("connection",$socket);
+        $socketIO.emit("connect",$socket);
         
-        $socket.on("test",function(){
-            console.log($socket.session,arguments);
-        });
     });
     
     var appSocketFunctions = [];
+    var appSocketUserFunctions = [];
     
-    socketIO.on("connection",function(socket){
+    $socketIO.on("connect",function(_$socket){
         for (var i=0;i<appSocketFunctions.length;i++){ 
-            appSocketFunctions[i](socket);
+            appSocketFunctions[i](_$socket);
         }
+        app.users.checkUserAuth("socket")(_$socket,function(isUser){
+            if(isUser){
+                for (var j=0;j<appSocketUserFunctions.length;j++){ 
+                    appSocketUserFunctions[j](_$socket);
+                }
+                _$socket.emit("socket-ready");
+            }else _$socket.emit("socket-ready");
+            
+        });
+        
     });
     
     register(null, {
         "sockets": {
             addSocketConnection:function(fn){
                 appSocketFunctions.push(fn);
+            },
+            addSocketUserConnection:function(fn){
+                appSocketUserFunctions.push(fn);
             }
         }
     });

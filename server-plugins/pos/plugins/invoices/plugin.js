@@ -22,7 +22,7 @@ module.exports = function(options, imports, register) {
                 });        
             },
             httpConnection:function(http){
-                http.app.get('/invoices', pos.app.users.checkUserAuth, function(req, res, next) {
+                http.get('/invoices', pos.app.users.checkUserAuth(), function(req, res, next) {
                     db.invoicesPage(req.query.page-1 || 0,50,
                         function(err,invoices){
                             if(!err){
@@ -43,8 +43,8 @@ module.exports = function(options, imports, register) {
                         });
                 });
                 
-                http.app.get('/invoices/new/:id?',
-                    pos.app.users.checkUserAuth, 
+                http.get('/invoices/new/:id?',
+                    pos.app.users.checkUserAuth(), 
                     pos.app.Form.get(__dirname + "/newInvoice.html",{next:function(req,res,callback){
                         pos.customers.db.getCustomer(req.params.id,function(err,customer){
                             callback(err,{customer:customer});

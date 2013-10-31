@@ -8,8 +8,8 @@ module.exports = function(options, imports, register) {
     
     pos.app.welder.addRequestParser(function(http){
         
-        http.app.get('/customers',
-            pos.app.users.checkUserAuth,
+        http.get('/customers',
+            pos.app.users.checkUserAuth(),
             function(req, res, next) {
                 db.customersPage(req.query.page-1 || 0,50,
                     function(err,customers){
@@ -31,12 +31,12 @@ module.exports = function(options, imports, register) {
                     });
             });
         
-        http.app.get('/customers/new', 
-            pos.app.users.checkUserAuth,
+        http.get('/customers/new', 
+            pos.app.users.checkUserAuth(),
             pos.app.Form.get(__dirname + "/newCustomer.html"));
         
-        http.app.post('/customers/new', 
-            pos.app.users.checkUserAuth,
+        http.post('/customers/new', 
+            pos.app.users.checkUserAuth(),
             pos.app.Form.post(__dirname + "/newCustomer.html",'/customers',{
                 required : function(req,res){
                     return [

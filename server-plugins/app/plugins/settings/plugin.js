@@ -1,6 +1,16 @@
 "use strict";
 
 module.exports = function(options, imports, register) {
+    var app = imports.app;
+    
+    //update settigns per page request
+    app.welder.addMiddleWare(function(http){
+        http.use(function(req, res, next) {
+            app.settings.load(function(){
+                next();
+            });
+        });
+    });
     
     var dbSettings = require("./db.settings.js")(imports.app.db);
     //dbSettings.setSetting

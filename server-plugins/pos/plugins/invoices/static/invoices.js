@@ -243,7 +243,7 @@ define(function(require, exports, module) {
             
             function saveDraft(){
                 if(!loaded) return;
-                console.log("saving draft");
+                //console.log("saving draft");
                 $(".saveDraftBtn").removeClass("btn-success");
                 $(".saveDraftBtn").addClass("btn-danger");
                 $(".saveDraftBtn").addClass("disabled");

@@ -15,7 +15,7 @@ module.exports = function(options, imports, register) {
     
     app.welder.addRequestParser(function(http){
         
-        http.app.get('/setup',app.Form.get(__dirname + "/setup.html",function(req,res,redirectTo){
+        http.get('/setup',app.Form.get(__dirname + "/setup.html",function(req,res,redirectTo){
                     if(app.settings.isUsersSetup && !req.session.user){
                         if(!app.settings.isSetup)
                             redirectTo("/login");
@@ -24,7 +24,7 @@ module.exports = function(options, imports, register) {
                     return !app.settings.isUsersSetup || !app.settings.isSetup && req.session.user;
                 }));
                 
-        http.app.post('/setup',  app.Form.post(__dirname + "/setup.html",'/setup',{
+        http.post('/setup',  app.Form.post(__dirname + "/setup.html",'/setup',{
             "appSetupUser": {//req.body.formid
                 allow: function(req,res){
                     return !app.settings.isSetup;

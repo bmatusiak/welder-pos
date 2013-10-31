@@ -9,7 +9,7 @@ module.exports = function(options, imports, register) {
     register(null, {
         "products": {
             httpConnection:function(http){
-                http.app.get('/products', pos.app.users.checkUserAuth, function(req, res, next) {
+                http.get('/products', pos.app.users.checkUserAuth(), function(req, res, next) {
                     db.productsPage(req.query.page-1 || 0,50,
                         function(err,products){
                             if(!err){
@@ -30,11 +30,11 @@ module.exports = function(options, imports, register) {
                         });
                 });
                 
-                http.app.get('/products/new/:id?',
-                    pos.app.users.checkUserAuth, 
+                http.get('/products/new/:id?',
+                    pos.app.users.checkUserAuth(), 
                     pos.app.Form.get(__dirname + "/newProduct.html"));
                 
-                http.app.post('/products/new/:id?', pos.app.users.checkUserAuth, 
+                http.post('/products/new/:id?', pos.app.users.checkUserAuth(), 
                     pos.app.Form.post(__dirname + "/newProduct.html",'/products',{
                         required : function(req,res){
                             return [

@@ -27,14 +27,26 @@ window.requirejs(["require","socketio"],function(r,socketio){
         
         $socket.on('connect', function () {
             socket.connected = true;
-            for (var i = 0; i < connectedFns.length; i++) {  
-                connectedFns[i].call({},socket);
-            }
+            $(function(){
+                for (var i = 0; i < connectedFns.length; i++) {  
+                    connectedFns[i].call({},socket);
+                }
+            });
         });
         
         $socket.on('disconnect', function () {
+            console.log("websocket disconnected");
             socket.connected = false;
+            socket.ready = false;
+            $.holdReady( true );
         });
+        
+        $socket.on('socket-ready', function () {
+            console.log("websocket ready");
+            socket.ready = true;
+            $.holdReady( false );
+        });
+        
         socket(function(){
             console.log("websocket connected");
         });   
@@ -47,7 +59,6 @@ window.requirejs(["require","socketio"],function(r,socketio){
         });
     };
    //console.log("requirejs loaded");
-   $.holdReady( false );
    $(function(){
        $("autoload").each(function(){
            var mod = $(this).attr("mod");
