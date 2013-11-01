@@ -2,17 +2,13 @@
 
 module.exports = function(options, imports, register) {
     
-    var APP = imports;
-    
-    APP.dir = {
-            template: __dirname+"/template"
-        };
+    imports.dir = {
+        template: __dirname+"/template"
+    };
+    imports.plugin = require("./app-setup.js");
+    imports.plugin("app",__dirname + "/plugins",function(plugin,plugins){
         
-    APP.plugin = require("./app-setup.js");
-    
-    APP.plugin("app",__dirname + "/plugins",function(plugin,plugins){
+        require("./main.js")(imports);
         
-        require("./main.js")(APP);
-        
-    },APP)(options, imports, register);
+    })(options, imports, register);
 };
