@@ -3,13 +3,12 @@
 module.exports = function(app) {
     app.welder.addStaticFile("/static/modules/main.js",__dirname+"/client.main.js",false);
 
+    app.welder.addStatic("/",__dirname+"/static",false);
+    
     app.ejs.use(app.dir.template + "/parts");
     app.ejs.staticOption("app",app);
     
-    
-    
     app.welder.addRequestParser(function(http){
-        
         http.use('/index.html', function(req, res, next) {
             res.redirect("/");
         });
@@ -28,8 +27,5 @@ module.exports = function(app) {
                 }
             }
         });
-        
     });
-    
-    app.welder.addStatic("/",__dirname+"/static",false);
 };
