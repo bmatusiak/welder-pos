@@ -5,6 +5,7 @@ module.exports = function(options, imports, register) {
     var fs = require("fs");
     
     var APP = {
+        plugin:require("./app-setup.js"),
         db:imports["db-mongoose"],
         welder:imports.welder,
         hub:imports.hub,
