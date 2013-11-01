@@ -10,7 +10,7 @@
         ],
         "consumes":[
             "welder",
-            "db-mongoose",
+            "db",
             "hub"
         ]
     }

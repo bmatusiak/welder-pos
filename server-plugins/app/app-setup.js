@@ -1,11 +1,11 @@
 "use strict";
 var fs = require("fs");
 
-module.exports = function(pluginName,pluginDir,init){
+module.exports = function(pluginName,pluginDir,init,pluginObject){
     
 return function(options, imports, register) {
     
-    var pluginObject = {
+    pluginObject = pluginObject || {
         app:imports.app
     };
     var registerObject = {};

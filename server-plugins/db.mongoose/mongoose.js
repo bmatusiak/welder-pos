@@ -12,8 +12,8 @@ module.exports = function(options, imports, register) {
     mongoose.counter = require("./indexCounter.js")(mongoose);
     mongoose.session = new (require("./mongooseSession.js")(mongoose,mongoose.Schema))({ interval: 120000 });
     
-    var MongoosePlugin = {
-        "db-mongoose": mongoose
+    var DatabasePlugin = {
+        "db": mongoose
     };
     
     db.on('error', function(err){
@@ -23,6 +23,6 @@ module.exports = function(options, imports, register) {
     });
     db.once('open', function callback () {
         console.log("Mongoose Connected");
-        register(null, MongoosePlugin);
+        register(null, DatabasePlugin);
     });
 };
