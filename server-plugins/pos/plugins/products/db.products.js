@@ -7,80 +7,71 @@ module.exports = function(db) {
     var collection = "products";
     
     var modelSchema = new Schema({
-        id : { type: Number, index: true, unique:true },
-        customer_id : String,
-        products:[{
-            id:Number,
-            name:String,
-            model:String,
-            price:String,
-            quanity:Number,
-            applyTax:Boolean
-        }],
-        
+        name:String,
+        model:{ type: String, unique:true },
+        price:String,
+        stock:Number,
         created: Date,
-        createdBy: String,
+        createdBy: String
     });
     
     var Products = db.model(collection, modelSchema);
     
     var newProduct = function(
         name,
-        address,
-        city,
-        state,
-        zip,
-        email,
-        phone,
+        model,
+        price,
+        stock,
         whoCreatedLogin,
         callback){
-        Products.findOne({email: email}, function(err,employee){
-            if(!err && !employee){
-                db.counter("Products",1000,function(count){
-                    employee = new Products();
-                    employee.id = count;
-                    employee.name = name;
-                    employee.address = address;
-                    employee.city = city;
-                    employee.state = state;
-                    employee.zip = zip;
-                    employee.email = email;
-                    employee.phone = phone;
-                    employee.created = Date.now();
-                    employee.createdBy = whoCreatedLogin;
-                    employee.save(callback);
-                });
-            }else if(!err && employee !== null){
-                callback("User with Email Exist!");
+        Products.findOne({model: model}, function(err,product){
+            if(!err && !product){
+                product = new Products();
+                product.name = name;
+                product.model = model;
+                product.price = price;
+                product.stock = stock;
+                
+                product.created = Date.now();
+                product.createdBy = whoCreatedLogin;
+                product.save(callback);
+            }else if(!err && product !== null){
+                callback("Product With Model '"+model+"' Exists!");
             }
         });
     };
     
-    var getProducts = function(id,callback){
-        Products.findOne({id: id}, function(err,employee){
-            if(!err && !employee){
-                callback("not exist");
-            }else if(!err && employee !== null){
-                callback(null,employee);
-            }
+    var getProduct = function(queryObject,callback){
+        Products.findOne(queryObject, function(err,product){
+            if(!err && !product){
+                callback("Product Not Found!");
+            }else if(!err && product !== null){
+                callback(null,product);
+            }else callback("Product Not Found!");
         });
     };
     
-    var listProducts = function(callback){
-        Products.find(function(err,employees){
-            callback(err,employees);
+    var listProducts = function(queryObject,callback){
+        if(!callback){
+        Products.find(function(err,products){
+            queryObject(err,products);
         });
+        }else{
+           Products.find(queryObject,function(err,products){
+                callback(err,products);
+            }); 
+        }
     };
     
     var productsPage = function(page,perPage,callback){
         Products.find({})
         .limit(perPage)
         .skip(perPage * page)
-        .sort({date: 'desc'})
-        .exec(function(err, blogs) {
+        .sort({created: 'desc'})
+        .exec(function(err, products) {
             Products.count().exec(function(err, count) {
                 callback(null,{
-                    results: blogs,
+                    results: products,
                     page: page,
                     pages: count / perPage
                 });
@@ -90,7 +81,7 @@ module.exports = function(db) {
     
     return {
         newProduct:newProduct,
-        getProducts:getProducts,
+        getProduct:getProduct,
         listProducts:listProducts,
         productsPage:productsPage
     };

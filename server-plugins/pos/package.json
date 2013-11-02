@@ -9,8 +9,7 @@
             "pos"
         ],
         "consumes": [
-            "app",
-            "hub"
+            "app"
         ]
     }
 }

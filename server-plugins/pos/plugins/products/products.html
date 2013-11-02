@@ -17,7 +17,6 @@
                         
                             <div class="widget-header">
                                 <span class="pull-right"><a href="/products/new"><h3>New</h3></a></span>
-                                <span class="pull-right"><a href="/products/catagory"><h3>Catagories</h3></a></span>
                                 <h3>Products</h3>
                             </div>
                             <!-- /widget-header -->
@@ -27,16 +26,20 @@
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Phone</th>
-                                            <th>Email</th>
+                                            <th>model</th>
+                                            <th>Stock</th>
+                                            <th>Price</th>
+                                            <th> </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <% for(var i in products.results){ %>
                                         <tr>
                                             <td><%- products.results[i].name %></td>
-                                            <td><%- products.results[i].phone %></td>
-                                            <td><%- products.results[i].email %></td>
+                                            <td><%- products.results[i].model %></td>
+                                            <td><% if(products.results[i].stock < 0){ %>Unlimited<% }else{ %><%- products.results[i].stock %><% } %></td>
+                                            <td><%- products.results[i].price %></td>
+                                            <td style="text-align:center;"><a href="/products/<%- products.results[i].id %>">Edit</a></td>
                                         </tr>
                                         <% } %>
                                     </tbody>

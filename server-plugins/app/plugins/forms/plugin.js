@@ -34,7 +34,7 @@ module.exports = function(options, imports, register) {
                 return next();
             }
             
-            var templateData = {error:'',req:req};
+            var templateData = {error:req.body.error || '',req:req};
             
             if(formObject.next){
                 formObject.next(req,res,function(err,data){

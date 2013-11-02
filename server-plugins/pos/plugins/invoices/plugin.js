@@ -19,7 +19,19 @@ module.exports = function(options, imports, register) {
                     db.getDraft(customerID,function(err,data){
                         if(callback) callback(err,data);    
                     });
-                });        
+                });
+                socket.on("invoice-product-lookup",function(name,model,callback){
+                    var query = {};
+                    if(name)
+                        query.name = new RegExp(name, "gi");
+                        
+                    if(model)
+                        query.model = model;
+                      
+                    pos.products.db.listProducts(query,function(err,data){
+                        if(callback) callback(err,data);    
+                    });
+                }); 
             },
             httpConnection:function(http){
                 http.get('/invoices', pos.app.users.checkUserAuth(), function(req, res, next) {

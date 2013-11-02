@@ -8,8 +8,9 @@ module.exports = function(options, imports, register) {
     
     register(null, {
         "products": {
+            db:db,
             httpConnection:function(http){
-                http.get('/products', pos.app.users.checkUserAuth(), function(req, res, next) {
+                http.sub(pos.app.users.checkUserAuth()).get('/products', function(req, res, next) {
                     db.productsPage(req.query.page-1 || 0,50,
                         function(err,products){
                             if(!err){
@@ -30,40 +31,56 @@ module.exports = function(options, imports, register) {
                         });
                 });
                 
-                http.get('/products/new/:id?',
-                    pos.app.users.checkUserAuth(), 
+                http.sub(pos.app.users.checkUserAuth()).get('/products/:id',
+                    function(req,res,next){
+                        var id = req.params.id;
+                        if(id === "new")
+                            return next();
+                            
+                        db.getProduct({_id:id},function(err,product){
+                            req.body = product || {error: err};
+                            next();
+                        });
+                    },
                     pos.app.Form.get(__dirname + "/newProduct.html"));
                 
-                http.post('/products/new/:id?', pos.app.users.checkUserAuth(), 
+                http.sub(pos.app.users.checkUserAuth()).post('/products/:id',
                     pos.app.Form.post(__dirname + "/newProduct.html",'/products',{
                         required : function(req,res){
                             return [
                                 [req.body.name,"Name Must be Defined"],
-                                [req.body.address,"Address Must be Defined"],
-                                [req.body.city,"City Must be Defined"],
-                                [req.body.state,"State Must be Defined"],
-                                [req.body.zip,"Zip Must be Defined"],
-                                [req.body.email,"Email Must be Defined"],
-                                [req.body.phone,"Phone Must be Defined"]
+                                [req.body.model,"Model Must be Defined"],
+                                [req.body.stock,"Stock Must be Defined"],
+                                [req.body.price,"Price Must be Defined"]
                             ];
                         },
                         next : function(req,res,error,callback){
-                            if(!error)
-                            db.newCustomer(
-                                req.body.name,
-                                req.body.address,
-                                req.body.city,
-                                req.body.state,
-                                req.body.zip,
-                                req.body.email,
-                                req.body.phone,
-                                req.session.user,
-                                function(err){
-                                    if(!err){
-                                        callback(null);
-                                    }else callback(err);
+                            var id = req.params.id;
+                            if(id === "new")
+                                if(!error){
+                                    db.newProduct(
+                                        req.body.name,
+                                        req.body.model,
+                                        req.body.price,
+                                        req.body.stock,
+                                        req.session.user,
+                                        function(err){
+                                            if(!err){
+                                                callback(null);
+                                            }else callback(err);
+                                        });
+                                }else{ callback(); }
+                            else {
+                                db.getProduct({_id:id},function(err,product){
+                                    if(err) return callback(err);
+                                    
+                                    product.name = req.body.name,
+                                    product.model = req.body.model,
+                                    product.price = req.body.price,
+                                    product.stock = req.body.stock,
+                                    product.save(function(err){callback(err)});
                                 });
-                            else callback();
+                            }
                         }
                     }) 
                 );

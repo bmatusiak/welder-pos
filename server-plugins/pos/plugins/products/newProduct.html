@@ -16,47 +16,49 @@
                         <div class="widget stacked ">
                         
                             <div class="widget-header">
-                                <h3>New Product</h3>
+                                <h3>Product</h3>
                             </div>
                             <!-- /widget-header -->
                             <div class="widget-content">
-                                <form action="/customers/new" method="post" autocomplete="off" />
+                                <form action="/products/<%- req.params.id %>" method="post" autocomplete="off" />
                                     
                                     <div class="error" style="color:red;">
-                                        <%- (typeof(error) !== 'undefined' ? error : '') %>
+                                        <%- error %>
                                     </div>
                                     
                             		<div class="field">
-                            			<label for="catagory">Catagory:</label>
-                            			<select name="catagory" id="catagory">
-                                          <option value="none">------------</option>
-                                          <option value="catagoryID1">catagoryNAME1</option>
-                                          <option value="catagoryID2">catagoryNAME2</option>
-                                          <option value="catagoryID3">catagoryNAME3</option>
-                                          <option value="catagoryID4">catagoryNAME4</option>
-                                          <option value="catagoryID5">catagoryNAME5</option>
-                                        </select>
+                            			<label>ID: <%- req.params.id %></label>
                             		</div> <!-- /field -->
+                            		<hr />
                             		
                             		<div class="field">
                             			<label for="name">Name:</label>
-                            			<input type="text" id="name" name="name" value="" placeholder="Name" required="required" />
+                            			<input type="text" id="name" name="name" value="<%- req.body.name || '' %>" placeholder="Name" required="required" />
                             		</div> <!-- /field -->
                             		
                             		<div class="field">
-                            			<label for="model">Model:</label>
-                            			<input type="text" id="model" name="model" value="" placeholder="Model" required="required" />
+                            			<label for="model">Model/SKU:</label>
+                            			<input type="text" id="model" name="model" value="<%- req.body.model || '' %>" placeholder="Model/SKU" required="required" />
                             		</div> <!-- /field -->
                             		
                             		<div class="input-prepend">
                             			<label for="price">Price:</label>
                                         <span class="add-on">$</span>
-                            			<input type="text" id="price" name="price" value="" placeholder="Price" required="required" />
+                            			<input type="text" id="price" name="price" value="<%- req.body.price || '' %>" placeholder="Price" required="required" />
+                            		</div> <!-- /field -->
+                            		
+                            		<hr />
+                            		
+                            		<div class="field">
+                            			<label for="stock">Stock Count:</label>
+                            			<input type="text" id="stock" name="stock" value="<%- req.body.stock || '-1' %>" placeholder="Price" required="required" />
+                            			<span>-1 is Unlimited</span>
                             		</div> <!-- /field -->
                             		
                                 	<hr />
+                                	
                                 	<div class="login-actions">
-                                		<button class="button btn btn-warning btn-large pull-right">Create Product</button>
+                                		<button class="button btn btn-warning btn-large pull-right">Save Product</button>
                                 	</div> <!-- .actions -->
                                 </form>
                             </div>

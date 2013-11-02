@@ -20,4 +20,5 @@ module.exports = function(options, imports, register) {
             }
         }
     })(options, imports, register);
+    
 };

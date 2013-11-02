@@ -112,26 +112,14 @@ define(function(require, exports, module) {
                     },
                     autoFocus: true,
                     source : function(req,res){
-                        var dataA = [];
-                        
-                        var dataR = [{
-                            label: "Test", 
-                            value: "Test",
-                            model: "test-sku",
-                            price:"10.99"
-                        },{
-                            label: "Test2",
-                            value: "Test2",
-                            model: "test2-sku",
-                            price:"19.99"
-                        }];
-                        for (var i=0;i<dataR.length;i++){ 
-                            console.log();
-                            if(dataR[i].label.indexOf(req.term) >= 0)
-                            dataA.push(dataR[i]);
-                        }
-                        console.log(dataA);
-                        res(dataA);
+                        socket.emit("invoice-product-lookup",req.term,null,function(err,products){
+                            var dataA = [];
+                            for (var i=0;i<products.length;i++){
+                                products[i].label = products[i].name;
+                                dataA.push(products[i]);
+                            }
+                            res(dataA);
+                        });
                     }
                 }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
                     return $( "<li>" )
