@@ -11,7 +11,7 @@ define(function(require, exports, module) {
                         +'<td>'+customers[i].name+'</td>'
                         +'<td>'+customers[i].phone+'</td>'
                         +'<td>'+customers[i].email+'</td>'
-                        +'<td style="text-align:center;font-size:30px;"><a href="/invoices/new/'+customers[i].id+'"><i class="icon-plus-sign-alt"></i></a></td>'
+                        +'<td style="text-align:center;font-size:30px;"><a href="/invoices/new/'+customers[i].id+'"><i class="icon-edit"></i></a></td>'
                         +'</tr>';
                     $(".customersList").prepend(template);
                     $(".loadingCustomersList").hide();

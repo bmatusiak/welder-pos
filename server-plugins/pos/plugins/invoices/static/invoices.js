@@ -3,13 +3,12 @@ define(function(require, exports, module) {
     return function(customerID) {
         var loaded = false;
         window.socket(function (socket) {
-        
+            var customerID = $(".customerID").val();
             var nextUnitID = 0;
             $(document).on('click','.addAttribute',function(){
                 var unit = $(this).closest(".unit");
                 var unitAtribute = createUnitAtribute(unit,++nextUnitID);
-                
-                updateUnitPrice(unit);
+                saveDraft();
             });
             
             $(document).on('click','a.trash',function(){
@@ -21,31 +20,52 @@ define(function(require, exports, module) {
                 } 
                     
                 unit.remove();
-                updateMainTotals();
+                saveDraft();
             });
             $(document).on('change','input',function(){
                 var unit = $(this).closest(".unit").length ? $(this).closest(".unit") : $(this).closest(".unitAttribute").length ?  $(this).closest(".unitAttribute") : false;
                 
-                updateUnitPrice(unit);
+                saveDraft();
             });
             $(document).on('keyup','input',function(){
                 var unit = $(this).closest(".unit").length ? $(this).closest(".unit") : $(this).closest(".unitAttribute").length ?  $(this).closest(".unitAttribute") : false;
                 
-                updateUnitPrice(unit);
+                saveDraft();
             });
             
-            $(document).find(".saveDraftBtn").click(function(){
-                
-            })
+            $(document).find(".openInvoiceBtn").click(function(){
+                $(".btn").addClass("disabled");
+                $("input").attr("readonly","readonly");
+                saveDraft(function(invoiceObject){
+                    socket.emit("invoice-create-open",customerID,invoiceObject,function(invoiceID){
+                        console.log(customerID,invoiceObject);
+                        $("tr[unitid]").remove();
+                        nextUnitID = 0;
+                        //updateMainTotals();
+                        saveDraft(function(){
+                            document.location = "/invoices/"+invoiceID;    
+                        });
+                    });
+                });
+            });
             
-            updateMainTotals();
+            $(document).find(".trashDraftBtn").click(function(){
+                $("tr[unitid]").remove();
+                nextUnitID = 0;
+                saveDraft();
+            });
+            
+            $("#addBlank").click(function(){
+                createUnit(++nextUnitID);
+                saveDraft();
+            });
             
             if(!loaded){
                 socket.emit("invoice-load-draft",customerID,function(err,draft){
+                    if(draft.nextUnitID)
+                        nextUnitID = draft.nextUnitID;
                     
                     for(var i in draft){
-                        
-                        //var unitID = i;
                         var unitData = draft[i];
                         if(typeof unitData !== "object") continue;
                         var unit = createUnit(i);
@@ -61,9 +81,15 @@ define(function(require, exports, module) {
                             unitAtribute.find(".productPrice").val(unitData.attribute[j].productPrice);
                         } 
                         
-                        updateUnitPrice(unit);
+                        unit.find(".price").text(unitData.price.toFixed(2));
+                        unit.find(".tax").text(unitData.tax.toFixed(2));
+                        unit.find(".tprice").text(unitData.total.toFixed(2));
                     }
                     
+                    $(".sub-total").text(draft.stotal.toFixed(2));
+                    $(".ttax").text(draft.ttotal.toFixed(2));
+                    $(".total").text(draft.total.toFixed(2));
+                
                     loaded = true;
                     
                     $("#loadingUnits").hide();
@@ -148,92 +174,14 @@ define(function(require, exports, module) {
                 
                 return unitAtribute;
             }  
-            $("#addBlank").click(function(){
-                var unit = createUnit(++nextUnitID);
-                
-                updateUnitPrice(unit);
-            });
             
+            var saving = false;
             
-            function updateUnitPrice(unit){
-                if(unit){
-                    var unitIDparent = unit.attr("unitid-parent");
-                    if(unitIDparent) unit = $("[unitid='"+unitIDparent+"']");
-                    
-                    if(!unitIDparent) unitIDparent = unit.attr("unitid");
-                    var addAttributes = 0;
-                    
-                    $("[unitid-parent='"+unitIDparent+"']").each(function(k,value){
-                        var thisUnit = $(value);
-                        var upval = thisUnit.find(".productPrice").val() !== "" ? thisUnit.find(".productPrice").val() : "0.00";
-                        var unitPrice = parseFloat(upval).toFixed(2);
-                                               
-                        var unitQuanity = parseFloat(thisUnit.find(".productQuanity").val() !== "" ? thisUnit.find(".productQuanity").val() : 0);
-                                            
-                        var qPrice = parseFloat((unitPrice * unitQuanity).toFixed(2));
-                        addAttributes += qPrice;
-                                            
-                    });
-                    
-                    updateUnitTotal(unit,addAttributes);
-                    
-                }
-            }
-            function updateUnitTotal(unit,attributesAmount){
-                var upval = unit.find(".productPrice").val() !== "" ? unit.find(".productPrice").val() : "0.00";
-                var unitPrice = parseFloat(upval).toFixed(2);
-                   
-                var unitQuanity = parseFloat(unit.find(".productQuanity").val() !== "" ? unit.find(".productQuanity").val() : 0);
-                
-                var PriceEle = unit.find(".price");
-                var taxEle = unit.find(".tax");
-                var tPriceEle = unit.find(".tprice");
-                
-                var qPrice = parseFloat((unitPrice * unitQuanity).toFixed(2));
-                qPrice += attributesAmount;
-                PriceEle.text(qPrice.toFixed(2));
-                
-                var tPrice = parseFloat((Math.round((qPrice*0.06) * 100) / 100).toFixed(2));
-                taxEle.text(tPrice.toFixed(2));
-                
-                tPriceEle.text((qPrice+tPrice).toFixed(2));
-                
-                updateMainTotals();
-            }
-            function updateMainTotals(){
-                var subTotal = $(".sub-total");
-                subTotal.text("0.00");
-                var stotal = 0;
-                $(".price").each(function(k,value){
-                    stotal += parseFloat($(value).text());
-                });
-                subTotal.text(stotal.toFixed(2) );
-                
-                var TTax = $(".ttax");
-                TTax.text("0.00");
-                var ttotal = 0;
-                $(".tax").each(function(k,value){
-                    ttotal += parseFloat($(value).text());
-                });
-                
-                TTax.text(ttotal.toFixed(2) );
-            
-                var Total = $(".total");
-                Total.text("0.00");
-                var total = 0;
-                $(".tprice").each(function(k,value){
-                    total += parseFloat($(value).text());
-                    Total.text(total.toFixed(2) );
-                });
-                
-                saveDraft();
-            }
-            
-            function saveDraft(){
-                if(!loaded) return;
-                //console.log("saving draft");
+            function saveDraft(callback){
+                if(!loaded || saving) return;
+                saving = true;
                 $(".saveDraftBtn").removeClass("btn-success");
-                $(".saveDraftBtn").addClass("btn-danger");
+                $(".saveDraftBtn").addClass("btn-warning");
                 $(".saveDraftBtn").addClass("disabled");
                 
                 var draftObject = {nextUnitID:nextUnitID};
@@ -258,16 +206,27 @@ define(function(require, exports, module) {
                     
                 });
                 
-                if(loaded){
-                    socket.emit("invoice-save-draft",customerID,draftObject,function(err){
-                        $(".saveDraftBtn").removeClass("btn-danger");
-                        $(".saveDraftBtn").removeClass("disabled");
-                        $(".saveDraftBtn").addClass("btn-success");
-                    }); 
-                }
+                socket.emit("invoice-save-draft",customerID,draftObject,function(err,draftData){
+                    saving = false;
+                    $(".saveDraftBtn").removeClass("btn-warning");
+                    $(".saveDraftBtn").removeClass("disabled");
+                    $(".saveDraftBtn").addClass("btn-success");
+                    for(var i in draftData){
+                        var unitData = draftData[i];
+                        if(typeof unitData !== "object") continue;
+                        var unit = $("[unitid='"+i+"']");
+                        
+                        unit.find(".price").text(unitData.price.toFixed(2));
+                        unit.find(".tax").text(unitData.tax.toFixed(2));
+                        unit.find(".tprice").text(unitData.total.toFixed(2));
+                    }
+                    $(".sub-total").text(draftData.stotal.toFixed(2) );
+                    $(".ttax").text(draftData.ttotal.toFixed(2) );
+                    $(".total").text(draftData.total.toFixed(2) );
+                    
+                    if(callback) callback(draftData);
+                }); 
             }
-            
-            
         });
     };
 });

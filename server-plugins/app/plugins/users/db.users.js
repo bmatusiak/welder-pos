@@ -1,5 +1,6 @@
 "use strict";
-
+//http://devsmash.com/blog/password-authentication-with-mongoose-and-bcrypt
+//this link to secure up user's passwords
 module.exports = function(db) {
     
     var Schema = db.Schema;

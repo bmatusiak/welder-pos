@@ -43,6 +43,8 @@ return function(options, imports, register) {
             $imports.hub.on("ready", function(app) {
                 var plugins = app.services;
                 init(registerObject[pluginName], plugins);
+                register(null, registerObject);
+                console.log(pluginName,"Loaded!");
             });
             $register(null, registerObject);
         }
@@ -52,9 +54,6 @@ return function(options, imports, register) {
         if (err) {
             console.log(err);
             register(err);
-        }else{
-            console.log(pluginName,"Loaded!");
-            register(null, registerObject);
         }
     });
 };

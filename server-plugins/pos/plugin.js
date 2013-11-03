@@ -5,7 +5,13 @@ module.exports = function(options, imports, register) {
     var app = imports.app;
     
     app.plugin("pos",__dirname+"/plugins",function(pos,plugins){
+        app.ejs.staticOption("pos",pos);
+        pos.elements = {};
         for(var i in plugins){
+            if(plugins[i].elementsDir){
+                pos.elements[i] = {};
+                app.ejs.use(plugins[i].elementsDir,pos.elements[i]);
+            }
             if(plugins[i].moduleDir){
                 app.welder.addStatic("/static/modules/"+i,plugins[i].moduleDir,false);
             }

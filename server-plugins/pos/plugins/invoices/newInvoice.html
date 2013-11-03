@@ -105,6 +105,7 @@
                                             </tr>
                                         </table>
                                     </div>
+                                    <input class="customerID" type="hidden" value="<%- customer.id %>">
                                     <!--
                                     <div class="span6">
                                         <table width="100%">
@@ -181,9 +182,11 @@
                                                             <a class='loading3 loading'>&nbsp;</a>
                                                             <div class='clearfix'></div>
                                                         </div>
-                                                        <span>Saved</span>
+                                                        <span>Draft Saved</span>
                                                     </i>&nbsp;
-                                            		<button class="newInvoiceBtn button btn btn-warning btn-large">Create Invoice</button>&nbsp;
+                                            		<button class="trashDraftBtn button btn btn-danger btn-large">Trash Draft</button>&nbsp;
+                                            		<button class="openInvoiceBtn button btn btn-info btn-large">Open Invoice</button>&nbsp;
+                                            		
                                             	</div> <!-- .actions -->
                                             </td>
                                         </tr>
@@ -222,10 +225,10 @@
                 list-style:none;
                 border:none;
             }
-            .saveDraftBtn.btn-success .loading-tag,.saveDraftBtn.btn-danger span {
+            .saveDraftBtn.btn-success .loading-tag,.saveDraftBtn.btn-warning span {
                 display:none;
             }
-            .saveDraftBtn.btn-danger .loading-tag,.saveDraftBtn.btn-success span {
+            .saveDraftBtn.btn-warning .loading-tag,.saveDraftBtn.btn-success span {
                 display:block;
             }
             

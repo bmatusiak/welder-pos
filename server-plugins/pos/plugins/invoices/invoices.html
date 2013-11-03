@@ -25,17 +25,19 @@
                                 <table class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
-                                            <th>Name</th>
-                                            <th>Phone</th>
-                                            <th>Email</th>
+                                            <th>id</th>
+                                            <th>cid</th>
+                                            <th>Date Created</th>
+                                            <th>invoiceData</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <% for(var i in invoices.results){ %>
                                         <tr>
-                                            <td><%- invoices.results[i].name %></td>
-                                            <td><%- invoices.results[i].phone %></td>
-                                            <td><%- invoices.results[i].email %></td>
+                                            <td><%- invoices.results[i].id %></td>
+                                            <td><%- invoices.results[i].cid %></td>
+                                            <td><%- invoices.results[i].created %></td>
+                                            <td><%- JSON.parse(pos.invoices.db.calcInvoiceJSON(invoices.results[i].invoiceData)).total.toFixed(2) %></td>
                                         </tr>
                                         <% } %>
                                     </tbody>

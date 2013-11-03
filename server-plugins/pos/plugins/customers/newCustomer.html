@@ -11,63 +11,8 @@
             <div class="container">
                 <div class="row">
                 
-      	            <div class="span8 offset2">
-      	            
-                        <div class="widget stacked ">
-                        
-                            <div class="widget-header">
-                                <h3>New Customer</h3>
-                            </div>
-                            <!-- /widget-header -->
-                            <div class="widget-content">
-                                <form action="/customers/new" method="post" />
-                                    
-                                    <div class="error" style="color:red;">
-                                        <%- error || '' %>
-                                    </div>
-                                    
-                            		<div class="field">
-                            			<label for="name">Name:</label>
-                            			<input type="text" id="name" name="name" value="<%- req.body.name || '' %>" placeholder="Name" required="required" />
-                            		</div> <!-- /field -->
-                            		
-                            		<div class="field">
-                            			<label for="address">Address:</label>
-                            		    <input type="text" id="address" name="address" value="<%- req.body.address || '' %>" placeholder="Address" />
-                            		</div> <!-- /field -->
-                            			
-                            		<div class="field">
-                            			<label for="city">City:</label>
-                            		    <input type="text" id="city" name="city" value="<%- req.body.city || '' %>" placeholder="City"  />
-                            		</div> <!-- /field -->
-                            			
-                            		<div class="field">
-                            			<label for="state">State:</label>
-                            		    <input type="text" id="state" name="state" value="<%- req.body.state || '' %>" placeholder="State"  />
-                            		</div> <!-- /field -->
-                            			
-                            		<div class="field">
-                            			<label for="zip">ZIP:</label>
-                            		    <input type="text" id="zip" name="zip" value="<%- req.body.zip || '' %>" placeholder="ZIP"  />
-                            		</div> <!-- /field -->
-                            			
-                            		<div class="field">
-                            			<label for="email">Email:</label>
-                            		    <input type="text" id="email" name="email" value="<%- req.body.email || '' %>" placeholder="Email"  />
-                            		</div> <!-- /field -->
-                            			
-                            		<div class="field">
-                            			<label for="phone">Phone:</label>
-                            		    <input type="text" id="phone" name="phone" value="<%- req.body.phone || '' %>" placeholder="Phone"  />
-                            		</div> <!-- /field -->
-                            		
-                                	<hr />
-                                	<div class="login-actions">
-                                		<button class="button btn btn-warning btn-large pull-right">Create Customer</button>
-                                	</div> <!-- .actions -->
-                                </form>
-                            </div>
-                        </div>
+      	            <div class="span6 offset3">
+      	                <%- widget("New Customer",pos.elements.customers.new()) %>
                     </div>
                 </div>
                 <!-- /row -->

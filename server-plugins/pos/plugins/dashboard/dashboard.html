@@ -41,7 +41,8 @@
                         <div class="widget stacked ">
                         
                             <div class="widget-header">
-                                <span class="pull-right"><a href="/customers/new"><h3>New</h3></a></span>
+                                <span class="pull-right"> <button class="btn btn-small" data-toggle="modal" data-target="#newCustomer">New</button><a href="/customers/new"><h3>New</h3></a></span>
+                               
                                 <h3>Latest Customers</h3>
                             </div>
                             <!-- /widget-header -->
@@ -54,7 +55,7 @@
                                             <th>Name</th>
                                             <th>Phone</th>
                                             <th>Email</th>
-                                            <th>New Invoice</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody class="customersList">
@@ -81,6 +82,7 @@
         <!-- /main -->
         <script src="/js/libs/jquery-ui-1.10.0.custom.min.js"></script>
         <script src="/js/libs/bootstrap.min.js"></script>
+        <%- pos.elements.customers.new("model") %>
         <autoload style="display:none" mod="dashboard"></autoload>
     </body>
 </html>

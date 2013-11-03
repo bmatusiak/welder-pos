@@ -1,0 +1,15 @@
+{
+    "name": "app.setup",
+    "version": "0.0.1",
+
+    "main": "./plugin.js",
+
+    "plugin": {
+        "provides": [
+            "demo"
+        ],
+        "consumes": [
+            "pos"
+        ]
+    }
+}

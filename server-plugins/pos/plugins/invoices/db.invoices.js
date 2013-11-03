@@ -7,15 +7,10 @@ module.exports = function(db) {
     var collection = "invoices";
     
     var modelSchema = new Schema({
-        //id : { type: Number, index: true, unique:true },
-        cid : { type: String, index: true, unique:true },
-        products:[{
-            unitid:Number,
-            name:String,
-            model:String,
-            price:String,
-            quanity:Number
-        }],
+        id : { type: Number, index: true, unique:true },
+        cid : String,
+        
+        invoiceData: String ,
         
         created: Date,
         createdBy: String,
@@ -24,38 +19,24 @@ module.exports = function(db) {
     var Invoices = db.model(collection, modelSchema);
     
     var newInvoice = function(
-        name,
-        address,
-        city,
-        state,
-        zip,
-        email,
-        phone,
+        customerID,
+        invoiceData,
         whoCreatedLogin,
         callback){
-        Invoices.findOne({email: email}, function(err,employee){
-            if(!err && !employee){
-                db.counter("Invoices",1000,function(count){
-                    employee = new Invoices();
-                    employee.id = count;
-                    employee.name = name;
-                    employee.address = address;
-                    employee.city = city;
-                    employee.state = state;
-                    employee.zip = zip;
-                    employee.email = email;
-                    employee.phone = phone;
-                    employee.created = Date.now();
-                    employee.createdBy = whoCreatedLogin;
-                    employee.save(callback);
+            db.counter("Invoices",1,function(count){
+                var invoice = new Invoices();
+                invoice.id = count;
+                invoice.cid = customerID;
+                invoice.invoiceData = JSON.stringify(invoiceData);
+                invoice.created = Date.now();
+                invoice.createdBy = whoCreatedLogin;
+                invoice.save(function(err){
+                    callback(invoice.id);
                 });
-            }else if(!err && employee !== null){
-                callback("User with Email Exist!");
-            }
-        });
+            });
     };
     
-    var getInvoices = function(id,callback){
+    var getInvoice = function(id,callback){
         Invoices.findOne({id: id}, function(err,employee){
             if(!err && !employee){
                 callback("not exist");
@@ -70,7 +51,6 @@ module.exports = function(db) {
             callback(err,employees);
         });
     };
-    
     
     var invoicesPage = function(page,perPage,callback){
         Invoices.find({})
@@ -88,6 +68,35 @@ module.exports = function(db) {
         });
     };
     
+    var calcInvoiceJSON = function(invoiceJSON){
+        var invoiceObj = JSON.parse(invoiceJSON);
+        
+        invoiceObj.stotal = 0;
+        invoiceObj.ttotal = 0;
+        invoiceObj.total = 0; 
+        
+        for(var i in invoiceObj){
+            var unitData = invoiceObj[i];
+            if(typeof unitData !== "object") continue;
+            
+            unitData.price = parseFloat(unitData.productPrice) * parseFloat(unitData.productQuanity);
+            
+            for(var j in unitData.attribute){
+                unitData.price += parseFloat(unitData.attribute[j].productPrice) * (parseFloat(unitData.attribute[j].productQuanity)* parseFloat(unitData.productQuanity));
+            }
+            unitData.tax = unitData.price * 0.06;
+            unitData.total = unitData.price+(unitData.price * 0.06);
+            
+            invoiceObj.stotal += unitData.price;
+            invoiceObj.ttotal += unitData.price * 0.06;
+            invoiceObj.total  += unitData.price+(unitData.price * 0.06);
+        }
+        //invoiceObj.stotal = invoiceObj.stotal.toFixed(2);
+        //invoiceObj.ttotal = invoiceObj.ttotal.toFixed(2);
+        //invoiceObj.total = invoiceObj.total.toFixed(2);
+        
+        return JSON.stringify(invoiceObj);
+    };
     
     //-------------------------------------------------------------
     
@@ -99,6 +108,7 @@ module.exports = function(db) {
     });
     
     var Drafts = db.model("invoice-drafts", draftSchema);
+    
     var updateDraft = function(
         customerID,
         draftObject,
@@ -148,8 +158,9 @@ module.exports = function(db) {
     
     
     return {
+        calcInvoiceJSON:calcInvoiceJSON,
         newInvoice:newInvoice,
-        getInvoices:getInvoices,
+        getInvoice:getInvoice,
         updateDraft:updateDraft,
         getDraft:getDraft,
         listInvoices:listInvoices,

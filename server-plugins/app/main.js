@@ -6,6 +6,7 @@ module.exports = function(app) {
     app.welder.addStatic("/",__dirname+"/static",false);
     
     app.ejs.use(app.dir.template + "/parts");
+    
     app.ejs.staticOption("app",app);
     
     app.welder.addRequestParser(function(http){

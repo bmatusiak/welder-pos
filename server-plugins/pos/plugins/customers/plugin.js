@@ -71,7 +71,10 @@ module.exports = function(options, imports, register) {
     });
     
     register(null, {
-        "customers": {db:db}
+        "customers": {
+            db:db,
+            elementsDir:__dirname+"/elements"
+        }
     });
 
 };

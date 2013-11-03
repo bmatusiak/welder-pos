@@ -21,6 +21,7 @@ module.exports = function(options, imports, register) {
                 
             res.redirect("/");
         });
+        
         http.get("/login",app.Form.get(__dirname + "/login.html",function(req,res,redirectTo){
             redirectTo("/");
             return app.settings.isUsersSetup && !req.session.user;
@@ -42,7 +43,7 @@ module.exports = function(options, imports, register) {
                                     [req.body.password == user.userpass,"Incorrect Password"]
                                 ],function(err,errStr){
                                     if(!err){
-                                        req.session.user = req.body.userlogin;
+                                        req.session.user = user.userlogin;
                                         callback();
                                     }else 
                                         callback(errStr);

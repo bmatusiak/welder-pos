@@ -8,23 +8,32 @@ module.exports = function(options, imports, register) {
     
     register(null, {
         "invoices": {
+            db:db,
             moduleDir:__dirname+"/static",
-            socketConnection:function(socket){
-               socket.on("invoice-save-draft",function(customerID,data,callback){
+            socketUserConnection:function(socket){
+                socket.on("invoice-create-open",function(customerId,invoiceObject,callback){
+                    db.newInvoice(customerId,invoiceObject,socket.session.user,function(invoiceID){
+                        callback(invoiceID);
+                    });
+                });
+                socket.on("invoice-save-draft",function(customerID,data,callback){
                     db.updateDraft(customerID,data,function(){
-                        if(callback) callback();    
+                        var invoiceJSON = db.calcInvoiceJSON(JSON.stringify(data));
+                        if(callback) callback(null,JSON.parse(invoiceJSON));    
                     });
                 });
                 socket.on("invoice-load-draft",function(customerID,callback){
                     db.getDraft(customerID,function(err,data){
-                        if(callback) callback(err,data);    
+                        var invoiceJSON = db.calcInvoiceJSON(JSON.stringify(data));
+                        if(callback) callback(err,JSON.parse(invoiceJSON));    
                     });
                 });
                 socket.on("invoice-product-lookup",function(name,model,callback){
                     var query = {};
-                    if(name)
-                        query.name = new RegExp(name, "gi");
-                        
+                    if(name){
+                        query.name = new RegExp(name.split(" ").join("|"), "gi");
+                        //query.name = new RegExp(name, "gi");
+                    }
                     if(model)
                         query.model = model;
                       
@@ -41,7 +50,7 @@ module.exports = function(options, imports, register) {
                                 res.writeHead(200, {
                                     'Content-Type': 'text/html'
                                 });
-                                pos.app.ejs.renderFile(__dirname + "/invoices.html",{invoices:invoices,req:req,settings:pos.app.settings},function(err,data){
+                                pos.app.ejs.renderFile(__dirname + "/invoices.html",{pos:pos,invoices:invoices,req:req,settings:pos.app.settings},function(err,data){
                                     res.end(data);
                                 });
                             }else {
