@@ -19,20 +19,13 @@
                                 <h3>Invoices</h3>
                             </div>
                             <!-- /widget-header -->
-                            <div>
-    
-                                <table class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Customer</th>
-                                            <th>Phone</th>
-                                            <th>Amount</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                            <div class="widget-content invoicesList">
+                                <div id='loading' class="loadingInvoicesList">
+                                    <a id='loading1' class='loading'>&nbsp;</a>
+                                    <a id='loading2' class='loading'>&nbsp;</a>
+                                    <a id='loading3' class='loading'>&nbsp;</a>
+                                    <div class='clearfix'></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -41,36 +34,17 @@
                         <div class="widget stacked ">
                         
                             <div class="widget-header">
-                                <span class="pull-right"> <button class="btn btn-small" data-toggle="modal" data-target="#newCustomer">New</button><a href="/customers/new"><h3>New</h3></a></span>
-                               
+                                <span class="pull-right"> <button class="btn btn-small" data-toggle="modal" data-target="#newCustomer">New</button>&nbsp;&nbsp;&nbsp;</span>
                                 <h3>Latest Customers</h3>
                             </div>
                             <!-- /widget-header -->
-                            <div>
-    
-                                <table class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Phone</th>
-                                            <th>Email</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="customersList">
-                                        <tr class="loadingCustomersList">
-                                            <td colspan="5">
-                                                <div id='loading'>
-                                                    <a id='loading1' class='loading'>&nbsp;</a>
-                                                    <a id='loading2' class='loading'>&nbsp;</a>
-                                                    <a id='loading3' class='loading'>&nbsp;</a>
-                                                    <div class='clearfix'></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div class="widget-content customersList">
+                                <div id='loading' class="loadingCustomersList">
+                                    <a id='loading1' class='loading'>&nbsp;</a>
+                                    <a id='loading2' class='loading'>&nbsp;</a>
+                                    <a id='loading3' class='loading'>&nbsp;</a>
+                                    <div class='clearfix'></div>
+                                </div>
                             </div>
                         </div>
                     </div>

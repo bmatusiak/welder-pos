@@ -1,5 +1,3 @@
-"use strict";
-
 module.exports = function(options, imports, register) {
     
     var fs = require("fs");
@@ -71,32 +69,43 @@ module.exports = function(options, imports, register) {
         
         return this.staticOptions[name];
     };
-    
+    function getOptions(args){
+        if(args.callee.caller.caller.caller.caller === ejs.render){
+            return args.callee.caller.caller.arguments[0];
+        }
+        return false;
+    }
     EJSfile.prototype.use = function(elementsDir,returnObject) {
         var _self = this;
         var useElements = returnObject || _self.elements;
         var theEleFunction = function(str, filename) {
             return function() {
-                var oldArgs;
-                if(this.args)
-                    oldArgs = this.args;
+                //as long as this gets executed inside ejs its safe
+                var options = getOptions(arguments) || _self.options();
                 
-                this.args = arguments;
-                this.args.filename = filename;
+                var oldArgs,oldFilename;
+                if(options.args)
+                    oldArgs = options.args;
+                
+                if(options.filename)
+                    oldFilename = options.filename;
+                
+                options.args = arguments;
+                options.filename = filename;
                 try {
-                    var data = ejsRender(str, this);
-                    delete this.args;
+                    var data = ejsRender(str, options);
+                    delete options.args;
                     if(oldArgs)
-                        this.args = oldArgs;
+                        options.args = oldArgs;
+                        
+                    delete options.filename;
+                    if(oldFilename)    
+                        options.filename = oldFilename;
                         
                     return data;
                 }
                 catch (err) {
                     var e = new ReferenceError(err.toString().replace("ReferenceError: ejs:", filename + ":"));
-                    console.log("----------------------------------------");
-                    console.log(filename);;
-                    console.log(e);
-                    console.log("----------------------------------------");
                     throw e;
                 }
             };

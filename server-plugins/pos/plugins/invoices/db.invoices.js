@@ -7,13 +7,17 @@ module.exports = function(db) {
     var collection = "invoices";
     
     var modelSchema = new Schema({
-        id : { type: Number, index: true, unique:true },
-        cid : String,
+        _id : { type: Number, index: true, unique:true },
+        customer : { type: Number, ref: 'customers' },
         
         invoiceData: String ,
         
         created: Date,
         createdBy: String,
+    });
+    
+    modelSchema.virtual('invoice').get(function() {
+        return JSON.parse(calcInvoiceJSON(this.invoiceData));
     });
     
     var Invoices = db.model(collection, modelSchema);
@@ -25,8 +29,8 @@ module.exports = function(db) {
         callback){
             db.counter("Invoices",1,function(count){
                 var invoice = new Invoices();
-                invoice.id = count;
-                invoice.cid = customerID;
+                invoice._id = count;
+                invoice.customer = customerID;
                 invoice.invoiceData = JSON.stringify(invoiceData);
                 invoice.created = Date.now();
                 invoice.createdBy = whoCreatedLogin;
@@ -47,20 +51,21 @@ module.exports = function(db) {
     };
     
     var listInvoices = function(callback){
-        Invoices.find(function(err,employees){
-            callback(err,employees);
+        Invoices.find(function(err,invoices){
+            callback(err,invoices);
         });
     };
     
     var invoicesPage = function(page,perPage,callback){
         Invoices.find({})
+        .populate('customer')
         .limit(perPage)
         .skip(perPage * page)
         .sort({date: 'desc'})
-        .exec(function(err, blogs) {
+        .exec(function(err, invoices) {
             Invoices.count().exec(function(err, count) {
                 callback(null,{
-                    results: blogs,
+                    results: invoices,
                     page: page,
                     pages: count / perPage
                 });

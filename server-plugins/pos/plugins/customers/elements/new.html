@@ -1,7 +1,7 @@
 <% var type = args[0] || "form"; %>
 
 <% if(type == "model"){ %>
-<div class="modal fade" id="newCustomer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade hide" id="newCustomer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 <div class="modal-dialog">
 <div class="modal-content">
 <div class="modal-header">
@@ -19,13 +19,13 @@
         <div class="span6">
             <div class="field">
     			<label for="name">Name:</label>
-    			<input class="input-block-level" type="text" id="name" name="name" value="" placeholder="Name" required="required" />
+    			<input class="input-block-level" type="text" id="name" name="name" value="<% if(type == "form"){ %><%- req.body.name %><%}%>" placeholder="Name" required="required" />
     		</div> <!-- /field -->
         </div>
         <div class="span6">
             <div class="field">
     			<label for="phone">Phone:</label>
-    		    <input class="input-block-level" type="text" id="phone" name="phone" value="" placeholder="Phone"  />
+    		    <input class="input-block-level" type="text" id="phone" name="phone" value="<% if(type == "form"){ %><%- req.body.phone %><%}%>" placeholder="Phone"  />
     		</div> <!-- /field -->
         </div>
     </div>
@@ -34,7 +34,7 @@
         <div class="span6">
             <div class="field">
     			<label for="address">Address:</label>
-    		    <input class="input-block-level" type="text" id="address" name="address" value="" placeholder="Address" />
+    		    <input class="input-block-level" type="text" id="address" name="address" value="<% if(type == "form"){ %><%- req.body.address %><%}%>" placeholder="Address" />
     		</div> <!-- /field -->
         </div>
     </div>
@@ -43,13 +43,13 @@
         <div class="span6">
             <div class="field">
     			<label for="city">City:</label>
-    		    <input class="input-block-level" type="text" id="city" name="city" value="" placeholder="City"  />
+    		    <input class="input-block-level" type="text" id="city" name="city" value="<% if(type == "form"){ %><%- req.body.city %><%}%>" placeholder="City"  />
     		</div> <!-- /field -->
         </div>
         <div class="span6">
             <div class="field">
     			<label for="state">State:</label>
-    		    <input class="input-block-level" type="text" id="state" name="state" value="" placeholder="State"  />
+    		    <input class="input-block-level" type="text" id="state" name="state" value="<% if(type == "form"){ %><%- req.body.state %><%}%>" placeholder="State"  />
     		</div> <!-- /field -->
         </div>
     </div>
@@ -57,13 +57,13 @@
         <div class="span6">
             <div class="field">
     			<label for="zip">ZIP:</label>
-    		    <input class="input-block-level" type="text" id="zip" name="zip" value="" placeholder="ZIP"  />
+    		    <input class="input-block-level" type="text" id="zip" name="zip" value="<% if(type == "form"){ %><%- req.body.zip %><%}%>" placeholder="ZIP"  />
     		</div> <!-- /field -->
         </div>
         <div class="span6">
             <div class="field">
     			<label for="email">Email:</label>
-    		    <input class="input-block-level" type="text" id="email" name="email" value="" placeholder="Email"  />
+    		    <input class="input-block-level" type="text" id="email" name="email" value="<% if(type == "form"){ %><%- req.body.email %><%}%>" placeholder="Email"  />
     		</div> <!-- /field -->
         </div>
     </div>

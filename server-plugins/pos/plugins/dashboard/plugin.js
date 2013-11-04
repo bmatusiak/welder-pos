@@ -34,9 +34,9 @@ module.exports = function(options, imports, register) {
                 });
                 $socket.on('dashboard-invoices',function(page,callback){
                     if(!callback && page && typeof(page) == "function")callback = page;
-                    pos.invoices.db.customersPage(page ? page-1 : 0 || 0,50,
-                        function(err,customers){
-                            callback(err,customers.results);
+                    pos.invoices.db.invoicesPage(page ? page-1 : 0 || 0,50,
+                        function(err,invoices){
+                            callback(err,invoices.results);
                         });
                 });
             }
