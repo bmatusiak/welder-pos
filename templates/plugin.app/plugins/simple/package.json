@@ -1,15 +1,15 @@
 {
-    "name": "plugin.template",
+    "name": "plugin.simple",
     "version": "0.0.1",
 
     "main": "./plugin.js",
 
     "plugin": {
         "provides": [
-            "pluginTemplate"
+            "simple"
         ],
         "consumes": [
-            "app"
+            "pluginApp"
         ]
     }
 }

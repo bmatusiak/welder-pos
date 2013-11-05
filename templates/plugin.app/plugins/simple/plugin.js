@@ -2,10 +2,10 @@
 
 module.exports = function(options, imports, register) {
     
-    var app = imports.app;
+    var pluginApp = imports.pluginApp;
     
     register(null, {
-        "pluginTemplate": {}
+        "simple": {}
     });
 
 };
