@@ -6,6 +6,7 @@
         "architect": "*",
         "mongoose": "*",
         "ejs" : "*",
-        "socket.io":"*"
+        "socket.io":"*",
+        "bcrypt":"*"
     }
 }

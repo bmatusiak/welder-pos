@@ -36,11 +36,10 @@ module.exports = function(options, imports, register) {
                 },
                 next : function(req,res,error,callback){
                     if(!error)
-                        db.getUser(req.body.userlogin,function(err,user){
+                        db.auth(req.body.userlogin,req.body.password,function(err, user, reason){
                             if(!err){
                                 app.Form.condition([
-                                    [user.userpass ,"Account Has No Password"],
-                                    [req.body.password == user.userpass,"Incorrect Password"]
+                                    [user,"Failed to Login!"]
                                 ],function(err,errStr){
                                     if(!err){
                                         req.session.user = user.userlogin;
