@@ -17,7 +17,10 @@ module.exports = function(db) {
         email : String,
         phone : String,
         
+        tax : String,
+        
         invoices : [{ type: Schema.Types.ObjectId, ref: 'invoices' }],
+        orders : [{ type: Schema.Types.ObjectId, ref: 'orders' }],
         
         created: Date,
         createdBy: String,
@@ -43,41 +46,41 @@ phone
         phone,
         whoCreatedLogin,
         callback){
-        Customers.findOne({email: email}, function(err,employee){
-            if(!err && !employee){
+        Customers.findOne({email: email}, function(err,customer){
+            if(!err && !customer){
                 db.counter("Customers",1000,function(count){
-                    employee = new Customers();
-                    employee._id = count;
-                    employee.name = name;
-                    employee.address = address;
-                    employee.city = city;
-                    employee.state = state;
-                    employee.zip = zip;
-                    employee.email = email;
-                    employee.phone = phone;
-                    employee.created = Date.now();
-                    employee.createdBy = whoCreatedLogin;
-                    employee.save(callback);
+                    customer = new Customers();
+                    customer._id = count;
+                    customer.name = name;
+                    customer.address = address;
+                    customer.city = city;
+                    customer.state = state;
+                    customer.zip = zip;
+                    customer.email = email;
+                    customer.phone = phone;
+                    customer.created = Date.now();
+                    customer.createdBy = whoCreatedLogin;
+                    customer.save(callback);
                 });
-            }else if(!err && employee !== null){
+            }else if(!err && customer !== null){
                 callback("User with Email Exist!");
             }
         });
     };
     
     var getCustomer = function(id,callback){
-        Customers.findOne({_id: id}, function(err,employee){
-            if(!err && !employee){
+        Customers.findOne({_id: id}, function(err,customer){
+            if(!err && !customer){
                 callback("not exist");
-            }else if(!err && employee !== null){
-                callback(null,employee);
+            }else if(!err && customer !== null){
+                callback(null,customer);
             }
         });
     };
     
     var listCustomer = function(callback){
-        Customers.find(function(err,employees){
-            callback(err,employees);
+        Customers.find(function(err,customer){
+            callback(err,customer);
         });
     };
     

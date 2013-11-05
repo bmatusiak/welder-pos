@@ -16,16 +16,28 @@ module.exports = function(options, imports, register) {
                         callback(invoiceID);
                     });
                 });
-                socket.on("invoice-save-draft",function(customerID,data,callback){
-                    db.updateDraft(customerID,data,function(){
-                        var invoiceJSON = db.calcInvoiceJSON(JSON.stringify(data));
-                        if(callback) callback(null,JSON.parse(invoiceJSON));    
+                socket.on("invoice-save-draft",function(docID,data,callback){
+                    db.updateDraft(docID,data,function(err,draft){
+                        if(callback) callback(null,draft.data);    
                     });
                 });
-                socket.on("invoice-load-draft",function(customerID,callback){
-                    db.getDraft(customerID,function(err,data){
-                        var invoiceJSON = db.calcInvoiceJSON(JSON.stringify(data));
-                        if(callback) callback(err,JSON.parse(invoiceJSON));    
+                socket.on("invoice-load-draft",function(docID,callback){
+                    db.getDraft(docID,function(err,draft){
+                        if(callback) callback(err,draft.data);    
+                    });
+                });
+                socket.on("invoice-load-invoice",function(docID,callback){
+                    db.getInvoice(docID,function(err,invoice){
+                        if(callback) callback(err,invoice.data);    
+                    });
+                });
+                
+                socket.on("invoice-save-invoice",function(docID,data,callback){
+                    db.getInvoice(docID,function(err,invoice){
+                        invoice.data = data;
+                        invoice.save(function(err,invoice){
+                            if(callback) callback(err,invoice.data);    
+                        });
                     });
                 });
                 socket.on("invoice-product-lookup",function(name,model,callback){
@@ -44,7 +56,7 @@ module.exports = function(options, imports, register) {
             },
             httpConnection:function(http){
                 http.get('/invoices', pos.app.users.checkUserAuth(), function(req, res, next) {
-                    db.invoicesPage(req.query.page-1 || 0,50,
+                    db.invoicesPage(req.query.page-1 || 0,2,
                         function(err,invoices){
                             if(!err){
                                 res.writeHead(200, {
@@ -64,12 +76,25 @@ module.exports = function(options, imports, register) {
                         });
                 });
                 
-                http.get('/invoices/new/:id?',
+                http.get('/invoices/:id/:customerid?',
                     pos.app.users.checkUserAuth(), 
                     pos.app.Form.get(__dirname + "/newInvoice.html",{next:function(req,res,callback){
-                        pos.customers.db.getCustomer(req.params.id,function(err,customer){
-                            callback(err,{customer:customer});
-                        });
+                        if(req.params.id == "new"){
+                            /*
+                            pos.customers.db.getCustomer(req.params.customerid,function(err,customer){
+                                callback(err,{customer:customer});
+                            });
+                            */
+                            db.getDraft(req.params.customerid,function(err,draft){
+                                draft.type = "draft";
+                                callback(err,{doc:draft});
+                            });
+                        }else{
+                            pos.invoices.db.getInvoice(req.params.id,function(err,invoice){
+                                invoice.type = "invoice";
+                                callback(err,{doc:invoice});
+                            });
+                        }
                     }}));
             }
         }

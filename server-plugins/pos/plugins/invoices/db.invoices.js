@@ -19,6 +19,13 @@ module.exports = function(db) {
     modelSchema.virtual('invoice').get(function() {
         return JSON.parse(calcInvoiceJSON(this.invoiceData));
     });
+    modelSchema.virtual('data').get(function() {
+        return JSON.parse(calcInvoiceJSON(this.invoiceData));
+    });
+    modelSchema.virtual('data').set(function (data) {
+        this.invoiceData = JSON.stringify(data);
+    });
+    modelSchema.set('toJSON', { getters: true, virtuals: true });
     
     var Invoices = db.model(collection, modelSchema);
     
@@ -32,7 +39,7 @@ module.exports = function(db) {
                 invoice._id = count;
                 invoice.customer = customerID;
                 invoice.invoiceData = JSON.stringify(invoiceData);
-                invoice.created = Date.now();
+                invoice.created = new Date();
                 invoice.createdBy = whoCreatedLogin;
                 invoice.save(function(err){
                     callback(invoice.id);
@@ -41,11 +48,13 @@ module.exports = function(db) {
     };
     
     var getInvoice = function(id,callback){
-        Invoices.findOne({id: id}, function(err,employee){
-            if(!err && !employee){
+        Invoices.findOne({_id: id})
+        .populate('customer')
+        .exec(function(err, invoice) {
+            if(!err && !invoice){
                 callback("not exist");
-            }else if(!err && employee !== null){
-                callback(null,employee);
+            }else if(!err && invoice !== null){
+                callback(null,invoice);
             }
         });
     };
@@ -61,7 +70,7 @@ module.exports = function(db) {
         .populate('customer')
         .limit(perPage)
         .skip(perPage * page)
-        .sort({date: 'desc'})
+        .sort({created: 'desc'})
         .exec(function(err, invoices) {
             Invoices.count().exec(function(err, count) {
                 callback(null,{
@@ -108,8 +117,16 @@ module.exports = function(db) {
     
     var draftSchema = new Schema({
         //id : { type: Number, index: true, unique:true },
-        cid : { type: Number, index: true, unique:true },
-        data: String
+        customer : { type: Number, ref: 'customers' },
+        
+        dataJSON: String
+    });
+    
+    draftSchema.virtual('data').get(function() {
+        return JSON.parse(calcInvoiceJSON(this.dataJSON || JSON.stringify({})));
+    });
+    draftSchema.virtual('data').set(function (data) {
+        this.dataJSON = JSON.stringify(data);
     });
     
     var Drafts = db.model("invoice-drafts", draftSchema);
@@ -119,20 +136,17 @@ module.exports = function(db) {
         draftObject,
         callback){
         if(!callback) callback=function(){};
-        Drafts.findOne({cid: customerID}, function(err,draft){
+        Drafts.findOne({customer: customerID})
+        .populate('customer')
+        .exec(function(err, draft) {
             if(!err && !draft){
                 draft = new Drafts();
-                draft.cid = customerID;
-                draft.data = JSON.stringify(draftObject);
-                draft.save(function(){
-                    callback(null,JSON.parse(draft.data));
-                });
+                draft.data = draftObject;
+                draft.save(callback);
         
             }else if(!err && draft !== null){
-                draft.data = JSON.stringify(draftObject);
-                draft.save(function(){
-                    callback(null,JSON.parse(draft.data));
-                });
+                draft.data = draftObject;
+                draft.save(callback);
             }
         });
     };
@@ -141,20 +155,18 @@ module.exports = function(db) {
         customerID,
         callback){
         if(!callback) callback=function(){};
-        Drafts.findOne({cid: customerID}, function(err,draft){
+        Drafts.findOne({customer: customerID})
+        .populate('customer')
+        .exec(function(err, draft) {
             if(!err && !draft){
                 draft = new Drafts();
-                draft.cid = customerID;
-                draft.data = JSON.stringify({});
+                draft.customer = customerID;
                 draft.save(function(){
-                   callback(null,JSON.parse(draft.data)); 
+                   callback(null,draft); 
                 });
             }else if(!err && draft !== null){
-                if(!draft.data)
-                    draft.data = JSON.stringify({});
-                
                 draft.save(function(){
-                   callback(null,JSON.parse(draft.data)); 
+                   callback(null,draft); 
                 });
                     
             }
@@ -163,7 +175,7 @@ module.exports = function(db) {
     
     
     return {
-        calcInvoiceJSON:calcInvoiceJSON,
+        //calcInvoiceJSON:calcInvoiceJSON,
         newInvoice:newInvoice,
         getInvoice:getInvoice,
         updateDraft:updateDraft,

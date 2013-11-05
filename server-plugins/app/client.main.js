@@ -62,7 +62,7 @@ window.requirejs(["require","socketio"],function(r,socketio){
    $(function(){
        $("autoload").each(function(){
            var mod = $(this).attr("mod");
-           var modData = $(this).attr("modData");
+           var modData = $(this).attr("modData") || $(this).data();
            loadMod(mod,function(fn){
                fn(modData);
            });

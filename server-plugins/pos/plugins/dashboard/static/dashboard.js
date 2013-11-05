@@ -8,14 +8,14 @@ define(function(require, exports, module) {
                 for(var i in customers){
                     var template = [
                         '<div class="row-fluid">',
-                            '<a href="/invoices/new/'+customers[i].id+'" class="pull-right" style="font-size:30px;padding-top: 7px;"><i class="icon-edit"></i></a>',
+                            '<a href="/invoices/new/'+customers[i]._id+'" class="pull-right" style="font-size:30px;padding-top: 7px;"><i class="icon-edit"></i></a>',
                             '<div class="pull-right" style="text-align:right;padding-right:10px;">',
                                 customers[i].phone+"<br />",
                                 customers[i].email,
                             '</div>',
                             '<div>',
                                 customers[i].name+"<br />",
-                                customers[i].id,
+                                customers[i]._id,
                             '</div>',
                         '</div>',
                         '<hr style="margin:5px 0px 5px 0px;" />'
@@ -32,14 +32,14 @@ define(function(require, exports, module) {
                 for(var i in invoices){
                     var template = [
                         '<div class="row-fluid">',
-                            '<a href="/invoices/'+invoices[i].id+'" class="pull-right" style="font-size:30px;padding-top: 7px;"><i class="icon-edit"></i></a>',
+                            '<a href="/invoices/'+invoices[i]._id+'" class="pull-right" style="font-size:30px;padding-top: 7px;"><i class="icon-edit"></i></a>',
                             '<div class="pull-right" style="text-align:right;padding-right:10px;">',
-                                invoices[i].price+"<br />",
+                                invoices[i].invoice.total+"<br />",
                                 invoices[i].created,
                             '</div>',
                             '<div>',
-                                invoices[i].cid+"<br />",
-                                invoices[i].id,
+                                invoices[i].customer.name+"<br />",
+                                invoices[i]._id,
                             '</div>',
                         '</div>',
                         '<hr style="margin:5px 0px 5px 0px;" />'

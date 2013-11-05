@@ -84,7 +84,7 @@
                         <div class="widget stacked ">
                         
                             <div class="widget-header">
-                                <h3>New Invoice</h3>
+                                <h3><%- doc.type %></h3>
                             </div>
                             <!-- /widget-header -->
                             <div class="widget-content">
@@ -94,33 +94,19 @@
                                         <table width="100%">
                                             <tr>
                                                 <td>
-                                                    Customer: <%- customer._id %>
+                                                    Customer: <%- doc.customer._id %>
                                                     <hr />
-                                                    <strong><%- customer.name %></strong><br />
-                                                    <%- customer.address %><br />
-                                                    <%- customer.city %>, <%- customer.state %> <%- customer.zip %> <br />
-                                                    <%- customer.phone %> - <%- customer.email %> <br />
+                                                    <strong><%- doc.customer.name %></strong><br />
+                                                    <%- doc.customer.address %><br />
+                                                    <%- doc.customer.city %>, <%- doc.customer.state %> <%- doc.customer.zip %> <br />
+                                                    <%- doc.customer.phone %> - <%- doc.customer.email %> <br />
                                                     
                                                 </td>
                                             </tr>
                                         </table>
                                     </div>
-                                    <input class="customerID" type="hidden" value="<%- customer._id %>">
-                                    <!--
-                                    <div class="span6">
-                                        <table width="100%">
-                                            <tr>
-                                                <td>
-                                                    Billing:
-                                                    <hr />
-                                                    <strong><%- customer.name %></strong><br />
-                                                    <%- customer.address %><br />
-                                                    <%- customer.city %>, <%- customer.state %> <%- customer.zip %> <br />
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    -->
+                                    <input class="customerID" type="hidden" value="<%- doc.customer._id %>">
+                                    
                                 </div>
                                 <hr />
                                 <br class="clear-fix" />
@@ -175,17 +161,33 @@
                                         <tr class="actions">
                                             <td colspan="6">
                                                 <div class="page-actions pull-right">
-                                            		<i href="javascript:" class="saveDraftBtn button btn btn-success btn-large">
-                                                		<div class='loading-tag' style="text-align:center;">
-                                                            <a class='loading1 loading'>&nbsp;</a>
-                                                            <a class='loading2 loading'>&nbsp;</a>
-                                                            <a class='loading3 loading'>&nbsp;</a>
-                                                            <div class='clearfix'></div>
-                                                        </div>
-                                                        <span>Draft Saved</span>
-                                                    </i>&nbsp;
-                                            		<button class="trashDraftBtn button btn btn-danger btn-large">Trash Draft</button>&nbsp;
-                                            		<button class="openInvoiceBtn button btn btn-info btn-large">Open Invoice</button>&nbsp;
+                                            		
+                                                    <% if(doc.type == "draft") { %>
+                                                            <i href="javascript:" class="saveDocBtn button btn btn-success btn-large">
+                                                    		<div class='loading-tag' style="text-align:center;">
+                                                                <a class='loading1 loading'>&nbsp;</a>
+                                                                <a class='loading2 loading'>&nbsp;</a>
+                                                                <a class='loading3 loading'>&nbsp;</a>
+                                                                <div class='clearfix'></div>
+                                                            </div>
+                                                            <span>Draft Saved</span>
+                                                        </i>&nbsp;
+                                                        <button class="trashDraftBtn button btn btn-danger btn-large">Trash Draft</button>&nbsp;
+                                                		<button class="openInvoiceBtn button btn btn-info btn-large">Open Order</button>&nbsp;
+                                                    <% }else if(doc.type == "invoice"){ %>
+                                                        <i href="javascript:" class="saveDocBtn button btn btn-success btn-large">
+                                                    		<div class='loading-tag' style="text-align:center;">
+                                                                <a class='loading1 loading'>&nbsp;</a>
+                                                                <a class='loading2 loading'>&nbsp;</a>
+                                                                <a class='loading3 loading'>&nbsp;</a>
+                                                                <div class='clearfix'></div>
+                                                            </div>
+                                                            <span>Draft Saved</span>
+                                                        </i>&nbsp;
+                                                        <button class="trashDraftBtn button btn btn-danger btn-large">Trash Draft</button>&nbsp;
+                                                		<button class="openInvoiceBtn button btn btn-info btn-large">Set Invoice</button>&nbsp;
+                                                    		    
+                                                    <%}%>
                                             		
                                             	</div> <!-- .actions -->
                                             </td>
@@ -225,16 +227,19 @@
                 list-style:none;
                 border:none;
             }
-            .saveDraftBtn.btn-success .loading-tag,.saveDraftBtn.btn-warning span {
+            .saveDocBtn.btn-success .loading-tag,.saveDocBtn.btn-warning span {
                 display:none;
             }
-            .saveDraftBtn.btn-warning .loading-tag,.saveDraftBtn.btn-success span {
+            .saveDocBtn.btn-warning .loading-tag,.saveDocBtn.btn-success span {
                 display:block;
             }
             
         </style>
         <script src="/js/libs/bootstrap.min.js"></script>
-        
-        <autoload style="display:none" mod="invoices" modData="<%- customer._id %>"></autoload>
+        <% if(doc.type == "draft") { %>
+            <autoload style="display:none" mod="invoices" data-customerid="<%- doc.customer._id %>" data-docid="<%- doc.customer._id %>" data-type="draft"></autoload>
+        <% }else if(doc.type == "invoice"){ %>
+            <autoload style="display:none" mod="invoices" data-customerid="<%- doc.customer._id %>" data-docid="<%- doc._id %>" data-type="invoice"></autoload>
+        <%}%>
     </body>
 </html>

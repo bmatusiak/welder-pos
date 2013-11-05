@@ -1,16 +1,16 @@
 define(function(require, exports, module) {
 
-    return function(customerID) {
+    return function(docData) {
         var loaded = false;
         window.socket(function (socket) {
-            var customerID = $(".customerID").val();
+            var customerID = docData.customerid;
             var nextUnitID = 0;
+            
             $(document).on('click','.addAttribute',function(){
                 var unit = $(this).closest(".unit");
                 var unitAtribute = createUnitAtribute(unit,++nextUnitID);
-                saveDraft();
+                saveDoc();
             });
-            
             $(document).on('click','a.trash',function(){
                 var unit = $(this).closest(".unit").length ? $(this).closest(".unit") : $(this).closest(".unitAttribute").length ?  $(this).closest(".unitAttribute") : false;
                     
@@ -20,48 +20,45 @@ define(function(require, exports, module) {
                 } 
                     
                 unit.remove();
-                saveDraft();
+                saveDoc();
             });
             $(document).on('change','input',function(){
                 var unit = $(this).closest(".unit").length ? $(this).closest(".unit") : $(this).closest(".unitAttribute").length ?  $(this).closest(".unitAttribute") : false;
                 
-                saveDraft();
+                saveDoc();
             });
             $(document).on('keyup','input',function(){
                 var unit = $(this).closest(".unit").length ? $(this).closest(".unit") : $(this).closest(".unitAttribute").length ?  $(this).closest(".unitAttribute") : false;
                 
-                saveDraft();
+                saveDoc();
             });
-            
             $(document).find(".openInvoiceBtn").click(function(){
                 $(".btn").addClass("disabled");
                 $("input").attr("readonly","readonly");
-                saveDraft(function(invoiceObject){
+                saveDoc(function(invoiceObject){
                     socket.emit("invoice-create-open",customerID,invoiceObject,function(invoiceID){
                         console.log(customerID,invoiceObject);
                         $("tr[unitid]").remove();
                         nextUnitID = 0;
                         //updateMainTotals();
-                        saveDraft(function(){
+                        saveDoc(function(){
                             document.location = "/invoices/"+invoiceID;    
                         });
                     });
                 });
             });
-            
             $(document).find(".trashDraftBtn").click(function(){
                 $("tr[unitid]").remove();
                 nextUnitID = 0;
-                saveDraft();
+                saveDoc();
             });
-            
             $("#addBlank").click(function(){
                 createUnit(++nextUnitID);
-                saveDraft();
+                saveDoc();
             });
             
             if(!loaded){
-                socket.emit("invoice-load-draft",customerID,function(err,draft){
+                socket.emit("invoice-load-"+docData.type,docData.docid,function(err,draft){
                     if(draft.nextUnitID)
                         nextUnitID = draft.nextUnitID;
                     
@@ -93,7 +90,6 @@ define(function(require, exports, module) {
                     loaded = true;
                     
                     $("#loadingUnits").hide();
-                    
                     $(".onInvoiceLoad,.producttable").show();
                 }); 
             }
@@ -177,12 +173,11 @@ define(function(require, exports, module) {
             
             var saving = false;
             
-            function saveDraft(callback){
+            function saveDoc(callback){
                 if(!loaded || saving) return;
                 saving = true;
-                $(".saveDraftBtn").removeClass("btn-success");
-                $(".saveDraftBtn").addClass("btn-warning");
-                $(".saveDraftBtn").addClass("disabled");
+                var saveIcon = $(".saveDocBtn");
+                saveIcon.removeClass("btn-success").addClass("btn-warning").addClass("disabled");
                 
                 var draftObject = {nextUnitID:nextUnitID};
                 $(".unit").each(function(k,value){
@@ -206,11 +201,10 @@ define(function(require, exports, module) {
                     
                 });
                 
-                socket.emit("invoice-save-draft",customerID,draftObject,function(err,draftData){
+                socket.emit("invoice-save-"+docData.type,docData.docid,draftObject,function(err,draftData){
                     saving = false;
-                    $(".saveDraftBtn").removeClass("btn-warning");
-                    $(".saveDraftBtn").removeClass("disabled");
-                    $(".saveDraftBtn").addClass("btn-success");
+                    saveIcon.removeClass("btn-warning").removeClass("disabled").addClass("btn-success");
+                    
                     for(var i in draftData){
                         var unitData = draftData[i];
                         if(typeof unitData !== "object") continue;
