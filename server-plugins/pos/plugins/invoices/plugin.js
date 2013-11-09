@@ -6,6 +6,13 @@ module.exports = function(options, imports, register) {
     
     var db = require("./db.invoices.js")(pos.app.db);
     
+    pos.app.menus.
+    register("SUBNAV",{
+        icon:"icon-file",
+        link:"/invoices",
+        title:"Invoices"
+    });
+
     register(null, {
         "invoices": {
             db:db,
@@ -57,7 +64,7 @@ module.exports = function(options, imports, register) {
             },
             httpConnection:function(http){
                 http.get('/invoices', pos.app.users.checkUserAuth(), function(req, res, next) {
-                    db.invoicesPage(req.query.page-1 || 0,2,
+                    db.pageDocs({type: {'$ne': "draft" }},req.query.page-1 || 0,2,
                         function(err,docs){
                             if(!err){
                                 res.writeHead(200, {

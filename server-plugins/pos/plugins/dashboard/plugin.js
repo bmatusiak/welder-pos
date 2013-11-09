@@ -4,6 +4,14 @@ module.exports = function(options, imports, register) {
     
     var pos = imports.pos;
     
+    
+    pos.app.menus.
+    register("SUBNAV",{
+        icon:"icon-home",
+        link:"/",
+        title:"Home"
+    });
+        
     register(null, {
         "dashboard": {
             moduleDir:__dirname+"/static",

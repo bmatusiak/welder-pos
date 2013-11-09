@@ -26,12 +26,6 @@ module.exports = function(options, imports, register) {
             }
         };
         
-        menusPlugin.
-        register("SUBNAV",{
-            icon:"icon-home",
-            link:"/",
-            title:"Home"
-        });
                     
     register(null,{
         "menus":menusPlugin

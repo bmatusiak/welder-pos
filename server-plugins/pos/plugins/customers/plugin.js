@@ -6,6 +6,14 @@ module.exports = function(options, imports, register) {
     
     var db = require("./db.customers.js")(pos.app.db);
     
+    
+    pos.app.menus.
+    register("SUBNAV",{
+        icon:"icon-user",
+        link:"/customers",
+        title:"Customers"
+    });
+    
     pos.app.welder.addRequestParser(function(http){
         
         http.get('/customers',

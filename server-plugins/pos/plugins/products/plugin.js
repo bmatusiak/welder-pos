@@ -6,6 +6,13 @@ module.exports = function(options, imports, register) {
     
     var db = require("./db.products.js")(pos.app.db);
     
+    pos.app.menus.
+    register("SUBNAV",{
+        icon:"icon-tag",
+        link:"/products",
+        title:"Products"
+    });
+    
     register(null, {
         "products": {
             db:db,
