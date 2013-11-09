@@ -5,7 +5,7 @@
                 <i class="icon-cog"></i>
             </a>
             <a class="brand" href="/index.html">Point of Sale</a>
-            <% if(req.session.user){ %>
+            <% if(typeof req !== "undefined" && req.session.user){ %>
             <div class="nav-collapse collapse">
                 <ul class="nav pull-right">
                     <!-- <li class="dropdown">
@@ -64,6 +64,17 @@
             </a>
             <div class="subnav-collapse collapse">
                 <ul class="mainnav">
+                    <%  var SUBNAVMENU = app.menus.get("SUBNAV"); 
+                        for(var i in SUBNAVMENU){
+                    %>
+                    <li class="">
+                        <a href="<%- SUBNAVMENU[i].link %>">
+                            <i class="<%- SUBNAVMENU[i].icon %>"></i>
+                            <span><%- SUBNAVMENU[i].title %></span>
+                        </a>
+                    </li>
+                    <% } %>
+                    
                     <li class="">
                         <a href="/">
                             <i class="icon-home"></i>

@@ -73,7 +73,10 @@ module.exports = function(options, imports, register) {
     register(null, {
         "customers": {
             db:db,
-            elementsDir:__dirname+"/elements"
+            elementsDir:__dirname+"/elements",
+            settings:{
+                customerTax:["0.06","Default Customer Tax"]
+            }
         }
     });
 

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <%- HEAD() %>
+    
+    <body>
+        
+        <%- NAVBAR(true) %>
+
+        <div class="main">
+            <div class="container">
+                <div class="row">
+                    <div class="span12">
+      	                <div class="widget stacked ">
+                            <div class="widget-header">
+                                <h3>Settings</h3>
+                            </div>
+                            <!-- /widget-header -->
+                            <div>
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Plugin</th>
+                                            <th>Name</th>
+                                            <th>Value</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% for(var i in settings){ 
+                                        if( i == "set" ||
+                                            i == "load" ||
+                                            i == "define"
+                                        ) continue;
+                                        %>
+                                        <tr>
+                                            <td><%- settingPlugin[i] %></td>
+                                            <td><%- i %></td>
+                                            <td><%- settings[i] %></td>
+                                            <td><% if(settingDescription[i]){ %><%- settingDescription[i] %><% }else{ %>None<% } %></td>
+                                            <td><button class="btn btn-small" onclick="editSettingDialog('<%- i %>','<%- settings[i] %>')">Edit</button></td>
+                                        </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /main -->
+        <script src="/js/libs/jquery-ui-1.10.0.custom.min.js"></script>
+        <script src="/js/libs/bootstrap.min.js"></script>
+        <script>
+            function editSettingDialog(settingName,settingValue){
+                var dialog = $('#editSetting');
+                dialog.find("#settingName").val(settingName);
+                dialog.find("#settingValue").val(settingValue);
+                dialog.modal();
+            }
+        </script>
+        <div class="modal fade hide" id="editSetting">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel" style="color:white;">New Customer</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/pos/settings" method="post" autocomplete="off" />
+                        <div class="row-fluid">
+                            <div class="span6" style="text-align:right;">
+                                <label for="settingName">Name:</label>
+                            </div>
+                            <div class="span6">
+                                <div class="field">
+                                    <input class="input-block-level" type="text" id="settingName" name="settingName"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span6" style="text-align:right;">
+                                <label for="settingValue">Value:</label>
+                            </div>
+                            <div class="span6">
+                                <div class="field">
+                                    <input class="input-block-level" type="text" id="settingValue" name="settingValue"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button class="button btn btn-primary">Save Setting</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

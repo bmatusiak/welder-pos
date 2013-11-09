@@ -1,0 +1,16 @@
+{
+    "name": "plugin.ecommerce",
+    "version": "0.0.1",
+
+    "main": "./plugin.js",
+
+    "plugin": {
+        "provides": [
+            "ecommerce"
+        ],
+        "consumes": [
+            "app",
+            "pos"
+        ]
+    }
+}

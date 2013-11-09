@@ -24,7 +24,7 @@
                 margin: 0;    
             }
             .productPrice{
-                width:40px;
+                width:60px;
             }
             .productNameRow{
                 white-space:nowrap;
@@ -70,6 +70,7 @@
             	.unitTotals td:nth-of-type(3):after { content: "Tax"; }
             	.unitTotals td:nth-of-type(4):after { content: "Total"; }
             	.unitTotals td:after{  padding-left:10px; float:right;}
+            	
             	
             }
         </style>
@@ -161,30 +162,32 @@
                                         <tr class="actions">
                                             <td colspan="6">
                                                 <div class="page-actions pull-right">
-                                            		
-                                                    <% if(doc.type == "draft") { %>
-                                                            <i href="javascript:" class="saveDocBtn button btn btn-success btn-large">
+                                            		<% if(doc.child){ %>
+                                            		    <a class="button btn btn-info btn-large" href="/invoices/<%- doc.child %>">View Child</a>&nbsp;
+                                                    	
+                                                    <% }else if(doc.type == "draft") { %>
+                                                        <button href="javascript:" class="saveDocBtn button btn btn-success btn-large">
                                                     		<div class='loading-tag' style="text-align:center;">
                                                                 <a class='loading1 loading'>&nbsp;</a>
                                                                 <a class='loading2 loading'>&nbsp;</a>
                                                                 <a class='loading3 loading'>&nbsp;</a>
                                                                 <div class='clearfix'></div>
                                                             </div>
-                                                            <span>Draft Saved</span>
-                                                        </i>&nbsp;
+                                                            <span>Saved</span>
+                                                        </button>&nbsp;
                                                         <button class="trashDraftBtn button btn btn-danger btn-large">Trash Draft</button>&nbsp;
                                                 		<button class="openInvoiceBtn button btn btn-info btn-large">Open Order</button>&nbsp;
-                                                    <% }else if(doc.type == "invoice"){ %>
-                                                        <i href="javascript:" class="saveDocBtn button btn btn-success btn-large">
+                                                    <% }else if(doc.type == "order"){ %>
+                                                        <button class="saveDocBtn button btn btn-success btn-large">
                                                     		<div class='loading-tag' style="text-align:center;">
                                                                 <a class='loading1 loading'>&nbsp;</a>
                                                                 <a class='loading2 loading'>&nbsp;</a>
                                                                 <a class='loading3 loading'>&nbsp;</a>
                                                                 <div class='clearfix'></div>
                                                             </div>
-                                                            <span>Draft Saved</span>
-                                                        </i>&nbsp;
-                                                        <button class="trashDraftBtn button btn btn-danger btn-large">Trash Draft</button>&nbsp;
+                                                            <span>Saved</span>
+                                                        </button>&nbsp;
+                                                        <button class="trashDraftBtn button btn btn-danger btn-large">Void Order</button>&nbsp;
                                                 		<button class="openInvoiceBtn button btn btn-info btn-large">Set Invoice</button>&nbsp;
                                                     		    
                                                     <%}%>
@@ -194,6 +197,7 @@
                                         </tr>
                                         </tbody>
                                     </table>
+                                    <div class="pull-right"><%- doc._id %></div>
                                 </div>
                                 <!--
                                 <hr />
@@ -227,19 +231,40 @@
                 list-style:none;
                 border:none;
             }
-            .saveDocBtn.btn-success .loading-tag,.saveDocBtn.btn-warning span {
+            
+            .saveDocBtn.btn-success .loading-tag,
+            .saveDocBtn.btn-danger .loading-tag,
+            .saveDocBtn.btn-warning span {
                 display:none;
             }
-            .saveDocBtn.btn-warning .loading-tag,.saveDocBtn.btn-success span {
+            
+            .saveDocBtn.btn-warning .loading-tag,
+            .saveDocBtn.btn-danger span,
+            .saveDocBtn.btn-success span {
                 display:block;
             }
             
+            input.productModel {
+        	    background: transparent;
+                border: 0;
+        	}
         </style>
         <script src="/js/libs/bootstrap.min.js"></script>
-        <% if(doc.type == "draft") { %>
-            <autoload style="display:none" mod="invoices" data-customerid="<%- doc.customer._id %>" data-docid="<%- doc.customer._id %>" data-type="draft"></autoload>
-        <% }else if(doc.type == "invoice"){ %>
-            <autoload style="display:none" mod="invoices" data-customerid="<%- doc.customer._id %>" data-docid="<%- doc._id %>" data-type="invoice"></autoload>
-        <%}%>
+        
+        <autoload style="display:none" mod="invoices" data-customerid="<%- doc.customer._id %>" data-docid="<%- doc._id %>" data-type="<%- doc.type %>"></autoload>
+        
+        <div id="confirm" class="modal hide fade" role="dialog">
+            <div class="modal-header">
+                <h3>Confirm</h3>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+        
     </body>
 </html>

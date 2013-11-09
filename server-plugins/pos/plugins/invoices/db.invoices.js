@@ -4,77 +4,135 @@ module.exports = function(db) {
     
     var Schema = db.Schema;
     
-    var collection = "invoices";
+    var collection = "invoiceDocs";
     
     var modelSchema = new Schema({
-        _id : { type: Number, index: true, unique:true },
+        id : Number,
+        
+        // _id is a generated mongodb ObjectID
+        
         customer : { type: Number, ref: 'customers' },
         
-        invoiceData: String ,
+        locked: Boolean,
+        calculated: Boolean,
+        
+        type: String,
+        
+        docData: String,
+        //data:VIRTUAL, gets and sets docData based on type
+        
+        parent: { type: Schema.Types.ObjectId, ref: collection },
+        child: { type: Schema.Types.ObjectId, ref: collection },
         
         created: Date,
         createdBy: String,
     });
     
-    modelSchema.virtual('invoice').get(function() {
-        return JSON.parse(calcInvoiceJSON(this.invoiceData));
-    });
     modelSchema.virtual('data').get(function() {
-        return JSON.parse(calcInvoiceJSON(this.invoiceData));
+        var dataObj;
+        dataObj = JSON.parse(this.docData)
+        return calcData(dataObj);
     });
     modelSchema.virtual('data').set(function (data) {
-        this.invoiceData = JSON.stringify(data);
+        if(this.locked) return;
+        this.docData = JSON.stringify(data);
+        this.calculated = true;
     });
+    
     modelSchema.set('toJSON', { getters: true, virtuals: true });
     
-    var Invoices = db.model(collection, modelSchema);
+    modelSchema.pre('save', function(next) {
+        var doc = this;
+        
+        if(doc.locked)
+            return next(new Error("Document is Locked"));
+            
+        if(doc.type === "invoice")
+            doc.locked = true;
+        
+        
+        next();
+    });
     
-    var newInvoice = function(
-        customerID,
-        invoiceData,
-        whoCreatedLogin,
-        callback){
-            db.counter("Invoices",1,function(count){
-                var invoice = new Invoices();
-                invoice._id = count;
-                invoice.customer = customerID;
-                invoice.invoiceData = JSON.stringify(invoiceData);
-                invoice.created = new Date();
-                invoice.createdBy = whoCreatedLogin;
-                invoice.save(function(err){
-                    callback(invoice.id);
-                });
-            });
-    };
+    var InvoiceDocs = db.model(collection, modelSchema);
     
-    var getInvoice = function(id,callback){
-        Invoices.findOne({_id: id})
+    var getDoc = function(query,callback){
+        InvoiceDocs.findOne(query)
         .populate('customer')
-        .exec(function(err, invoice) {
-            if(!err && !invoice){
+        .exec(function(err, doc) {
+            if(err || !doc){
                 callback("not exist");
-            }else if(!err && invoice !== null){
-                callback(null,invoice);
+            }else if(!err && doc !== null){
+                callback(null,doc);
             }
         });
     };
     
-    var listInvoices = function(callback){
-        Invoices.find(function(err,invoices){
-            callback(err,invoices);
+    var newDoc = function(
+        docObj,
+        whoCreatedLogin,
+        callback){
+            getDoc({_id:docObj._id},function(err,doc){
+                var newDoc;
+                if(doc && docObj.type !== "draft" && !doc.child){
+                    newDoc = new InvoiceDocs();
+                    newDoc.parent = doc._id;
+                    newDoc.customer = doc.customer;
+                    newDoc.type = docObj.type;
+                    newDoc.data = doc.data;
+                    newDoc.created = new Date();
+                    newDoc.createdBy = whoCreatedLogin;
+                    if(newDoc.type === "invoice")
+                        db.counter("Invoices",1,function(count){
+                            newDoc.id = count;
+                            save();
+                        });      
+                    else 
+                        save();
+                } else if(!doc && docObj.type == "draft"){
+                    newDoc = new InvoiceDocs();
+                    newDoc.customer = docObj.customer;
+                    newDoc.data = docObj.data;
+                    newDoc.type = docObj.type;
+                    newDoc.created = new Date();
+                    newDoc.createdBy = whoCreatedLogin;
+                    save();
+                } else
+                    callback("New Document Failed to Create",docObj);
+                
+                function save(){
+                    newDoc.save(function(err,_doc){
+                        getDoc({_id:_doc._id},function(err,__doc){
+                            callback(err,__doc);
+                        });
+                        if(doc && doc.type !== "draft"){
+                            doc.child = _doc._id;
+                            doc.save();
+                        }
+                    });
+                }
+                
+            });
+    };
+    
+    var listDocs = function(query,callback){
+        InvoiceDocs.find(query)
+        .populate('customer')
+        .exec(function(err, docs) {
+            callback(err,docs);
         });
     };
     
-    var invoicesPage = function(page,perPage,callback){
-        Invoices.find({})
+    var pageDocs = function(query,page,perPage,callback){
+        InvoiceDocs.find(query)
         .populate('customer')
         .limit(perPage)
         .skip(perPage * page)
         .sort({created: 'desc'})
-        .exec(function(err, invoices) {
-            Invoices.count().exec(function(err, count) {
+        .exec(function(err, docs) {
+            InvoiceDocs.count(query).exec(function(err, count) {
                 callback(null,{
-                    results: invoices,
+                    results: docs,
                     page: page,
                     pages: count / perPage
                 });
@@ -82,15 +140,14 @@ module.exports = function(db) {
         });
     };
     
-    var calcInvoiceJSON = function(invoiceJSON){
-        var invoiceObj = JSON.parse(invoiceJSON);
+    var calcData = function(docObj){
         
-        invoiceObj.stotal = 0;
-        invoiceObj.ttotal = 0;
-        invoiceObj.total = 0; 
+        docObj.stotal = 0;
+        docObj.ttotal = 0;
+        docObj.total = 0; 
         
-        for(var i in invoiceObj){
-            var unitData = invoiceObj[i];
+        for(var i in docObj){
+            var unitData = docObj[i];
             if(typeof unitData !== "object") continue;
             
             unitData.price = parseFloat(unitData.productPrice) * parseFloat(unitData.productQuanity);
@@ -101,87 +158,20 @@ module.exports = function(db) {
             unitData.tax = unitData.price * 0.06;
             unitData.total = unitData.price+(unitData.price * 0.06);
             
-            invoiceObj.stotal += unitData.price;
-            invoiceObj.ttotal += unitData.price * 0.06;
-            invoiceObj.total  += unitData.price+(unitData.price * 0.06);
+            docObj.stotal += unitData.price;
+            docObj.ttotal += unitData.price * 0.06;
+            docObj.total  += unitData.price+(unitData.price * 0.06);
         }
-        //invoiceObj.stotal = invoiceObj.stotal.toFixed(2);
-        //invoiceObj.ttotal = invoiceObj.ttotal.toFixed(2);
-        //invoiceObj.total = invoiceObj.total.toFixed(2);
-        
-        return JSON.stringify(invoiceObj);
-    };
-    
-    //-------------------------------------------------------------
-    
-    
-    var draftSchema = new Schema({
-        //id : { type: Number, index: true, unique:true },
-        customer : { type: Number, ref: 'customers' },
-        
-        dataJSON: String
-    });
-    
-    draftSchema.virtual('data').get(function() {
-        return JSON.parse(calcInvoiceJSON(this.dataJSON || JSON.stringify({})));
-    });
-    draftSchema.virtual('data').set(function (data) {
-        this.dataJSON = JSON.stringify(data);
-    });
-    
-    var Drafts = db.model("invoice-drafts", draftSchema);
-    
-    var updateDraft = function(
-        customerID,
-        draftObject,
-        callback){
-        if(!callback) callback=function(){};
-        Drafts.findOne({customer: customerID})
-        .populate('customer')
-        .exec(function(err, draft) {
-            if(!err && !draft){
-                draft = new Drafts();
-                draft.data = draftObject;
-                draft.save(callback);
-        
-            }else if(!err && draft !== null){
-                draft.data = draftObject;
-                draft.save(callback);
-            }
-        });
-    };
-    
-    var getDraft = function(
-        customerID,
-        callback){
-        if(!callback) callback=function(){};
-        Drafts.findOne({customer: customerID})
-        .populate('customer')
-        .exec(function(err, draft) {
-            if(!err && !draft){
-                draft = new Drafts();
-                draft.customer = customerID;
-                draft.save(function(){
-                   callback(null,draft); 
-                });
-            }else if(!err && draft !== null){
-                draft.save(function(){
-                   callback(null,draft); 
-                });
-                    
-            }
-        });
+        return docObj;
     };
     
     
     return {
-        //calcInvoiceJSON:calcInvoiceJSON,
-        newInvoice:newInvoice,
-        getInvoice:getInvoice,
-        updateDraft:updateDraft,
-        getDraft:getDraft,
-        listInvoices:listInvoices,
-        invoicesPage:invoicesPage
+        calcData:calcData,
+        newDoc:newDoc,
+        getDoc:getDoc,
+        listDocs:listDocs,
+        pageDocs:pageDocs
     };
 };
 

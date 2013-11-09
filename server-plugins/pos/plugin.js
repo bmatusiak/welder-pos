@@ -24,6 +24,14 @@ module.exports = function(options, imports, register) {
             if(plugins[i].socketUserConnection){
                 app.sockets.addSocketUserConnection(plugins[i].socketUserConnection);
             }
+            if(plugins[i].settings && plugins.settings && plugins[i] !== pos){
+                for(var j in plugins[i].settings){
+                    var name = j;
+                    var desc = plugins[i].settings[j][1];
+                    var val = plugins[i].settings[j][0];
+                    plugins.settings.define(i,name,desc,val);
+                }
+            }
         }
     })(options, imports, register);
     
