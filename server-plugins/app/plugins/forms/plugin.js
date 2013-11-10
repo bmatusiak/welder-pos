@@ -41,20 +41,10 @@ module.exports = function(options, imports, register) {
                     for(var i in data){
                         templateData[i] = data[i];
                     }
-                    res.writeHead(200, {
-                        'Content-Type': 'text/html'
-                    });
-                    imports.ejs.renderFile(path,templateData,function(err,data){
-                        res.end(data);
-                    });
+                    req.ejs(path,templateData);
                 });
             }else{
-                res.writeHead(200, {
-                    'Content-Type': 'text/html'
-                });
-                imports.ejs.renderFile(path,templateData,function(err,data){
-                    res.end(data);
-                });
+                req.ejs(path,templateData);
             }
         };
     };
@@ -133,12 +123,9 @@ module.exports = function(options, imports, register) {
                 formID.next(req,res,(!formCheckOut ? errorString : null ),function(err,rdPath){
                     if(err || !formCheckOut){
                         var error = errorString+(err ? err +"<br />" : '');
-                        res.writeHead(200, {
-                            'Content-Type': 'text/html'
-                        });
-                        imports.ejs.renderFile(path,{error:error,req:req},function(err,data){
-                            res.end(data);
-                        });
+                        
+                        req.ejs(path,{error:error});
+                        
                     }
                     else res.redirect(rdPath || redirectPath);
                 });

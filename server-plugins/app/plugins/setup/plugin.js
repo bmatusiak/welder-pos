@@ -5,12 +5,7 @@ module.exports = function(options, imports, register) {
     var app = imports.app;
     
     function renderSetupApp(req,res,error){
-        res.writeHead(200, {
-            'Content-Type': 'text/html'
-        });
-        app.ejs.renderFile(__dirname + "/setup.html",{error:error,req:req,settings:app.settings},function(err,data){
-            res.end(data);
-        });
+        req.ejs(__dirname + "/setup.html",{error:error,settings:app.settings});
     }
     
     app.welder.addRequestParser(function(http){
@@ -76,12 +71,7 @@ module.exports = function(options, imports, register) {
                                 req.session.user = req.body.userlogin;
                                 
                                 main.settings.set("isUsersSetup","true",function(){
-                                    res.writeHead(200, {
-                                        'Content-Type': 'text/html'
-                                    });
-                                    main.ejs.renderFile(main.dir.template + "/redirect.html",{req:req,redirect:{path:"/setup"}},function(err,data){
-                                        res.end(data);
-                                    });
+                                    req.ejs(main.dir.template + "/redirect.html",{req:req,redirect:{path:"/setup"}});
                                 });
                             }else renderSetupApp(req,res,err.toString());
                         });
@@ -101,12 +91,7 @@ module.exports = function(options, imports, register) {
                 }
                 if(req.body.formid == "appSetupPOS"){
                     main.settings.set("isSetup","true",function(){
-                        res.writeHead(200, {
-                            'Content-Type': 'text/html'
-                        });
-                        main.ejs.renderFile(main.dir.template + "/redirect.html",{req:req,redirect:{path:"/"}},function(err,data){
-                            res.end(data);
-                        });
+                        req.ejs(main.dir.template + "/redirect.html",{req:req,redirect:{path:"/"}});
                     });
                 }
             }

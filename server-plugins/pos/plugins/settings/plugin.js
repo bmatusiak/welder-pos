@@ -59,18 +59,12 @@ module.exports = function(options, imports, register) {
         });
         app.welder.addRequestParser(function(http){
             http.get("/pos/settings",pos.app.users.checkUserAuth(),function(req, res, next) {
-                res.writeHead(200, {
-                    'Content-Type': 'text/html'
-                });
-                pos.app.ejs.renderFile(__dirname + "/settings.html",
+                req.ejs(__dirname + "/settings.html",
                     {
-                        req:req,
                         settings:pos.settings,
                         settingDescription:settingDescription,
                         settingPlugin:settingPlugin
-                    },function(err,data){
-                    res.end(data);
-                });
+                    });
             });
             http.post("/pos/settings",pos.app.users.checkUserAuth(),function(req, res, next) {
                 settings.set(req.body.settingName,req.body.settingValue,function(){

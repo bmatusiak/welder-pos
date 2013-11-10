@@ -23,19 +23,9 @@ module.exports = function(options, imports, register) {
                 db.customersPage(req.query.page-1 || 0,50,
                     function(err,customers){
                         if(!err){
-                            res.writeHead(200, {
-                                'Content-Type': 'text/html'
-                            });
-                            pos.app.ejs.renderFile(__dirname + "/customers.html",{customers:customers,req:req,settings:pos.app.settings},function(err,data){
-                                res.end(data);
-                            });
+                            req.ejs(__dirname + "/customers.html",{customers:customers,settings:pos.app.settings});
                         }else {
-                            res.writeHead(200, {
-                                'Content-Type': 'text/html'
-                            });
-                            pos.app.ejs.renderFile(pos.app.dir.template + "/error.html",{error:err},function(err,data){
-                                res.end(data);
-                            });
+                            req.ejs(pos.app.dir.template + "/error.html",{error:err});
                         }
                     });
             });

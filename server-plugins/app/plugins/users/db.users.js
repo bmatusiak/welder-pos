@@ -19,7 +19,9 @@ module.exports = function(db) {
         created: { type: Date, default: Date.now },
         createdBy: String,
         loginAttempts: { type: Number, required: true, default: 0 },
-        lockUntil: { type: Number }
+        lockUntil: { type: Number },
+        
+        permissionsData:String
     });
     
     var reasons = usersSchema.statics.failedLogin = {
@@ -27,6 +29,15 @@ module.exports = function(db) {
         PASSWORD_INCORRECT: 1,
         MAX_ATTEMPTS: 2
     };
+    
+    usersSchema.virtual('permissions').get(function() {
+        if(!this.permissionsData) return {};
+        return JSON.parse(this.permissionsData);
+    });
+    usersSchema.virtual('permissions').set(function (permissionsData) {
+        this.permissionsData = JSON.stringify(permissionsData);
+        this.save();
+    });
     
     usersSchema.virtual('isLocked').get(function() {
         // check for a future lockUntil timestamp

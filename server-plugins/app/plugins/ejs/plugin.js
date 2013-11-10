@@ -1,5 +1,6 @@
 module.exports = function(options, imports, register) {
     
+    
     var fs = require("fs");
     var ejs = require("ejs");
     
@@ -129,7 +130,24 @@ module.exports = function(options, imports, register) {
         return ejs.render.apply(ejs, arguments);
     }
     
+    var $ejs = new EJSfile();
+    
+    imports.app.welder.addMiddleWare(function(http){
+         http.use(function(req,res,next){
+            req.ejs = function(filename, options, callback){
+                options.req = req;
+                $ejs.renderFile(filename,options,callback ? callback : function(err,data){
+                    res.writeHead(200, {
+                        'Content-Type': 'text/html'
+                    });
+                    res.end(data);
+                }); 
+            };
+            next();
+         });
+    });
+    
     register(null, {
-        "ejs": new EJSfile()
+        "ejs": $ejs
     });
 };

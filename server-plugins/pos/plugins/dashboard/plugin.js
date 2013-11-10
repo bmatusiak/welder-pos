@@ -18,19 +18,9 @@ module.exports = function(options, imports, register) {
             moduleDir:__dirname+"/static",
             httpConnection:function(http){
                 http.sub(pos.app.users.checkUserAuth()).get('/home', function(req, res, next) {
-                    var options = {
-                        req:req
-                    };
-                    function renderDashboard(){
-                        res.writeHead(200, {
-                            'Content-Type': 'text/html'
-                        });
-                        pos.app.ejs.renderFile(__dirname + "/dashboard.html",options,function(err,data){
-                            res.end(data);
-                        }); 
-                    }
                     
-                    renderDashboard();
+                    req.ejs(__dirname + "/dashboard.html",options);
+                    
                 });
             },
             socketUserConnection:function($socket){

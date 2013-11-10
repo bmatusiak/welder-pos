@@ -68,19 +68,9 @@ module.exports = function(options, imports, register) {
                     db.pageDocs({type: {'$ne': "draft" }},req.query.page-1 || 0,2,
                         function(err,docs){
                             if(!err){
-                                res.writeHead(200, {
-                                    'Content-Type': 'text/html'
-                                });
-                                pos.app.ejs.renderFile(__dirname + "/invoices.html",{pos:pos,docs:docs,req:req},function(err,data){
-                                    res.end(data);
-                                });
+                                req.ejs(__dirname + "/invoices.html",{pos:pos,docs:docs});
                             }else {
-                                res.writeHead(200, {
-                                    'Content-Type': 'text/html'
-                                });
-                                pos.app.ejs.renderFile(pos.app.dir.template + "/error.html",{error:err},function(err,data){
-                                    res.end(data);
-                                });
+                                req.ejs(pos.app.dir.template + "/error.html",{error:err});
                             }
                         });
                 });
@@ -106,12 +96,7 @@ module.exports = function(options, imports, register) {
                             db.getDoc({_id:req.params.id},function(err,doc){
                                 //console.log(doc)
                                 if(err){
-                                    res.writeHead(200, {
-                                        'Content-Type': 'text/html'
-                                    });
-                                    pos.app.ejs.renderFile(pos.app.dir.template + "/error.html",{error:err},function(err,data){
-                                        res.end(data);
-                                    });
+                                    req.ejs(pos.app.dir.template + "/error.html",{error:err});
                                 }else
                                 callback(err,{doc:doc});
                             });
