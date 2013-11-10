@@ -9,7 +9,8 @@ module.exports = function(options, imports, register) {
     register("SUBNAV",{
         icon:"icon-home",
         link:"/",
-        title:"Home"
+        title:"Home",
+        sort:0
     });
         
     register(null, {

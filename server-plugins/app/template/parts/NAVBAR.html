@@ -36,9 +36,15 @@
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
-                            <li>
-                                <a href="/logout">Logout</a>
+                            <%  var USERDROPDOWNMENU = app.menus.get("USERDROPDOWN"); 
+                                for(var i in USERDROPDOWNMENU){
+                            %>
+                            <li class="">
+                                <a href="<%- USERDROPDOWNMENU[i].link %>">
+                                    <span><%- USERDROPDOWNMENU[i].title %></span>
+                                </a>
                             </li>
+                            <% } %>
                         </ul>
                     </li>
                 </ul>

@@ -10,7 +10,8 @@ module.exports = function(options, imports, register) {
     register("SUBNAV",{
         icon:"icon-tag",
         link:"/products",
-        title:"Products"
+        title:"Products",
+        sort:3
     });
     
     register(null, {

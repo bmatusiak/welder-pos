@@ -59,6 +59,14 @@ module.exports = function(options, imports, register) {
     });
     register(null,{
         "users":{
+            init:function(){
+                app.menus.
+                register("USERDROPDOWN",{
+                    link:"/logout",
+                    title:"Logout",
+                    sort:100000
+                });
+            },
             addUser:function(name,login,password,whoCreatedLogin,callback){
                 db.newUser(name,login,password,whoCreatedLogin,function(err){
                     callback(err);

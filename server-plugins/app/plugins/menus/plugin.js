@@ -19,9 +19,12 @@ module.exports = function(options, imports, register) {
                 return menusPlugin;
             },
             get:function(area){
-                if(areas[area])
+                if(areas[area]){
+                    areas[area].sort(function(d,b,c){
+                        return d.sort - b.sort
+                    });
                     return areas[area];
-                
+                }
                 return [];
             }
         };

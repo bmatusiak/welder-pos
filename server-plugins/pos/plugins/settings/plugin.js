@@ -80,6 +80,13 @@ module.exports = function(options, imports, register) {
             
         });
         
+        app.menus.
+        register("USERDROPDOWN",{
+            link:"/pos/settings",
+            title:"POS Settings",
+            sort:1000
+        });
+        
         register(null, {
             "settings": settings
         });

@@ -10,7 +10,8 @@ module.exports = function(options, imports, register) {
     register("SUBNAV",{
         icon:"icon-file",
         link:"/invoices",
-        title:"Invoices"
+        title:"Invoices",
+        sort:2
     });
 
     register(null, {

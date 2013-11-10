@@ -11,7 +11,8 @@ module.exports = function(options, imports, register) {
     register("SUBNAV",{
         icon:"icon-user",
         link:"/customers",
-        title:"Customers"
+        title:"Customers",
+        sort:1
     });
     
     pos.app.welder.addRequestParser(function(http){
