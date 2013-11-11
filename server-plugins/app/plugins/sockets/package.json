@@ -9,7 +9,8 @@
             "sockets"
         ],
         "consumes": [
-            "app"
+            "app",
+            "session"
         ]
     }
 }

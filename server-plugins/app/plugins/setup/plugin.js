@@ -71,7 +71,7 @@ module.exports = function(options, imports, register) {
                                 req.session.user = req.body.userlogin;
                                 
                                 main.settings.set("isUsersSetup","true",function(){
-                                    req.ejs(main.dir.template + "/redirect.html",{req:req,redirect:{path:"/setup"}});
+                                    req.ejs(main.dir.template + "/redirect.html",{redirect:{path:"/setup"}});
                                 });
                             }else renderSetupApp(req,res,err.toString());
                         });
@@ -91,7 +91,7 @@ module.exports = function(options, imports, register) {
                 }
                 if(req.body.formid == "appSetupPOS"){
                     main.settings.set("isSetup","true",function(){
-                        req.ejs(main.dir.template + "/redirect.html",{req:req,redirect:{path:"/"}});
+                        req.ejs(main.dir.template + "/redirect.html",{redirect:{path:"/"}});
                     });
                 }
             }

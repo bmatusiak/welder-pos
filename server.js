@@ -1,4 +1,4 @@
-var Architect = require("architect");
+var Architect = require("auto-architect");
 
 var configPath = __dirname+"/config.js";
 

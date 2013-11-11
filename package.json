@@ -2,6 +2,7 @@
     "name": "welder-pos",
     "version": "1.0.0",
     "dependencies": {
+        "auto-architect":"https://github.com/bmatusiak/auto-architect/archive/master.tar.gz",
         "express": "*",
         "architect": "*",
         "mongoose": "*",

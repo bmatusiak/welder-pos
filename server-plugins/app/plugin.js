@@ -1,12 +1,15 @@
 "use strict";
 
+var architectSetup = require("auto-architect").setup;
+
 module.exports = function(options, imports, register) {
     
     imports.dir = {
         template: __dirname+"/template"
     };
     
-    imports.plugin = require("./app-setup.js");
+    imports.plugin = architectSetup;
+    
     imports.plugin("app",__dirname + "/plugins",function(app,plugins){
         
         app.welder.addStaticFile("/static/modules/main.js",__dirname+"/client.main.js",false);

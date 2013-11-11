@@ -25,16 +25,22 @@ module.exports = function(options, imports, register) {
         */
         return function(req,res,next){
             
+            var templateData = {error:req.body.error || ''};
+            
             var doRedirect;
             if(typeof(formObject.allow) == "function" && !formObject.allow(req,res,function(redirectPath){
-                doRedirect = redirectPath;
+                if(typeof redirectPath == "string")
+                    doRedirect = redirectPath;
+                else 
+                    for(var i in redirectPath){
+                        templateData[i] = redirectPath[i];
+                    }
             })){
                 if(doRedirect) 
                     return res.redirect(doRedirect);
                 return next();
             }
             
-            var templateData = {error:req.body.error || '',req:req};
             
             if(formObject.next){
                 formObject.next(req,res,function(err,data){

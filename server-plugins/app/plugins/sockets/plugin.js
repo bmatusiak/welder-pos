@@ -12,7 +12,7 @@ module.exports = function(options, imports, register) {
     
     var http = app.welder.http;
     var io = require('socket.io').listen(http.server);
-    var session = app.session;
+    var session = imports.session;
     //var store =  imports.session.store;
     
     if(options.useRedis){
