@@ -16,7 +16,7 @@ module.exports = function(options, imports, register) {
         return function(req,res,next){
             
             if(formObject.allow)
-                formObject.allow(req,res,function(err,allow,templateData){
+                formObject.allow(req,res,function(err,allow,templateData){ 
                     if(err && allow)
                         return res.redirect(allow || req.url);
                     
