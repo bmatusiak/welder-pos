@@ -19,7 +19,7 @@ module.exports = function(options, imports, register) {
             httpConnection:function(http){
                 http.sub(pos.app.users.checkUserAuth()).get('/home', function(req, res, next) {
                     
-                    req.ejs(__dirname + "/dashboard.html",options);
+                    req.ejs(__dirname + "/dashboard.html");
                     
                 });
             },

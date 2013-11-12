@@ -10,27 +10,36 @@ module.exports = function(options, imports, register) {
     
     app.welder.addRequestParser(function(http){
         
-        http.get('/setup',app.Form.get(__dirname + "/setup.html",function(req,res,redirectTo){
-                    if(app.settings.isUsersSetup && !req.session.user){
-                        if(!app.settings.isSetup)
-                            redirectTo("/login");
-                        else redirectTo("/");
-                    }
-                    return !app.settings.isUsersSetup || !app.settings.isSetup && req.session.user;
-                }));
-                
-        http.post('/setup',  app.Form.post(__dirname + "/setup.html",'/setup',{
+        http.get('/setup',app.Form.get(__dirname + "/setup.html",function allow(req,res,callback){
+            if(app.settings.isUsersSetup && !req.session.user){
+                if(!app.settings.isSetup)
+                    callback("app is not setup and user is not logged in so redirect to /login ","/login");
+                else callback("app is setup so redirect to / ","/");
+            }else 
+                callback(!app.settings.isUsersSetup || !app.settings.isSetup && req.session.user);
+            /*
+            if(app.settings.isUsersSetup && !req.session.user){
+                if(!app.settings.isSetup)
+                    redirectTo("/login");
+                else redirectTo("/");
+            }
+            return !app.settings.isUsersSetup || !app.settings.isSetup && req.session.user;
+            */
+            
+        }));
+        
+        http.post('/setup',  app.Form.post(__dirname + "/setup.html",{
             "appSetupUser": {//req.body.formid
-                allow: function(req,res){
-                    return !app.settings.isSetup;
+                allow: function(req,res,next){
+                    next(null,!app.settings.isSetup)
                 },
-                required : function(req,res){
-                    return [
+                required : function(req,res,next){
+                    next(null,[
                         [req.body.username,"User Name Must be Defined"],
                         [req.body.password,"Password Must be Defined"],
                         [req.body.password2,"Password Confirm Must be Defined"],
                         [req.body.password == req.body.password2,"Password & Password Confirm Must Match"],
-                    ];
+                    ]);
                 },
                 next : function(req,res,error,callback){//next is required in this object
                     if(!error)
@@ -47,8 +56,8 @@ module.exports = function(options, imports, register) {
                 }
             },
             "appSetupPOS":{
-                allow: function(req,res){
-                    return !app.settings.isSetup && req.session.user;
+                allow: function(req,res,next){
+                    next(null,!app.settings.isSetup && req.session.user);
                 },
                 next : function(req,res,error,callback){//next is required in this object
                     if(!error){

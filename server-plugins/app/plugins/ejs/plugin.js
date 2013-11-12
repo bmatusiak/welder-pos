@@ -25,8 +25,6 @@ module.exports = function(options, imports, register) {
                 _self.render(data.toString(), options, callback);
             }
             catch (err) {
-                //var e = new ReferenceError(err.toString().replace("ReferenceError: ejs:", filename + ":"));
-                console.log(err,filename);
                 throw err;
             }
     
@@ -46,8 +44,7 @@ module.exports = function(options, imports, register) {
             callback(null,ejsRender(str, options));
         }
         catch (err) {
-            
-            throw err;
+            callback(err);
         }
     
     };
@@ -135,14 +132,29 @@ module.exports = function(options, imports, register) {
     imports.app.welder.addMiddleWare(function(http){
          http.use(function(req,res,next){
             req.ejs = function(filename, options, callback){
+                if(!options) 
+                    options = {};
+                for (var i = 0; i < req.ejs.options.length; i++) {
+                    if(req.ejs.options[i]){
+                        options[i] = req.ejs.options[i];
+                    }
+                }
                 options.req = req;
+                options.error = options.error || null;
                 $ejs.renderFile(filename,options,callback ? callback : function(err,data){
+                    if(err){
+                            res.writeHead(200, {
+                            'Content-Type': 'text/plain'
+                        });
+                        return res.end(err.message);
+                    } 
                     res.writeHead(200, {
                         'Content-Type': 'text/html'
                     });
                     res.end(data);
                 }); 
             };
+            req.ejs.options = {};
             next();
          });
     });

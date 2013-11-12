@@ -37,25 +37,41 @@ module.exports = function(options, imports, register) {
             res.redirect("/user/"+req.session.user);
         });
         
-        http.get("/user/:id",[plugin.checkUserAuth(),function(req,res,next){
+        http.get("/user/:id",plugin.checkUserAuth(),
+        app.Form.get(__dirname + "/user.html",function(req,res,callback){
             db.getUser(req.params.id,function(err,user){
                 req.data = {id:req.params.id,user:user};
-                next();
+                callback(null,null,{permissions:permissions});
             });
-        }],app.Form.get(__dirname + "/user.html",function(req,res,callback){
-            callback({permissions:permissions});
             return true;
         }));
         
-        http.post("/user/:id",[plugin.checkUserAuth(),function(req,res,next){
-            db.getUser(req.params.id,function(err,user){
-                req.data = {id:req.params.id,user:user};
-                next();
-            });
-        }],app.Form.get(__dirname + "/user.html",function(req,res,callback){
-            callback({permissions:permissions});
-            return true;
-        }));
+        http.post("/user/:id",plugin.checkUserAuth(),
+        app.Form.post(__dirname + "/user.html",{//req.body.formid
+                allow: function(req,res,callback){
+                    callback();
+                },
+                required : function(req,res,next){
+                    next(null,[
+                        [req.params.id,"UserID Must be Defined"],
+                        [req.body.password && 
+                            req.body.password2 && 
+                            req.body.password == req.body.password2 || true,
+                            "Password & Password Confirm Must Match"],
+                    ]);
+                },
+                next : function(req,res,error,callback){//next is required in this object
+                    if(!error)
+                        db.getUser(req.params.id,function(err,user){
+                            for(var i in req.body){
+                                console.log(i);
+                            }
+                            //req.data = {id:req.params.id,user:user};
+                            callback(err);
+                        });
+                    else callback();
+                }
+            }));
         
         http.use("/logout",function(req,res,next){
             delete req.session.user;
@@ -63,17 +79,19 @@ module.exports = function(options, imports, register) {
             res.redirect("/");
         });
         
-        http.get("/login",app.Form.get(__dirname + "/login.html",function(req,res,redirectTo){
-            redirectTo("/");
-            return app.settings.isUsersSetup && !req.session.user;
+        http.get("/login",app.Form.get(__dirname + "/login.html",function(req,res,callback){
+            callback(req.session.user || !app.settings.isUsersSetup && req.session.user, "/");
         }));
             
-        http.post("/login",app.Form.post(__dirname + "/login.html",'/',{
-                required : function(req,res){
-                    return [
+        http.post("/login",app.Form.post(__dirname + "/login.html",{
+                allow: function(req,res,next){
+                    next(null,true);
+                },
+                required : function(req,res,next){
+                    next(null,[
                         [req.body.userlogin,"UserLogin Must be Defined"],
                         [req.body.password,"Password Must be Defined"],
-                    ];
+                    ]);
                 },
                 next : function(req,res,error,callback){
                     if(!error)
@@ -124,6 +142,7 @@ module.exports = function(options, imports, register) {
                 });
             },
             listUsers:db.listUsers,
+            
             checkUserAuth:function(type,permission){
                 if(type == "http" || !type){
                     return function(req,res,next){

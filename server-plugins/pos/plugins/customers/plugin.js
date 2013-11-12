@@ -36,9 +36,9 @@ module.exports = function(options, imports, register) {
         
         http.post('/customers/new', 
             pos.app.users.checkUserAuth(),
-            pos.app.Form.post(__dirname + "/newCustomer.html",'/customers',{
-                required : function(req,res){
-                    return [
+            pos.app.Form.post(__dirname + "/newCustomer.html",{
+                required : function(req,res,callback){
+                    callback(null,[
                         [req.body.name,"Name Must be Defined"],
                         [req.body.address,"Address Must be Defined"],
                         [req.body.city,"City Must be Defined"],
@@ -46,7 +46,7 @@ module.exports = function(options, imports, register) {
                         [req.body.zip,"Zip Must be Defined"],
                         [req.body.email,"Email Must be Defined"],
                         [req.body.phone,"Phone Must be Defined"]
-                    ];
+                    ]);
                 },
                 next : function(req,res,error,callback){
                     if(!error)
@@ -61,7 +61,7 @@ module.exports = function(options, imports, register) {
                         req.session.user,
                         function(err){
                             if(!err){
-                                callback(null);
+                                callback(null,"/customers");
                             }else callback(err);
                         });
                     else callback();

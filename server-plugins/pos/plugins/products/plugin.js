@@ -43,17 +43,22 @@ module.exports = function(options, imports, register) {
                     pos.app.Form.get(__dirname + "/newProduct.html"));
                 
                 http.sub(pos.app.users.checkUserAuth()).post('/products/:id',
-                    pos.app.Form.post(__dirname + "/newProduct.html",'/products',{
-                        required : function(req,res){
-                            return [
+                    pos.app.Form.post(__dirname + "/newProduct.html",{
+                        required : function(req,res,callback){
+                            callback(null,[
                                 [req.body.name,"Name Must be Defined"],
                                 [req.body.model,"Model Must be Defined"],
                                 [req.body.stock,"Stock Must be Defined"],
                                 [req.body.price,"Price Must be Defined"]
-                            ];
+                            ]);
                         },
                         next : function(req,res,error,callback){
                             var id = req.params.id;
+                            var done = function(err){
+                                if(!err){
+                                    callback(null,'/products');
+                                }else callback(err);
+                            };
                             if(id === "new")
                                 if(!error){
                                     db.newProduct(
@@ -62,11 +67,7 @@ module.exports = function(options, imports, register) {
                                         req.body.price,
                                         req.body.stock,
                                         req.session.user,
-                                        function(err){
-                                            if(!err){
-                                                callback(null);
-                                            }else callback(err);
-                                        });
+                                        done);
                                 }else{ callback(); }
                             else {
                                 db.getProduct({_id:id},function(err,product){
@@ -76,7 +77,7 @@ module.exports = function(options, imports, register) {
                                     product.model = req.body.model,
                                     product.price = req.body.price,
                                     product.stock = req.body.stock,
-                                    product.save(function(err){callback(err)});
+                                    product.save(done);
                                 });
                             }
                         }
