@@ -11,7 +11,7 @@
         <div class="row">
             <div class="span4  offset4">
                 <%- widgetOpen("Sign In") %>
-                    <form action="/login" method="post" />
+                    <form action="/login<%- (req.query.path ? '?path='+req.query.path : '') %>" method="post" />
 		                
             			<div class="login-fields">
             				

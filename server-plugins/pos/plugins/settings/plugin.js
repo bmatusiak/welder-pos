@@ -49,6 +49,8 @@ module.exports = function(options, imports, register) {
     };
     
     new AppSettings(function(settings){
+        app.users.registerPermission("pos_settings",false,"Allow Editing POS Settings");
+        
         //update settigns per page request
         app.welder.addMiddleWare(function(http){
             http.use(function(req, res, next) {
@@ -58,7 +60,7 @@ module.exports = function(options, imports, register) {
             });
         });
         app.welder.addRequestParser(function(http){
-            http.get("/pos/settings",pos.app.users.checkUserAuth(),function(req, res, next) {
+            http.get("/pos/settings",pos.app.users.checkUserAuth(null,"pos_settings"),function(req, res, next) {
                 req.ejs(__dirname + "/settings.html",
                     {
                         settings:pos.settings,

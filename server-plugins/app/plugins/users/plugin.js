@@ -21,7 +21,6 @@ module.exports = function(options, imports, register) {
     
     app.welder.addMiddleWare(function(http){
         
-        
         http.use(function(req,res,next){
             if(req.session.user && !req.user){
                 db.getUser(req.session.user,function(err,user){
@@ -63,11 +62,23 @@ module.exports = function(options, imports, register) {
                 next : function(req,res,error,callback){//next is required in this object
                     if(!error)
                         db.getUser(req.params.id,function(err,user){
-                            for(var i in req.body){
-                                console.log(i);
+                            if(err) return callback(err);
+                            
+                            if(req.body.password && req.body.password2)
+                                user.userpass = req.body.password;
+                                
+                            var userPerm = user.permissions;
+                            for (var i in permissions) {
+                                if(req.body["permission_"+i]){
+                                    userPerm[i] = true;
+                                }else{ 
+                                    userPerm[i] = false;
+                                }
                             }
-                            //req.data = {id:req.params.id,user:user};
-                            callback(err);
+                            user.permissions = userPerm;
+                            user.save(function(err){
+                                callback(err);
+                            });
                         });
                     else callback();
                 }
@@ -102,12 +113,10 @@ module.exports = function(options, imports, register) {
                                 ],function(err,errStr){
                                     if(!err){
                                         req.session.user = user.userlogin;
-                                        callback();
+                                        callback(null,req.query.path);
                                     }else 
                                         callback(errStr);
                                 });
-                                //req.session.user = req.body.userlogin;
-                                //callback();
                             }else 
                                 callback(err);
                         });
@@ -147,9 +156,14 @@ module.exports = function(options, imports, register) {
                 if(type == "http" || !type){
                     return function(req,res,next){
                         if(!req.session.user) {
-                            res.redirect("/login");
+                            res.redirect("/login?path="+req.url);
                         }else{
-                            next();
+                            if(permission)
+                                if(req.user.permissions[permission])
+                                    next();
+                                else req.ejs(app.dir.template + "/restricted.html");
+                            else    
+                                next();
                         }
                     };
                 }else if(type == "socket"){
@@ -164,5 +178,6 @@ module.exports = function(options, imports, register) {
         }
     });
     plugin.registerPermission("admin",false,"Allow Admin Actions");
+    
 };
                     

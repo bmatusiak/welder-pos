@@ -17,21 +17,12 @@ module.exports = function(options, imports, register) {
                 else callback("app is setup so redirect to / ","/");
             }else 
                 callback(!app.settings.isUsersSetup || !app.settings.isSetup && req.session.user);
-            /*
-            if(app.settings.isUsersSetup && !req.session.user){
-                if(!app.settings.isSetup)
-                    redirectTo("/login");
-                else redirectTo("/");
-            }
-            return !app.settings.isUsersSetup || !app.settings.isSetup && req.session.user;
-            */
-            
         }));
         
         http.post('/setup',  app.Form.post(__dirname + "/setup.html",{
             "appSetupUser": {//req.body.formid
                 allow: function(req,res,next){
-                    next(null,!app.settings.isSetup)
+                    next(null,!app.settings.isSetup);
                 },
                 required : function(req,res,next){
                     next(null,[
@@ -70,42 +61,6 @@ module.exports = function(options, imports, register) {
                 }
             }
         }));
-        /*
-        http.app.post('/setup', function(req, res, next) {
-            if(main.settings.isSetup) next(); else{
-                if(req.body.formid == "appSetupUser"){
-                    if(req.body.username && req.body.userlogin &&  req.body.password && req.body.password2 && req.body.password == req.body.password2 ){
-                        imports.posEmployees.addEmployee(req.body.username,req.body.userlogin,req.body.password,null,function(err){
-                            if(!err){
-                                req.session.user = req.body.userlogin;
-                                
-                                main.settings.set("isUsersSetup","true",function(){
-                                    req.ejs(main.dir.template + "/redirect.html",{redirect:{path:"/setup"}});
-                                });
-                            }else renderSetupApp(req,res,err.toString());
-                        });
-                    }else{
-                        var errorString = "";
-                        if(!req.body.username)
-                            errorString +="User Name Must be Defined<br />";
-                        
-                        if(!req.body.userlogin)
-                            errorString +="User Login Must be Defined<br />";
-                        
-                        if(req.body.password != req.body.password2)
-                            errorString +="Password Must Match<br />";
-                            
-                        renderSetupApp(req,res,errorString);    
-                    }
-                }
-                if(req.body.formid == "appSetupPOS"){
-                    main.settings.set("isSetup","true",function(){
-                        req.ejs(main.dir.template + "/redirect.html",{redirect:{path:"/"}});
-                    });
-                }
-            }
-        });
-        */
     });
     
     register(null, {
