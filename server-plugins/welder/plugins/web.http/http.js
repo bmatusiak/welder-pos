@@ -23,7 +23,7 @@ module.exports = function(options, imports, register) {
         use:sub.use,
         get:sub.get,
         post:sub.post,
-        app:app,
+        app:sub.app,
         server:server,
         express:express,
         listen: function(port,ip,callback){

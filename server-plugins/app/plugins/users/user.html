@@ -4,7 +4,6 @@
 <body>
 	
 	<%- NAVBAR(false) %>
-	
 
 <div class="main">
     <div class="container">
@@ -44,7 +43,7 @@
         				
         				    <% 
         				    var permissionsShown = false;
-        				    for(var i in permissions){  
+        				    for(var i in req.data.permissions){  
         				        if(!permissionsShown){
             				        permissionsShown = true; %>
             				        <hr />
@@ -52,7 +51,7 @@
             				    <% } %>
         				        <div class="field">
                 					<input class="pull-right" type="checkbox" id="permission_<%- i %>" name="permission_<%- i %>" <% if(req.user.permissions[i]){%>checked="checked"<%}%> />
-                					<label for="permission_<%- i %>"><%- permissions[i].description %></label>
+                					<label for="permission_<%- i %>"><%- req.data.permissions[i].description %></label>
                 				</div> <!-- /password -->
         				    <% } %>
         				<hr />

@@ -5,80 +5,54 @@ function attach($app,arr){
         if(arr[i])
             $app.use.apply($app,arr[i]);
 }
+
 function argsToArr(Args){
     var args = [];
     for(var i = 0;Args.length >= i;i++)
-        if(Args[i])
+        if(Args[i]){
             args.push(Args[i]);
+        }
     return args;
 }
 
-module.exports = function (app,useFirst){
+module.exports = function (app){
     
-    if(!useFirst) 
-        useFirst = [];
+    var $app = express();
+    
+    var userage = app.app || app;
+    userage.use($app);
     
     return function(){
-        var middleware = [];
-        var midArgs = argsToArr(arguments);
-        
-        for(var i = 0;midArgs.length >= i;i++)
-            if(midArgs[i])
-                middleware.push([midArgs[i]]);
         
         var sub = {
+            app: $app,
+            
             sub:function(){
-                var $app = express();
-                    
-                var newSub = module.exports($app,middleware);
                 
-                app.use(function(req,res,next){
-                    attach($app,useFirst);
+                var newSub = module.exports(sub)();
                 
-                    $app(req,res,next);
-                });
-                return newSub.apply(newSub,arguments);
+                return newSub.use.apply(newSub,arguments);
             },
             use:function(){
-                var args = argsToArr(arguments);
+                var midArgs = argsToArr(arguments);
                 
-                if(args.length)
-                    middleware.push(args);
-                    
+                if(typeof midArgs[0] == "object")
+                    attach($app,midArgs[0]);
+                else
+                    $app.use.apply($app,midArgs);
+                
                 return sub;
             },
             get:function(){ 
-                var args = argsToArr(arguments);
-                                    
-                app.use(function(req,res,next){
-                    
-                    var $app = express();
-                    
-                    attach($app,useFirst);
-                    
-                    attach($app,middleware);
-                        
-                    $app.get.apply($app,args);
-                    
-                    $app(req,res,next);
-                });
+                var midArgs = argsToArr(arguments);
+                
+                $app.get.apply($app,midArgs);
+                
                 return sub;
             },
             post:function(){
-                var args = argsToArr(arguments);
-                                    
-                app.use(function(req,res,next){
-                    
-                    var $app = express();
-                    
-                    attach($app,useFirst);
-                    
-                    attach($app,middleware);
-                        
-                    $app.post.apply($app,args);
-                    
-                    $app(req,res,next);
-                });
+                $app.post.apply($app,argsToArr(arguments));
+                
                 return sub;
             }
         };

@@ -39,8 +39,8 @@ module.exports = function(options, imports, register) {
         http.get("/user/:id",plugin.checkUserAuth(),
         app.Form.get(__dirname + "/user.html",function(req,res,callback){
             db.getUser(req.params.id,function(err,user){
-                req.data = {id:req.params.id,user:user};
-                callback(null,null,{permissions:permissions});
+                req.data = {id:req.params.id,user:user,permissions:permissions};
+                callback();
             });
             return true;
         }));
@@ -53,9 +53,9 @@ module.exports = function(options, imports, register) {
                 required : function(req,res,next){
                     next(null,[
                         [req.params.id,"UserID Must be Defined"],
-                        [req.body.password && 
-                            req.body.password2 && 
-                            req.body.password == req.body.password2 || true,
+                        [(req.body.password && 
+                            req.body.password2) ? 
+                            req.body.password == req.body.password2 : true,
                             "Password & Password Confirm Must Match"],
                     ]);
                 },
@@ -80,7 +80,12 @@ module.exports = function(options, imports, register) {
                                 callback(err);
                             });
                         });
-                    else callback();
+                    else {
+                        db.getUser(req.params.id,function(err,user){
+                            req.data = {id:req.params.id,user:user,permissions:permissions};
+                            callback();
+                        });
+                    }
                 }
             }));
         
