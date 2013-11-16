@@ -4,10 +4,11 @@
     "dependencies": {
         "auto-architect":"https://github.com/bmatusiak/auto-architect/archive/master.tar.gz",
         "express": "*",
-        "architect": "*",
         "mongoose": "*",
         "ejs" : "*",
         "socket.io":"*",
-        "bcrypt":"*"
+        "bcrypt":"*",
+        "nodemailer":"*",
+        "serializer":"*"
     }
 }

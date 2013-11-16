@@ -16,6 +16,8 @@ module.exports = function(db) {
         username : { type: String, required: true },
         userlogin : { type: String, index: true, unique:true, required: true },
         userpass : { type: String, required: true },
+        useremail : { type: String, required: true },
+        
         created: { type: Date, default: Date.now },
         createdBy: String,
         loginAttempts: { type: Number, required: true, default: 0 },
@@ -138,13 +140,14 @@ module.exports = function(db) {
         });
     };
     
-    var newUser = function(name,login,password,whoCreatedLogin,callback){
+    var newUser = function(name,login,password,email,whoCreatedLogin,callback){
         Users.findOne({name: name}, function(err,user){
             if(!err && !user){
                 user = new Users();
                 user.username = name;
                 user.userlogin = login;
                 user.userpass = password;
+                user.useremail = email;
                 user.createdBy = whoCreatedLogin;
                 user.save(callback);
             }else if(!err && user !== null){

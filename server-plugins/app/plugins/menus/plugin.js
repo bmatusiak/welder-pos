@@ -13,17 +13,27 @@ module.exports = function(options, imports, register) {
                     {
                         icon:"icon-home",
                         link:"/",
-                        title:"Home"
+                        title:"Home",
+                        permission:"user"
                     }   
                 */
                 return menusPlugin;
             },
-            get:function(area){
+            get:function(area,req){
                 if(areas[area]){
-                    areas[area].sort(function(d,b,c){
+                    var retData = [];
+                    var data = areas[area]
+                    data.forEach(function(it){
+                        if(it.permission && req){
+                            if(req.user.permissions[it.permission])
+                            retData.push(it);
+                        }else
+                            retData.push(it);
+                    })
+                    retData.sort(function(d,b,c){
                         return d.sort - b.sort
                     });
-                    return areas[area];
+                    return retData;
                 }
                 return [];
             }

@@ -19,6 +19,7 @@ module.exports = function(options, imports, register) {
         */
     };
     
+    
     app.welder.addMiddleWare(function(http){
         
         http.use(function(req,res,next){
@@ -38,6 +39,11 @@ module.exports = function(options, imports, register) {
         
         http.get("/user/:id",plugin.checkUserAuth(),
         app.Form.get(__dirname + "/user.html",function(req,res,callback){
+            if(req.params.id == "new"){
+                plugin.checkUserAuth(null,"add_users")(req,res,function(){
+                    callback();
+                });
+            }else
             db.getUser(req.params.id,function(err,user){
                 req.data = {id:req.params.id,user:user,permissions:permissions};
                 callback();
@@ -48,19 +54,48 @@ module.exports = function(options, imports, register) {
         http.post("/user/:id",plugin.checkUserAuth(),
         app.Form.post(__dirname + "/user.html",{//req.body.formid
                 allow: function(req,res,callback){
-                    callback();
+                    if(req.params.id === "new"){
+                        plugin.checkUserAuth(null,"add_users")(req,res,function(){
+                            callback();
+                        });
+                    }else
+                        callback();
                 },
                 required : function(req,res,next){
-                    next(null,[
-                        [req.params.id,"UserID Must be Defined"],
-                        [(req.body.password && 
-                            req.body.password2) ? 
-                            req.body.password == req.body.password2 : true,
-                            "Password & Password Confirm Must Match"],
-                    ]);
+                    if(req.params.id === "new"){
+                        next(null,[
+                            [req.body.username,"Users Name must be defined"],
+                            [req.body.password && 
+                                req.body.password2 && 
+                                req.body.password == req.body.password2 ,
+                                "Password & Password Confirm Must Match"],
+                            [req.body.userlogin,"User Login mus be defined"]
+                        ]);
+                    }else
+                        next(null,[
+                            [req.params.id,"UserID Must be Defined"],
+                            [(req.body.password && 
+                                req.body.password2) ? 
+                                req.body.password == req.body.password2 : true,
+                                "Password & Password Confirm Must Match"],
+                        ]);
                 },
                 next : function(req,res,error,callback){//next is required in this object
                     if(!error)
+                        if(req.params.id === "new"){
+                            plugin.addUser(req.body.username,req.body.userlogin,req.body.password,req.body.useremail,req.user.userlogin,function(err){
+                                if(!err){
+                                    if(app.emailer.enabled){
+                                        app.emailer.sendTemplate(
+                                            app.emailer.templates+"/user_welcome.html",
+                                            req.body.useremail,
+                                            req.body
+                                        );
+                                    }
+                                    res.redirect("/user/"+req.body.userlogin);
+                                }else callback(err);
+                            });
+                        }else 
                         db.getUser(req.params.id,function(err,user){
                             if(err) return callback(err);
                             
@@ -81,6 +116,9 @@ module.exports = function(options, imports, register) {
                             });
                         });
                     else {
+                        if(req.params.id === "new"){
+                            callback();
+                        }else 
                         db.getUser(req.params.id,function(err,user){
                             req.data = {id:req.params.id,user:user,permissions:permissions};
                             callback();
@@ -150,8 +188,8 @@ module.exports = function(options, imports, register) {
             registerPermission:function(name,def,description){
                 permissions[name] = {description:description,value:def};
             },
-            addUser:function(name,login,password,whoCreatedLogin,callback){
-                db.newUser(name,login,password,whoCreatedLogin,function(err){
+            addUser:function(name,login,password,email,whoCreatedLogin,callback){
+                db.newUser(name,login,password,email,whoCreatedLogin,function(err){
                     callback(err);
                 });
             },
@@ -183,6 +221,8 @@ module.exports = function(options, imports, register) {
         }
     });
     plugin.registerPermission("admin",false,"Allow Admin Actions");
+    plugin.registerPermission("add_users",false,"Allow Adding new Users");
+    plugin.registerPermission("set_user_permissions",false,"Allow Settings User Permissions");
     
 };
                     

@@ -30,11 +30,13 @@ module.exports = function(options, imports, register) {
                         [req.body.password,"Password Must be Defined"],
                         [req.body.password2,"Password Confirm Must be Defined"],
                         [req.body.password == req.body.password2,"Password & Password Confirm Must Match"],
+                        [req.body.useremail,"User Email Must be Defined"],
+                        
                     ]);
                 },
                 next : function(req,res,error,callback){//next is required in this object
                     if(!error)
-                        app.users.addUser(req.body.username,req.body.userlogin,req.body.password,null,function(err){
+                        app.users.addUser(req.body.username,req.body.userlogin,req.body.password,req.body.useremail,null,function(err){
                             if(!err){
                                 req.session.user = req.body.userlogin;
                                 

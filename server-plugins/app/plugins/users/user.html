@@ -8,9 +8,10 @@
 <div class="main">
     <div class="container">
         <div class="row">
-            <div class="span4  offset4">
-                <%- widgetOpen("User: "+ req.data.id ) %>
-                    <form action="/user/<%- req.data.user.userlogin  %>" method="post" />
+            <%  if(req.data){ %>
+            <div class="span4">
+            <%- widgetOpen("User: "+ req.data.id ) %>
+                <form action="/user/<%- req.data.user.userlogin  %>" method="post" />
         			<h1></h1>		
         			
         			<div class="login-fields">
@@ -50,7 +51,7 @@
             				        <h5>Change Permissions</h5>
             				    <% } %>
         				        <div class="field">
-                					<input class="pull-right" type="checkbox" id="permission_<%- i %>" name="permission_<%- i %>" <% if(req.user.permissions[i]){%>checked="checked"<%}%> />
+                					<input class="pull-right" type="checkbox" id="permission_<%- i %>" name="permission_<%- i %>" <% if(req.data.user.permissions[i]){%>checked="checked"<%}%> />
                 					<label for="permission_<%- i %>"><%- req.data.permissions[i].description %></label>
                 				</div> <!-- /password -->
         				    <% } %>
@@ -65,9 +66,44 @@
         			</div> <!-- .actions -->
         			
         			
-        		</form>
-                <%- widgetClose() %>
-            </div>
+    	    	</form> 
+    		</div>
+    		<% } %>
+        		
+    		<%  if(req.params.id == "new"){ %>
+        		<div class="span4">
+            
+                    <%- widgetOpen("User: "+ req.params.id ) %>
+                    <form action="/user/<%- req.params.id  %>" method="post" />
+                        <p>Setup Account:</p>
+                        <div class="error" style="color:red;">
+                            <%- error || '' %>
+                        </div>
+                        <div class="field">
+                            <label for="username">Your Name:</label>
+                            <input type="text" id="username" name="username" value="<%- req.body.username || '' %>" placeholder="Your Name" class="login username-field" required="required" />
+                        </div>
+                        <div class="field">
+                            <label for="userlogin">Username:</label>
+                            <input type="text" id="userlogin" name="userlogin" value="<%- req.body.userlogin || '' %>" placeholder="Username" class="login username-field" required="required" />
+                        </div>
+                        <div class="field">
+        					<label for="useremail">Email:</label>
+        					<input type="text" id="useremail" name="useremail" value="<%- req.body.useremail || '' %>" placeholder="Email" required="required" />
+        				</div>
+                        <div class="field">
+                            <label for="password">Password:</label>
+                            <input type="password" id="password" name="password" value="" placeholder="Password" class="login password-field" required="required" />
+                        </div>
+                        <div class="field">
+                            <label for="password2">Password:</label>
+                            <input type="password" id="password" name="password2" value="" placeholder="Password Check" class="login password-field" required="required" />
+                        </div>
+                        <button class="button btn btn-warning pull-right">Setup</button>
+                    </form>
+                </div>
+    		<% } %>
+        	<%- widgetClose() %>
         </div>
     </div>
 </div>

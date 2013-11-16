@@ -15,10 +15,7 @@
 		    <%- widgetOpen("First Time Setup") %>
             <form action="/setup" method="post" />
 		    <input name="formid" value="appSetupUser" type="hidden" />
-			<h1></h1>		
 			
-			<div class="login-fields">
-				
 				<p>Setup your Admin account:</p>
 				
 				<div class="error" style="color:red;">
@@ -27,17 +24,22 @@
 				
 				<div class="field">
 					<label for="username">Your Name:</label>
-					<input type="text" id="username" name="username" value="<%- req.body.username || '' %>" placeholder="Your Name" class="login username-field" required="required" />
+					<input type="text" id="username" name="username" value="<%- req.body.username || '' %>" placeholder="Your Name" required="required" />
 				</div> <!-- /field -->
 				
 				<div class="field">
 					<label for="userlogin">Username:</label>
-					<input type="text" id="userlogin" name="userlogin" value="<%- req.body.userlogin || '' %>" placeholder="Username" class="login username-field" required="required" />
+					<input type="text" id="userlogin" name="userlogin" value="<%- req.body.userlogin || '' %>" placeholder="Username" required="required" />
+				</div> <!-- /field -->
+				
+				<div class="field">
+					<label for="useremail">Email:</label>
+					<input type="text" id="useremail" name="useremail" value="<%- req.body.useremail || '' %>" placeholder="Email" required="required" />
 				</div> <!-- /field -->
 				
 				<div class="field">
 					<label for="password">Password:</label>
-					<input type="password" id="password" name="password" value="" placeholder="Password" class="login password-field" required="required" />
+					<input type="password" id="password" name="password" value="" placeholder="Password" required="required" />
 				</div> <!-- /password -->
 				
 				<div class="field">
@@ -45,15 +47,9 @@
 					<input type="password" id="password" name="password2" value="" placeholder="Password Check" class="login password-field" required="required" />
 				</div> <!-- /password -->
 				
-			</div> <!-- /login-fields -->
-			
-			<div class="login-actions">
 							
 				<button class="button btn btn-warning btn-large">Setup Account</button>
 				
-			</div> <!-- .actions -->
-			
-			
 		</form>
 		<% } %>
 		

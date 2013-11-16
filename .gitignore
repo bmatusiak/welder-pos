@@ -20,3 +20,5 @@ mongod*
 redisd*
 
 mongo*
+
+*_.*

@@ -36,7 +36,7 @@
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
-                            <%  var USERDROPDOWNMENU = app.menus.get("USERDROPDOWN"); 
+                            <%  var USERDROPDOWNMENU = app.menus.get("USERDROPDOWN",req); 
                                 for(var i in USERDROPDOWNMENU){
                             %>
                             <li class="">
@@ -70,7 +70,7 @@
             </a>
             <div class="subnav-collapse collapse">
                 <ul class="mainnav">
-                    <%  var SUBNAVMENU = app.menus.get("SUBNAV"); 
+                    <%  var SUBNAVMENU = app.menus.get("SUBNAV",req); 
                         for(var i in SUBNAVMENU){
                     %>
                     <li class="">
