@@ -1,8 +1,12 @@
 <div class="widget stacked ">
                             
 <div class="widget-header">
+    <% if(args[1]){ %>
+    <span class="pull-right"><%- args[1] %></span>
+    <% } %>
     <h3><%- args[0] %></h3>
 </div>
 <!-- /widget-header -->
+<% if(!args[2]){ %>
 <div class="widget-content">
-    
+<% } %>

@@ -16,7 +16,7 @@ module.exports = function(db) {
         username : { type: String, required: true },
         userlogin : { type: String, index: true, unique:true, required: true },
         userpass : { type: String, required: true },
-        useremail : { type: String, required: true },
+        useremail : { type: String, required: true, unique:true},
         
         created: { type: Date, default: Date.now },
         createdBy: String,
@@ -166,9 +166,19 @@ module.exports = function(db) {
         });
     };
     
-    var listUser = function(callback){
-        Users.find(function(err,users){
-            callback(err,users);
+    var listUsers = function(query,page,perPage,callback){
+        Users.find(query)
+        .limit(perPage)
+        .skip(perPage * page)
+        .sort({date: 'desc'})
+        .exec(function(err, data) {
+            Users.count(query).exec(function(err, count) {
+                callback(null,{
+                    results: data,
+                    page: page,
+                    pages: count / perPage
+                });
+            });
         });
     };
     
@@ -176,7 +186,7 @@ module.exports = function(db) {
         auth:auth,
         newUser:newUser,
         getUser:getUser,
-        listUser:listUser
+        listUsers:listUsers
     };
 };
 

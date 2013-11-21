@@ -1,3 +1,9 @@
-<%- widgetOpen(args[0]) %>
-<%- args[1] %>
-<%- widgetClose() %>
+<% if(args[2]){ %>
+    <%- widgetOpen(args[0],args[1]) %>
+    <%- args[2] %>
+    <%- widgetClose() %>
+<% }else{ %>
+    <%- widgetOpen(args[0]) %>
+    <%- args[1] %>
+    <%- widgetClose() %>
+<% }%>

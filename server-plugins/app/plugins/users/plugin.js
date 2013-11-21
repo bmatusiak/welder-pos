@@ -23,6 +23,9 @@ module.exports = function(options, imports, register) {
     app.welder.addMiddleWare(function(http){
         
         http.use(function(req,res,next){
+            if(!app.settings.isUsersSetup && req.url !== "/setup"){
+                return res.redirect("/setup");
+            }
             if(req.session.user && !req.user){
                 db.getUser(req.session.user,function(err,user){
                     if(!err && user)
@@ -85,13 +88,7 @@ module.exports = function(options, imports, register) {
                         if(req.params.id === "new"){
                             plugin.addUser(req.body.username,req.body.userlogin,req.body.password,req.body.useremail,req.user.userlogin,function(err){
                                 if(!err){
-                                    if(app.emailer.enabled){
-                                        app.emailer.sendTemplate(
-                                            app.emailer.templates+"/user_welcome.html",
-                                            req.body.useremail,
-                                            req.body
-                                        );
-                                    }
+                                    
                                     res.redirect("/user/"+req.body.userlogin);
                                 }else callback(err);
                             });
@@ -184,12 +181,29 @@ module.exports = function(options, imports, register) {
                     title:"My Account",
                     sort:10000
                 });
+                
+                app.admin.
+                register("Users",function(req,res,next){
+                    plugin.listUsers({},req.query.page,50,function(err,users){
+                        req.ejs(__dirname+"/pages/users.html",{users:users})  ;  
+                    });
+                });
             },
             registerPermission:function(name,def,description){
                 permissions[name] = {description:description,value:def};
             },
+            getPermissions:function(callback){
+                callback(null,permissions);
+            },
             addUser:function(name,login,password,email,whoCreatedLogin,callback){
-                db.newUser(name,login,password,email,whoCreatedLogin,function(err){
+                db.newUser(name,login,password,email,whoCreatedLogin,function(err,user){
+                    if(!err && app.emailer.enabled){
+                        app.emailer.sendTemplate(
+                            app.emailer.templates+"/user_welcome.html",
+                            user.useremail,
+                            user
+                        );
+                    }
                     callback(err);
                 });
             },

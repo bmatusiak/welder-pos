@@ -9,8 +9,16 @@ module.exports = function(options, imports, register) {
     pos.app.menus.
     register("SUBNAV",{
         icon:"icon-file",
-        link:"/invoices",
+        link:"/invoices?type=invoice",
         title:"Invoices",
+        sort:2
+    });
+    
+    pos.app.menus.
+    register("SUBNAV",{
+        icon:"icon-file-alt",
+        link:"/invoices?type=order",
+        title:"Orders",
         sort:2
     });
 
@@ -65,7 +73,7 @@ module.exports = function(options, imports, register) {
             },
             httpConnection:function(http){
                 http.get('/invoices', pos.app.users.checkUserAuth(), function(req, res, next) {
-                    db.pageDocs({type: {'$ne': "draft" }},req.query.page-1 || 0,2,
+                    db.pageDocs({type: req.query.type || {'$ne': "draft" }},req.query.page-1 || 0,2,
                         function(err,docs){
                             if(!err){
                                 req.ejs(__dirname + "/invoices.html",{pos:pos,docs:docs});
