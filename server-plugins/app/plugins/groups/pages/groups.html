@@ -8,66 +8,68 @@
 <div class="main">
     <div class="container">
         <div class="row">
-            <%  if(req.params.action){ %>
-                <%  var groupname = req.data.group.groupname || "new"; %>
-        		<div class="span4">
-            
-                    <%- widgetOpen("Group: "+ groupname ) %>
-                    <form action="/admin/groups/<%- groupname  %>" method="post" />
-                        <div class="error" style="color:red;">
-                            <%- error || '' %>
-                        </div>
-                        <div class="field">
-                            <label for="groupname">Group Name:</label>
-                            <input type="text" id="groupname" name="groupname" value="<%- req.body.groupname || req.data.group.groupname || '' %>" placeholder="Group Name" required="required" />
-                        </div>
-                        
-                            <% 
-        				    var permissionsShown = false;
-        				    for(var i in req.data.permissions){  
-        				        if(!permissionsShown){
-            				        permissionsShown = true; %>
-            				        <hr />
+            <div class="span12">
+                <%  if(req.params.action){ %>
+                    <%  var groupname = req.data.group.groupname || "new"; %>
+            		<div class="span4">
+                
+                        <%- widgetOpen("Group: "+ groupname ) %>
+                        <form action="/admin/groups/<%- groupname  %>" method="post" />
+                            <div class="error" style="color:red;">
+                                <%- error || '' %>
+                            </div>
+                            <div class="field">
+                                <label for="groupname">Group Name:</label>
+                                <input type="text" id="groupname" name="groupname" value="<%- req.body.groupname || req.data.group.groupname || '' %>" placeholder="Group Name" required="required" />
+                            </div>
+                            
+                                <% 
+            				    var permissionsShown = false;
+            				    for(var i in req.data.permissions){  
+            				        if(!permissionsShown){
+                				        permissionsShown = true; %>
+                				        <hr />
+                				        <div class="field">
+                                        <label>Change Permissions:</label>
+                				    <% } %>
             				        <div class="field">
-                                    <label>Change Permissions:</label>
+                    					<input class="pull-right" type="checkbox" id="permission_<%- i %>" name="permission_<%- i %>" <% if(req.data.group.permissions && req.data.group.permissions[i]){%>checked="checked"<%}%> />
+                    					<label for="permission_<%- i %>"><%- req.data.permissions[i].description %>:</label>
+                    				</div> <!-- /password -->
+            				    <% } if(permissionsShown){ %>
+            				        </div>
             				    <% } %>
-        				        <div class="field">
-                					<input class="pull-right" type="checkbox" id="permission_<%- i %>" name="permission_<%- i %>" <% if(req.data.group.permissions && req.data.group.permissions[i]){%>checked="checked"<%}%> />
-                					<label for="permission_<%- i %>"><%- req.data.permissions[i].description %>:</label>
-                				</div> <!-- /password -->
-        				    <% } if(permissionsShown){ %>
-        				        </div>
-        				    <% } %>
-                        
-    				    <hr />
-                        <button class="button btn btn-warning pull-right">Setup</button>
-                    </form>
-                    <%- widgetClose() %>
-                </div>
-    		<% }else{ %>
-        		    <%- widgetOpen("Groups",'<a href="/admin/groups/new"><h3>New</h3></a>',true) %>
-        		    <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Group Name</th>
-                                <th>Permissions</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% for(var i in req.data.groups.results){ %>
-                            <tr>
-                                <td><%- req.data.groups.results[i].groupname %></td>
-                                <td> <%for(var j in req.data.groups.results[i].permissions){ if(req.data.groups.results[i].permissions[j]){%>
-                                <%- j %>, <% }} %></td>
-                                
-                                <td style="text-align:center;font-size:30px;"><a href="/admin/groups/<%- req.data.groups.results[i].groupname %>"><i class="icon-eye-open"></i></a></td>
-                            </tr>
-                            <% } %>
-                        </tbody>
-                    </table>
-        		    <%- widgetClose(true) %>
-            <% } %>
+                            
+        				    <hr />
+                            <button class="button btn btn-warning pull-right">Setup</button>
+                        </form>
+                        <%- widgetClose() %>
+                    </div>
+        		<% }else{ %>
+            		    <%- widgetOpen("Groups",'<a href="/admin/groups/new"><h3>New</h3></a>',true) %>
+            		    <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Group Name</th>
+                                    <th>Permissions</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for(var i in req.data.groups.results){ %>
+                                <tr>
+                                    <td><%- req.data.groups.results[i].groupname %></td>
+                                    <td> <%for(var j in req.data.groups.results[i].permissions){ if(req.data.groups.results[i].permissions[j]){%>
+                                    <%- j %>, <% }} %></td>
+                                    
+                                    <td style="text-align:center;font-size:30px;"><a href="/admin/groups/<%- req.data.groups.results[i].groupname %>"><i class="icon-eye-open"></i></a></td>
+                                </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+            		    <%- widgetClose(true) %>
+                <% } %>
+            </div>
         </div>
     </div>
 </div>

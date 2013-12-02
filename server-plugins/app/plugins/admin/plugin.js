@@ -7,7 +7,8 @@ module.exports = function(options, imports, register) {
     var adminPluginsPost = {};
     
     app.welder.addRequestParser(function(http){
-        http.sub(app.users.checkUserAuth(null,"admin")).get("/admin/:plugin?/:action?",function(req,res,next){
+        var adminOnly = http.sub(app.users.checkUserAuth(null,"admin"));
+        adminOnly.get("/admin/:plugin?/:action?",function(req,res,next){
             if(!req.params.plugin) req.params.plugin = "index";
             
             if(adminPlugins[req.params.plugin])
@@ -15,8 +16,9 @@ module.exports = function(options, imports, register) {
             else req.ejs(app.dir.template+"/error.html",{error:"Page '"+req.url+"' Not Found"});
         });
         
-        http.sub(app.users.checkUserAuth(null,"admin")).post("/admin/:plugin?/:action?",function(req,res,next){
+        adminOnly.post("/admin/:plugin?/:action?",function(req,res,next){
             if(!req.params.plugin) req.params.plugin = "index";
+            if(!req.params.action) req.params.action = false;
             
             if(adminPluginsPost[req.params.plugin])
                 adminPluginsPost[req.params.plugin](req,res,next);

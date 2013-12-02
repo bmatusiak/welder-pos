@@ -55,6 +55,20 @@
                 					<label for="permission_<%- i %>"><%- req.data.permissions[i].description %></label>
                 				</div> <!-- /password -->
         				    <% } %>
+        				    
+        				    <% 
+        				    var groupsShown = false;
+        				    for(var i in req.data.groups){  
+        				        if(!groupsShown){
+            				        groupsShown = true; %>
+            				        <hr />
+            				        <h5>Change Permissions</h5>
+            				    <% } %>
+        				        <div class="field">
+                					<input class="pull-right" type="checkbox" id="group_<%- i %>" name="group_<%- i %>" <% if(req.data.user.groups[i].groupname){%>checked="checked"<%}%> />
+                					<label for="group_<%- i %>"><%- i %></label>
+                				</div> <!-- /password -->
+        				    <% } %>
         				<hr />
         				
         			</div> <!-- /login-fields -->

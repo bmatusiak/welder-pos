@@ -2,7 +2,7 @@
 module.exports = function(passConfig){
     passConfig([
         
-        "./pos",
+        //"./pos",
         
         {
             packagePath:"./app",

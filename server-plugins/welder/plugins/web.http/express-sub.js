@@ -22,37 +22,45 @@ module.exports = function (app){
     var userage = app.app || app;
     userage.use($app);
     
-    return function(){
+    return function(middlewares){
+        if(!middlewares) middlewares = [];
         
         var sub = {
             app: $app,
             
             sub:function(){
+                var mw = [];
                 
-                var newSub = module.exports(sub)();
+                var Args = argsToArr(arguments);
                 
-                return newSub.use.apply(newSub,arguments);
+                for(var i = 0;Args.length >= i;i++)
+                    if(Args[i]){
+                        mw.push(Args[i]);
+                    }
+                    
+                return module.exports(sub)(mw);
             },
             use:function(){
-                var midArgs = argsToArr(arguments);
+                var Args = argsToArr(arguments);
                 
-                if(typeof midArgs[0] == "object")
-                    attach($app,midArgs[0]);
-                else
-                    $app.use.apply($app,midArgs);
+                $app.use.apply($app,Args);
                 
                 return sub;
             },
-            get:function(){ 
-                var midArgs = argsToArr(arguments);
-                
-                $app.get.apply($app,midArgs);
-                
+            get:function(A,B,C){ 
+                if(C)
+                    $app.get.call($app,A,[].concat(middlewares,B),C);
+                else 
+                    $app.get.call($app,A,middlewares,B);
+                    
                 return sub;
             },
-            post:function(){
-                $app.post.apply($app,argsToArr(arguments));
-                
+            post:function(A,B,C){
+                if(C)
+                    $app.post.call($app,A,[].concat(middlewares,B),C);
+                else 
+                    $app.post.call($app,A,middlewares,B);
+                  
                 return sub;
             }
         };

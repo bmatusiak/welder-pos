@@ -49,7 +49,7 @@ module.exports = function(options, imports, register) {
     };
     
     new AppSettings(function(settings){
-        app.users.registerPermission("pos_settings",false,"Allow Editing POS Settings");
+        
         
         //update settigns per page request
         app.welder.addMiddleWare(function(http){
@@ -59,16 +59,20 @@ module.exports = function(options, imports, register) {
                 });
             });
         });
+        
         app.welder.addRequestParser(function(http){
-            http.get("/pos/settings",pos.app.users.checkUserAuth(null,"pos_settings"),function(req, res, next) {
+            var scope = app.users.registerPermission("pos_settings",false,"Allow Editing POS Settings");
+        
+            scope
+            .get("/pos/settings",function(req, res, next) {
                 req.ejs(__dirname + "/settings.html",
                     {
                         settings:pos.settings,
                         settingDescription:settingDescription,
                         settingPlugin:settingPlugin
                     });
-            });
-            http.post("/pos/settings",pos.app.users.checkUserAuth(),function(req, res, next) {
+            })
+            .post("/pos/settings",function(req, res, next) {
                 settings.set(req.body.settingName,req.body.settingValue,function(){
                     res.redirect("/pos/settings");    
                 });
@@ -80,7 +84,8 @@ module.exports = function(options, imports, register) {
         register("USERDROPDOWN",{
             link:"/pos/settings",
             title:"POS Settings",
-            sort:1000
+            sort:1000,
+            permission:"pos_settings"
         });
         
         register(null, {

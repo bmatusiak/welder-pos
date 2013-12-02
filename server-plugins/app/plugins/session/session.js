@@ -5,7 +5,7 @@ module.exports = function(options,imports,register){
     var secret = options.secret || process.env.SESSION_SECRET || "CHANGEME";
     
     imports.app.welder.addMiddleWare(function(http){
-         http.use(http.express.session(
+        imports.app.welder.http.use(imports.app.welder.http.express.session(
             {
                 key: cookieID,   
                 secret: secret, 
@@ -13,7 +13,7 @@ module.exports = function(options,imports,register){
                 cookie: {
                     path: '/',
                     httpOnly: true,
-                    maxAge: 1000 * 60 * 60 * 24 //one day(ish)  
+                    maxAge: 1000 * 60 * 60 * 24 //one day
                 }
             }
         ));

@@ -9,7 +9,9 @@ module.exports = function(options, imports, register) {
     http.cookieHandler = http.express.cookieParser(options.clientSecret);
     //compress everything
     http.app.use(http.express.compress());
-    
+    http.app.use(http.express.bodyParser());
+    http.app.use(http.cookieHandler);
+        
     var __StaticMountPaths = [];
     function _StaticFiles(){
         var Path,mount,name;
@@ -38,8 +40,6 @@ module.exports = function(options, imports, register) {
     
     var __Middlewares = [];
     function _Middlewares(){
-        http.app.use(http.express.bodyParser());
-        http.app.use(http.cookieHandler);
         
         for(var i in __Middlewares){
             __Middlewares[i](http);

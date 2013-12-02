@@ -5,8 +5,16 @@ module.exports = function(options, imports, register) {
     var app = imports.app;
     var db = require("./db.groups.js")(app.db);
     
+    var hardGroups = {};
+    
     register(null, {
         "groups": {
+            register:function(groupName,permissions){
+                if(typeof permissions == "string")
+                    permissions = [permissions];
+                    
+                hardGroups[groupName] = permissions;
+            },
             init:function(){
                 app.admin.register("groups",function(req,res,next){
                     if(req.params.action){

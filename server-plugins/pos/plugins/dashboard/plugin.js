@@ -17,10 +17,11 @@ module.exports = function(options, imports, register) {
         "dashboard": {
             moduleDir:__dirname+"/static",
             httpConnection:function(http){
-                http.sub(pos.app.users.checkUserAuth()).get('/home', function(req, res, next) {
-                    
+                http.sub(function(req,res,next){
+                    next();
+                },
+                pos.app.users.checkUserAuth()).get('/home', function(req, res, next) {
                     req.ejs(__dirname + "/dashboard.html");
-                    
                 });
             },
             socketUserConnection:function($socket){

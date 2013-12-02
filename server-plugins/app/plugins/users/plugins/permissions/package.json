@@ -1,0 +1,16 @@
+{
+    "name": "app.users",
+    "version": "0.0.1",
+
+    "main": "./plugin.js",
+
+    "plugin": {
+        "provides": [
+            "permissions"
+        ],
+        "consumes":[
+            "users",
+            "db"
+        ]
+    }
+}
