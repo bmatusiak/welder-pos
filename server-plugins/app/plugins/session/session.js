@@ -4,8 +4,10 @@ module.exports = function(options,imports,register){
     var cookieID = options.key || "session.key";
     var secret = options.secret || process.env.SESSION_SECRET || "CHANGEME";
     
+    var session = require('express-session')
+    
     imports.app.welder.addMiddleWare(function(http){
-        imports.app.welder.http.use(imports.app.welder.http.express.session(
+        imports.app.welder.http.use(session(
             {
                 key: cookieID,   
                 secret: secret, 

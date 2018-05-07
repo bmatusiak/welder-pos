@@ -3,8 +3,8 @@
 module.exports = function(options, imports, register) {
     
     var app = imports.app;
-    
-    var connectUtil = require('express/node_modules/connect/lib/utils.js');
+    var cookieParser = require('cookie-parser');
+    //var connectUtil = require('connect/lib/utils.js');
     var Events = require('events');
     var EventEmitter = Events.EventEmitter;
     var $socketIO = new EventEmitter();
@@ -30,7 +30,7 @@ module.exports = function(options, imports, register) {
         }
     }
     
-    io.configure(function() {
+    //io.configure(function() {
         io.set("transports", ["xhr-polling"]);
         io.set("polling duration", 10);
         io.set("log level", 0);
@@ -41,12 +41,14 @@ module.exports = function(options, imports, register) {
                 redisClient: Client
             }));
         }
-    });
+    //});
     
     
     io.set('authorization', function(data, accept) {
         http.cookieHandler(data,null,function(){
-            data.sessionID = connectUtil.parseSignedCookie(data.signedCookies[session.cookieID] || data.cookies[session.cookieID], session.secret);
+            data.sessionID = cookieParser.signedCookie(data.signedCookies[session.cookieID] || data.cookies[session.cookieID], session.secret);
+
+            //data.sessionID = connectUtil.parseSignedCookie(data.signedCookies[session.cookieID] || data.cookies[session.cookieID], session.secret);
             session.store.load(data.sessionID, function(err, $session) {
                 if (err || !$session) return accept('Error: No Session Found', true);
                 

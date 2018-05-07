@@ -34,7 +34,7 @@ module.exports = function(Mongoose, Schema) {
     Session = Mongoose.model(SessionCollection, SessionSchema);
     defaultCallback = function(err) {};
     _SessionStore = (function() {
-        __extends(SessionStore, require('express/node_modules/connect').session.Store);
+        __extends(SessionStore, require('express-session').Store);
 
         function SessionStore(options) {
             var _ref;

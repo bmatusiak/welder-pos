@@ -22,3 +22,4 @@ redisd*
 mongo*
 
 *_.*
+.c9

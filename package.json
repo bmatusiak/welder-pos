@@ -9,6 +9,10 @@
         "socket.io":"*",
         "bcrypt":"*",
         "nodemailer":"*",
-        "serializer":"*"
+        "serializer":"*",
+        "express-session":"*",
+        "cookie-parser":"*",
+        "compression":"*",
+        "body-parser":"*"
     }
 }

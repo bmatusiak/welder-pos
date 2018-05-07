@@ -6,10 +6,10 @@ module.exports = function(options, imports, register) {
     var started = false;
     
     var http = imports.http = require("./plugins/web.http/http.js")();
-    http.cookieHandler = http.express.cookieParser(options.clientSecret);
+    http.cookieHandler = require("cookie-parser")(options.clientSecret);
     //compress everything
-    http.app.use(http.express.compress());
-    http.app.use(http.express.bodyParser());
+    http.app.use(require("compression")());
+    http.app.use(require("body-parser")());
     http.app.use(http.cookieHandler);
         
     var __StaticMountPaths = [];

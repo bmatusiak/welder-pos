@@ -68,10 +68,8 @@ module.exports = function(options, imports, register) {
         return this.staticOptions[name];
     };
     function getOptions(args){
-        if(args.callee.caller.caller.caller.caller === ejs.render){
-            return args.callee.caller.caller.arguments[0];
-        }
-        return false;
+        
+        return args.callee.caller.arguments[0];
     }
     EJSfile.prototype.use = function(elementsDir,returnObject) {
         var _self = this;
