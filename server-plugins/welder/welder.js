@@ -9,7 +9,12 @@ module.exports = function(options, imports, register) {
     http.cookieHandler = require("cookie-parser")(options.clientSecret);
     //compress everything
     http.app.use(require("compression")());
-    http.app.use(require("body-parser")());
+    
+    var bodyParser = require("body-parser");
+    http.app.use(bodyParser.urlencoded({ extended: false }));
+    http.app.use(bodyParser.json());
+
+
     http.app.use(http.cookieHandler);
         
     var __StaticMountPaths = [];
@@ -68,7 +73,7 @@ module.exports = function(options, imports, register) {
         },
         addStaticFile:function(mountFile,File){
             http.app.use(mountFile, function(req,res){
-                res.sendfile(File);
+                res.sendFile(File);
             });
             console.log("Static Mounted",mountFile,"=",File);
         },

@@ -190,10 +190,10 @@ define(function(require, exports, module) {
                     socket.emit("invoice-new",doc,function(err,newDoc){
                         if(doc.type == "draft")
                             clearDoc(function(){
-                                document.location = "/invoices/"+newDoc._id;    
+                                document.location = "/invoices/"+newDoc.uid;    
                             });
                         else    
-                            document.location = "/invoices/"+newDoc._id;
+                            document.location = "/invoices/"+newDoc.uid;
                     });
                 });
             });
@@ -226,6 +226,10 @@ define(function(require, exports, module) {
             
             if(!loaded){
                 socket.emit("invoice-load",docData.docid,function(err,doc){
+                    
+                    if(!doc)
+                        return;
+                        
                     if(doc.data.nextUnitID)
                         nextUnitID = doc.data.nextUnitID;
                     

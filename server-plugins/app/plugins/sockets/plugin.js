@@ -31,16 +31,16 @@ module.exports = function(options, imports, register) {
     }
     
     //io.configure(function() {
-        io.set("transports", ["xhr-polling"]);
-        io.set("polling duration", 10);
-        io.set("log level", 0);
-        if(options.useRedis){
+        //io.set("transports", ["xhr-polling"]);
+        //io.set("polling duration", 10);
+        //io.set("log level", 0);
+        /*if(options.useRedis){
             io.set('store', new RedisStore({
                 redisPub: pub,
                 redisSub: sub,
                 redisClient: Client
             }));
-        }
+        }*/
     //});
     
     
@@ -52,16 +52,23 @@ module.exports = function(options, imports, register) {
             session.store.load(data.sessionID, function(err, $session) {
                 if (err || !$session) return accept('Error: No Session Found', true);
                 
-                data.session = $session;
+                data.headers.session = $session;
                 return accept(null, true);
             });
         });
         
     });
     
+    /*
+    io.use(function(socket, a, b){
+        console.log(".")
+        
+    })
+    */
+    
     function AppSocket(__socket){
         var _self = this;
-        this.session = __socket.handshake.session;
+        this.session = __socket.handshake.headers.session;
         
         this.emit = function(){//server -->> client
             __socket.emit.apply(__socket,arguments);
@@ -86,6 +93,10 @@ module.exports = function(options, imports, register) {
     }
     
     io.sockets.on('connection', function(__socket) {
+        
+        //$socketIO.emit("connect",__socket);
+        
+        
         var $socket = new AppSocket(__socket);
         
         $socketIO.emit("connect",$socket);
@@ -105,7 +116,8 @@ module.exports = function(options, imports, register) {
                     appSocketUserFunctions[j](_$socket);
                 }
                 _$socket.emit("socket-ready");
-            }else _$socket.emit("socket-ready");
+            }else 
+                _$socket.emit("socket-ready");
             
         });
         

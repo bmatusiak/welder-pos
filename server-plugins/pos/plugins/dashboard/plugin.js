@@ -32,13 +32,14 @@ module.exports = function(options, imports, register) {
                                 callback(err,customers.results);
                             });
                 });
+                /*
                 $socket.on('dashboard-invoices',function(page,callback){
                     if(!callback && page && typeof(page) == "function")callback = page;
                     pos.invoices.db.pageDocs({type: {'$ne': "draft" }},page ? page-1 : 0 || 0,50,
                         function(err,invoices){
                             callback(err,invoices.results);
                         });
-                });
+                });*/
             }
         }
     });

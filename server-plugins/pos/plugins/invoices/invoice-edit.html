@@ -85,8 +85,7 @@
                         <div class="widget stacked ">
                         
                             <div class="widget-header">
-                                <a class="pull-right" href="/invoices/edit/<%- invoiceid %>">Edit</a>
-                                <h3>Invoice</h3>
+                                <h3>Invoice: <%- invoiceid %></h3>
                             </div>
                             <!-- /widget-header -->
                             <div class="widget-content">
@@ -96,7 +95,6 @@
                                         <table width="100%">
                                             <tr>
                                                 <td id="customerInfo">
-                                                    
                                                     
                                                 </td>
                                             </tr>
@@ -130,9 +128,9 @@
                                         <tbody class="unit-container">
                                         
                                         <tr class="unitsbottomRow">
-                                            <!-- <td colspan="6">
+                                            <td colspan="6">
                                                  <a class="button btn btn-small" id="addBlank"><i class="icon-plus"></i></a>
-                                            </td>-->
+                                            </td>
                                         </tr>
                                         <thead width="100%">
                                             <tr>
@@ -154,7 +152,6 @@
                                             <td class="ttax"></td>
                                             <td class="total"></td>
                                         </tr>
-                                        <!--
                                         <tr class="actions">
                                             <td colspan="6">
                                                 <div class="page-actions pull-right">
@@ -172,10 +169,9 @@
                                                 		<button class="openInvoiceBtn button btn btn-info btn-large">Set Invoice</button>&nbsp;
                                                     		
                                             		
-                                            	</div>
+                                            	</div> <!-- .actions -->
                                             </td>
                                         </tr>
-                                        -->
                                         </tbody>
                                     </table>
                                     
@@ -232,7 +228,7 @@
         </style>
         <script src="/js/libs/bootstrap.min.js"></script>
         
-        <autoload style="display:none" mod="invoices" modFile="invoices-view" data-invoiceid="<%- invoiceid %>"></autoload>
+        <autoload style="display:none" mod="invoices" modFile="invoices-edit" data-invoiceid="<%- invoiceid %>"></autoload>
         
         <div id="confirm" class="modal hide fade" role="dialog">
             <div class="modal-header">

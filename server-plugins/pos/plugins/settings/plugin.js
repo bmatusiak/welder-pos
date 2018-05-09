@@ -61,7 +61,7 @@ module.exports = function(options, imports, register) {
         });
         
         app.welder.addRequestParser(function(http){
-            var scope = app.users.registerPermission("pos_settings",false,"Allow Editing POS Settings");
+            var scope = app.users.permissions.register("pos_settings",false,"Allow Editing POS Settings");
         
             scope
             .get("/pos/settings",function(req, res, next) {

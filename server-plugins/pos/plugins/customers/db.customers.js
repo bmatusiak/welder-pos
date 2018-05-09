@@ -6,8 +6,8 @@ module.exports = function(db) {
     
     var collection = "customers";
     
-    var settingSchema = new Schema({
-        _id : { type: Number, index: true, unique:true },
+    var customerSettingSchema = new Schema({
+        uid : { type: Number, index: true},
         
         name : String,
         address : String,
@@ -25,6 +25,7 @@ module.exports = function(db) {
         created: Date,
         createdBy: String,
     });
+    
     /*
 name
 address
@@ -34,7 +35,7 @@ zip
 email
 phone
 */
-    var Customers = db.model(collection, settingSchema);
+    var Customers = db.model(collection, customerSettingSchema);
     
     var newCustomer = function(
         name,
@@ -50,7 +51,7 @@ phone
             if(!err && !customer){
                 db.counter("Customers",1000,function(count){
                     customer = new Customers();
-                    customer._id = count;
+                    customer.uid = count;
                     customer.name = name;
                     customer.address = address;
                     customer.city = city;
@@ -69,7 +70,7 @@ phone
     };
     
     var getCustomer = function(id,callback){
-        Customers.findOne({_id: id}, function(err,customer){
+        Customers.findOne({uid: id}, function(err,customer){
             if(!err && !customer){
                 callback("not exist");
             }else if(!err && customer !== null){

@@ -25,7 +25,6 @@
                                 <table class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
-                                            <th>Type</th>
                                             <th>Customer Name</th>
                                             <th>Date Created</th>
                                             <th>Total</th>
@@ -35,11 +34,10 @@
                                     <tbody>
                                         <% for(var i in docs.results){ %>
                                         <tr>
-                                            <td><%- docs.results[i].type %></td>
                                             <td><%- docs.results[i].customer.name %></td>
                                             <td><%- docs.results[i].created %></td>
                                             <td><%- docs.results[i].data.total.toFixed(2) %></td>
-                                            <td><a href="/invoices/<%- docs.results[i]._id %>" style="font-size:30px;padding-top: 7px;"><i class="icon-edit"></i></a></td>
+                                            <td><a href="/invoices/view/<%- docs.results[i].invoiceid %>" style="font-size:30px;padding-top: 7px;"><i class="icon-edit"></i></a></td>
                                         </tr>
                                         <% } %>
                                     </tbody>
@@ -53,6 +51,8 @@
             <!-- /container -->
         </div>
         <!-- /main -->
+        <autoload style="display:none" mod="invoices"></autoload>
+        
         <script src="/js/libs/jquery-ui-1.10.0.custom.min.js"></script>
         <script src="/js/libs/bootstrap.min.js"></script>
     </body>

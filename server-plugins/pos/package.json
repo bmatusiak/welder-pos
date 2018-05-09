@@ -6,7 +6,7 @@
 
     "plugin": {
         "provides": [
-            "pos"
+            
         ],
         "consumes": [
             "app"

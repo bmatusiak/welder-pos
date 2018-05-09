@@ -5,6 +5,7 @@ module.exports = function(options, imports, register) {
     var app = imports.app;
     
     app.plugin("pos",__dirname+"/plugins",function(pos,plugins){
+        delete pos.pos;
         app.ejs.staticOption("pos",pos);
         pos.elements = {};
         for(var i in plugins){

@@ -23,6 +23,8 @@ module.exports = function(passConfig){
         
         "./welder"
         
+        ,"./pos"
+        
     ]);
 };
 

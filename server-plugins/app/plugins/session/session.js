@@ -16,7 +16,9 @@ module.exports = function(options,imports,register){
                     path: '/',
                     httpOnly: true,
                     maxAge: 1000 * 60 * 60 * 24 //one day
-                }
+                },
+                resave: true,
+                saveUninitialized: true
             }
         ));
     });

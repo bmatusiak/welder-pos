@@ -4,14 +4,16 @@ module.exports = function(db) {
     
     var Schema = db.Schema;
     
-    var collection = "invoiceDocs";
+    var collectionName = "invoices";
+    
+    var taxPercentage = 0.065
     
     var modelSchema = new Schema({
-        id : Number,
+        invoiceid : { type: Number, index: true},
         
         // _id is a generated mongodb ObjectID
         
-        customer : { type: Number, ref: 'customers' },
+        customer : { type: String, ref: 'customers' },
         
         locked: Boolean,
         calculated: Boolean,
@@ -21,8 +23,8 @@ module.exports = function(db) {
         docData: String,
         //data:VIRTUAL, gets and sets docData based on type
         
-        parent: { type: Schema.Types.ObjectId, ref: collection },
-        child: { type: Schema.Types.ObjectId, ref: collection },
+        //parent: { type: Schema.Types.ObjectId, ref: collectionName },
+        //child: { type: Schema.Types.ObjectId, ref: collectionName },
         
         created: Date,
         createdBy: String,
@@ -41,6 +43,7 @@ module.exports = function(db) {
     
     modelSchema.set('toJSON', { getters: true, virtuals: true });
     
+    /*
     modelSchema.pre('save', function(next) {
         var doc = this;
         
@@ -53,8 +56,9 @@ module.exports = function(db) {
         
         next();
     });
+    */
     
-    var InvoiceDocs = db.model(collection, modelSchema);
+    var InvoiceDocs = db.model(collectionName, modelSchema);
     
     var getDoc = function(query,callback){
         InvoiceDocs.findOne(query)
@@ -72,47 +76,30 @@ module.exports = function(db) {
         docObj,
         whoCreatedLogin,
         callback){
-            getDoc({_id:docObj._id},function(err,doc){
+            //getDoc({invoiceid:docObj.invoiceid},function(err,doc){
                 var newDoc;
-                if(doc && docObj.type !== "draft" && !doc.child){
+                
                     newDoc = new InvoiceDocs();
-                    newDoc.parent = doc._id;
-                    newDoc.customer = doc.customer;
-                    newDoc.type = docObj.type;
-                    newDoc.data = doc.data;
-                    newDoc.created = new Date();
-                    newDoc.createdBy = whoCreatedLogin;
-                    if(newDoc.type === "invoice")
-                        db.counter("Invoices",1,function(count){
-                            newDoc.id = count;
-                            save();
-                        });      
-                    else 
-                        save();
-                } else if(!doc && docObj.type == "draft"){
-                    newDoc = new InvoiceDocs();
+                    //newDoc.parent = doc.invoiceid;
                     newDoc.customer = docObj.customer;
                     newDoc.data = docObj.data;
-                    newDoc.type = docObj.type;
                     newDoc.created = new Date();
                     newDoc.createdBy = whoCreatedLogin;
-                    save();
-                } else
-                    callback("New Document Failed to Create",docObj);
-                
-                function save(){
-                    newDoc.save(function(err,_doc){
-                        getDoc({_id:_doc._id},function(err,__doc){
+                    db.counter(collectionName,1,function(count){
+                        newDoc.invoiceid = count;
+                        save(newDoc);
+                    });      
+                    
+                    
+                function save(newDoc){
+                    newDoc.save().then(function(_doc){
+                        getDoc({invoiceid:_doc.invoiceid},function(err,__doc){
                             callback(err,__doc);
                         });
-                        if(doc && doc.type !== "draft"){
-                            doc.child = _doc._id;
-                            doc.save();
-                        }
                     });
                 }
                 
-            });
+            //});
     };
     
     var listDocs = function(query,callback){
@@ -155,12 +142,12 @@ module.exports = function(db) {
             for(var j in unitData.attribute){
                 unitData.price += parseFloat(unitData.attribute[j].productPrice) * (parseFloat(unitData.attribute[j].productQuanity)* parseFloat(unitData.productQuanity));
             }
-            unitData.tax = unitData.price * 0.06;
-            unitData.total = unitData.price+(unitData.price * 0.06);
+            unitData.tax = unitData.price * taxPercentage;
+            unitData.total = unitData.price+(unitData.price * taxPercentage);
             
             docObj.stotal += unitData.price;
-            docObj.ttotal += unitData.price * 0.06;
-            docObj.total  += unitData.price+(unitData.price * 0.06);
+            docObj.ttotal += unitData.price * taxPercentage;
+            docObj.total  += unitData.price+(unitData.price * taxPercentage);
         }
         return docObj;
     };

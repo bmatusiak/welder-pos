@@ -1,115 +1,98 @@
 "use strict";
 
 module.exports = function(options, imports, register) {
-    
+
     var pos = imports.pos;
-    
+
     var db = require("./db.invoices.js")(pos.app.db);
-    
+
     pos.app.menus.
-    register("SUBNAV",{
-        icon:"icon-file",
-        link:"/invoices?type=invoice",
-        title:"Invoices",
-        sort:2
-    });
-    
-    pos.app.menus.
-    register("SUBNAV",{
-        icon:"icon-file-alt",
-        link:"/invoices?type=order",
-        title:"Orders",
-        sort:2
+    register("SUBNAV", {
+        icon: "icon-file",
+        link: "/invoices",
+        title: "Invoices",
+        sort: 2
     });
 
     register(null, {
         "invoices": {
-            db:db,
-            moduleDir:__dirname+"/static",
-            socketUserConnection:function(socket){
-                socket.on("invoice-new",function(doc,callback){
-                    if(!doc.type) doc.type == "draft";
-                    
-                    if(doc.type == "draft")
-                        doc.type = "order";
-                    else if(doc.type == "order")
-                        doc.type = "invoice";
-                    
-                    db.newDoc(doc,socket.session.user,function(err,doc){
-                        callback(err,doc);
-                    });
-                });
-                socket.on("invoice-save",function(docID,docData,callback){
-                    db.getDoc({_id:docID},function(err,doc){
-                        if(doc.locked) return callback("locked",doc);
+            db: db,
+            moduleDir: __dirname + "/static",
+            socketUserConnection: function(socket) {
+                socket.on("invoice-save", function(invoiceid, docData, callback) {
+                    db.getDoc({ invoiceid: invoiceid }, function(err, doc) {
                         doc.data = docData;
-                        doc.save(function(err,doc){
-                            if(callback) callback(err,doc);
+                        doc.save(function(err, doc) {
+                            if (callback) callback(err, doc);
                         });
                     });
                 });
-                socket.on("invoice-load",function(docID,callback){
-                    db.getDoc({_id:docID},function(err,doc){
-                        if(callback) callback(err,doc);    
+                socket.on("invoice-load", function(invoiceid, callback) {
+                    db.getDoc({ invoiceid: invoiceid }, function(err, doc) {
+                        if (callback) callback(err, doc);
                     });
                 });
-                socket.on("invoice-calculate",function(docData,callback){
-                    callback(null,db.calcData(docData));
+                socket.on("invoice-calculate", function(docData, callback) {
+                    callback(null, db.calcData(docData));
                 });
-                
+
                 //************************ 
-                socket.on("invoice-product-lookup",function(name,model,callback){
+                socket.on("invoice-product-lookup", function(name, model, callback) {
                     var query = {};
-                    if(name){
+                    if (name) {
                         query.name = new RegExp(name.split(" ").join("|"), "gi");
                     }
-                    if(model)
+                    if (model)
                         query.model = model;
-                      
-                    pos.products.db.listProducts(query,function(err,data){
-                        if(callback) callback(err,data);    
+
+                    pos.products.db.listProducts(query, function(err, data) {
+                        if (callback) callback(err, data);
                     });
-                }); 
+                });
             },
-            httpConnection:function(http){
+            httpConnection: function(http) {
+                //list newist invocies
                 http.get('/invoices', pos.app.users.checkUserAuth(), function(req, res, next) {
-                    db.pageDocs({type: req.query.type || {'$ne': "draft" }},req.query.page-1 || 0,2,
-                        function(err,docs){
-                            if(!err){
-                                req.ejs(__dirname + "/invoices.html",{pos:pos,docs:docs});
-                            }else {
-                                req.ejs(pos.app.dir.template + "/error.html",{error:err});
+                    db.pageDocs({ /*type: req.query.type || {'$ne': "draft" }*/ }, req.query.page - 1 || 0, 2,
+                        function(err, docs) {
+                            if (!err) {
+                                req.ejs(__dirname + "/invoices.html", { pos: pos, docs: docs });
+                            }
+                            else {
+                                req.ejs(pos.app.dir.template + "/error.html", { error: err });
                             }
                         });
                 });
-                
-                http.get('/invoices/:id/:customerid?',
-                    pos.app.users.checkUserAuth(), 
-                    pos.app.Form.get(__dirname + "/invoice-view.html",{next:function(req,res,callback){
-                        if(req.params.id == "new"){
+                //invoice actions, new, view, edit, void
+                http.get('/invoices/:action/:invoiceid?', pos.app.users.checkUserAuth(), function(req, res, next) {
+
+                    switch (req.params.action) {
+                        case 'new':
+                            //if new "req.params.invoiceid" should be customer hash
                             /*
-                            pos.customers.db.getCustomer(req.params.customerid,function(err,customer){
-                                callback(err,{customer:customer});
-                            });
+                                Generate new invoice, then redirect to /edit/invoiceid
                             */
-                            db.getDoc({customer:req.params.customerid,type:"draft"},function(err,doc){
-                                if(!doc && err){
-                                    db.newDoc({data:{},type:"draft",customer:req.params.customerid},req.session.user,function(err,doc){
-                                        callback(err,{doc:doc});
-                                    });
-                                }else 
-                                    callback(err,{doc:doc});
+                            db.newDoc({ data: {}, customer: req.params.invoiceid }, req.session.user, function(err, doc) {
+                                req.ejs(__dirname + "/invoice-new.html", { pos: pos, invoiceid: doc.invoiceid });
                             });
-                        }else{
-                            db.getDoc({_id:req.params.id},function(err,doc){
-                                //console.log(doc)
-                                if(err){
-                                    req.ejs(pos.app.dir.template + "/error.html",{error:err});
-                                }else
-                                callback(err,{doc:doc});
-                            });
-                        }
-                    }}));
+
+                            break;
+                        case 'edit':
+                            req.ejs(__dirname + "/invoice-edit.html", { pos: pos, invoiceid: req.params.invoiceid });
+                            break;
+                        case 'view':
+                            req.ejs(__dirname + "/invoice-view.html", { pos: pos, invoiceid: req.params.invoiceid });
+                            break;
+                        case 'void':
+                            req.ejs(__dirname + "/invoice-void.html", { pos: pos, invoiceid: req.params.invoiceid });
+                            break;
+                            
+                        default:
+                            req.ejs(pos.app.dir.template + "/error.html", { error: "Invalid Action" });
+                    }
+
+                });
+
             }
         }
     });

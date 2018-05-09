@@ -35,7 +35,7 @@ module.exports = function(options, imports, register) {
                         if(id === "new")
                             return next();
                             
-                        db.getProduct({_id:id},function(err,product){
+                        db.getProduct({uid:id},function(err,product){
                             req.body = product || {error: err};
                             next();
                         });
@@ -70,7 +70,7 @@ module.exports = function(options, imports, register) {
                                         done);
                                 }else{ callback(); }
                             else {
-                                db.getProduct({_id:id},function(err,product){
+                                db.getProduct({uid:id},function(err,product){
                                     if(err) return callback(err);
                                     
                                     product.name = req.body.name,
