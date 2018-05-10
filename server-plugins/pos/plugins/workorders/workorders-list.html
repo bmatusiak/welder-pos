@@ -16,8 +16,8 @@
                         <div class="widget stacked ">
                         
                             <div class="widget-header">
-                                <span class="pull-right"><a href="/invoices/wizard"><h3>New</h3></a></span>
-                                <h3>Invoices</h3>
+                                <span class="pull-right"><a href="/workorders/wizard"><h3>New</h3></a></span>
+                                <h3>workorders</h3>
                             </div>
                             <!-- /widget-header -->
                             <div>
@@ -25,19 +25,25 @@
                                 <table class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
+                                            <th>ID</th>
                                             <th>Customer Name</th>
+                                            <th>Discription</th>
+                                            <th>Status</th>
                                             <th>Date Created</th>
                                             <th>Total</th>
-                                            <th>Actions</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <% for(var i in docs.results){ %>
                                         <tr>
+                                            <td><%- docs.results[i].workorderid %></td>
                                             <td><%- docs.results[i].customer.name %></td>
-                                            <td><%- docs.results[i].created %></td>
+                                            <td><%- docs.results[i].issueData %></td>
+                                            <td><%- docs.results[i].status %></td>
+                                            <td><time class="timeago" datetime="<%- docs.results[i].created.toISOString() %>"><%- docs.results[i].created %></time></td>
                                             <td><%- docs.results[i].data.total.toFixed(2) %></td>
-                                            <td><a href="/invoices/view/<%- docs.results[i].invoiceid %>" style="font-size:30px;padding-top: 7px;"><i class="icon-edit"></i></a></td>
+                                            <td><a href="/workorders/view/<%- docs.results[i].workorderid %>" style="font-size:30px;padding-top: 7px;"><i class="icon-edit"></i></a></td>
                                         </tr>
                                         <% } %>
                                     </tbody>
@@ -51,7 +57,7 @@
             <!-- /container -->
         </div>
         <!-- /main -->
-        <autoload style="display:none" mod="invoices"></autoload>
+        <autoload style="display:none" mod="workorders"></autoload>
         
         <script src="/js/libs/jquery-ui-1.10.0.custom.min.js"></script>
         <script src="/js/libs/bootstrap.min.js"></script>

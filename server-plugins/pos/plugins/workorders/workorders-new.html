@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+    <%- HEAD() %>
+    
+    <body>
+    
+        <style>
+            .rotate-share-alt:before {
+                /* Safari */
+                -webkit-transform: rotate(-90deg);
+                /* Firefox */
+                -moz-transform: rotate(-90deg);
+                /* IE */
+                -ms-transform: rotate(-90deg);
+                /* Opera */
+                -o-transform: rotate(-90deg);
+                /* Internet Explorer */
+                filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+            }
+            
+            
+            .row-fluid hr{
+                margin: 0;    
+            }
+            .productPrice{
+                width:60px;
+            }
+            .productNameRow{
+                white-space:nowrap;
+            }
+            
+            @media 
+            only screen and (max-width: 979px),
+            (min-device-width: 979px) and (max-device-width: 1024px)  {
+                
+            	/* Force table to not be like tables anymore */
+            	table, thead, tbody, th, td, tr { 
+            	    border-color: gray;
+            		display: block; 
+            	}
+            	/* Hide table headers (but not display: none;, for accessibility) */
+            	.producttable thead { 
+            		display:none;
+            		
+            	}
+            	.table  th, .table td{
+            	    height:25px;
+            	}
+            	.producttable form{
+            	    margin: 0
+            	    
+            	}
+            	.producttable tr { 
+            	    margin-top:50px;
+            	}
+            	.producttable tr:nth-of-type(1) { 
+            	    margin-top:0px;
+            	}
+            	.unit td:nth-of-type(1):after { content: "Product";}
+            	.unit td:nth-of-type(2):after { content: "Model"; }
+            	.unit td:nth-of-type(3):after { content: "Unit Price"; }
+            	.unit td:nth-of-type(4):after { content: "Price"; }
+            	.unit td:nth-of-type(5):after { content: "Tax"; }
+            	.unit td:nth-of-type(6):after { content: "Total Price"; }
+                
+                .unit td:after{  padding-left:10px; float:right;}
+            	
+            	.unitTotals td:nth-of-type(2):after { content: "Sub-Total";}
+            	.unitTotals td:nth-of-type(3):after { content: "Tax"; }
+            	.unitTotals td:nth-of-type(4):after { content: "Total"; }
+            	.unitTotals td:after{  padding-left:10px; float:right;}
+            	
+            	
+            }
+        </style>
+        <%- NAVBAR(true) %>
+
+        <div class="main">
+            <div class="container">
+                <div class="row">
+                
+      	            <div class="span12">
+      	            
+                        <div class="widget stacked ">
+                        
+                            <div class="widget-header">
+                                <h3>Created workorder</h3>
+                            </div>
+                            <!-- /widget-header -->
+                            <div class="widget-content">
+                            
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                       <h2>Redirecting to workorder...</h2>
+                                       <script>
+                                           
+                                           setTimeout(function(){
+                                               window.location = "/workorders/edit/<%- workorderid %>"
+                                           },3000)
+                                       </script>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /main -->
+        <script src="/js/libs/jquery-ui-1.10.3.custom.min.js"></script>
+        <style>
+            .ui-autocomplete{
+                width:200px;
+            }
+            .ui-autocomplete .ui-menu-item{
+                list-style:none;
+            }
+            .ui-autocomplete .ui-menu-item .ui-state-focus{
+                list-style:none;
+                border:none;
+            }
+            
+            .saveDocBtn.btn-success .loading-tag,
+            .saveDocBtn.btn-danger .loading-tag,
+            .saveDocBtn.btn-warning span {
+                display:none;
+            }
+            
+            .saveDocBtn.btn-warning .loading-tag,
+            .saveDocBtn.btn-danger span,
+            .saveDocBtn.btn-success span {
+                display:block;
+            }
+            
+            input.productModel {
+        	    background: transparent;
+                border: 0;
+        	}
+        </style>
+        <script src="/js/libs/bootstrap.min.js"></script>
+        
+        <div id="confirm" class="modal hide fade" role="dialog">
+            <div class="modal-header">
+                <h3>Confirm</h3>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+        
+    </body>
+</html>

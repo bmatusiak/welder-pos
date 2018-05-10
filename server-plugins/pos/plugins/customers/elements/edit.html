@@ -1,0 +1,100 @@
+<% var type = args[0] || "form"; %>
+
+<% if(type == "model"){ %>
+<div class="modal fade hide" id="newCustomer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+<h4 class="modal-title" id="myModalLabel" style="color:white;">Edit Customer</h4>
+</div>
+<div class="modal-body">
+<%}%>
+
+<form action="/customers/edit/<%- customer._id %>" method="post" autocomplete="off" />
+<div class="error" style="color:red;">
+    <%- (typeof(error) !== "undefined" ? error : '') %>
+</div>
+    <div class="row-fluid">
+        <div class="span6">
+            <div class="field">
+    			<label for="name">Name:</label>
+    			<input class="input-block-level" type="text" id="name" name="name" value="<% if(type == "form"){ %><%- customer.name %><%}%>" placeholder="Name" required="required" />
+    		</div> <!-- /field -->
+        </div>
+        <div class="span6">
+            <div class="field">
+    			<label for="phone">Phone:</label>
+    		    <input class="input-block-level" type="text" id="phone" name="phone" value="<% if(type == "form"){ %><%- customer.phone %><%}%>" placeholder="Phone"  />
+    		</div> <!-- /field -->
+        </div>
+    </div>
+	
+	<div class="row-fluid">
+        <div class="span6">
+            <div class="field">
+    			<label for="address">Address:</label>
+    		    <input class="input-block-level" type="text" id="address" name="address" value="<% if(type == "form"){ %><%- customer.address %><%}%>" placeholder="Address" />
+    		</div> <!-- /field -->
+        </div>
+    </div>
+    
+	<div class="row-fluid">
+        <div class="span6">
+            <div class="field">
+    			<label for="city">City:</label>
+    		    <input class="input-block-level" type="text" id="city" name="city" value="<% if(type == "form"){ %><%- customer.city %><%}%>" placeholder="City"  />
+    		</div> <!-- /field -->
+        </div>
+        <div class="span6">
+            <div class="field">
+    			<label for="state">State:</label>
+    		    <input class="input-block-level" type="text" id="state" name="state" value="<% if(type == "form"){ %><%- customer.state %><%}%>" placeholder="State"  />
+    		</div> <!-- /field -->
+        </div>
+    </div>
+	<div class="row-fluid">
+        <div class="span6">
+            <div class="field">
+    			<label for="zip">ZIP:</label>
+    		    <input class="input-block-level" type="text" id="zip" name="zip" value="<% if(type == "form"){ %><%- customer.zip %><%}%>" placeholder="ZIP"  />
+    		</div> <!-- /field -->
+        </div>
+        <div class="span6">
+            <div class="field">
+    			<label for="email">Email:</label>
+    		    <input class="input-block-level" type="text" id="email" name="email" value="<% if(type == "form"){ %><%- customer.email %><%}%>" placeholder="Email"  />
+    		</div> <!-- /field -->
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="field">
+    			<label for="zip">Notes:</label>
+    			
+    		    <textarea class="span12" id="notes" name="notes" rows="5"><% if(type == "form"){ %><%- customer.notes %><%}%></textarea>
+    		</div> <!-- /field -->
+        </div>
+        <div class="span12">
+            <div class="field">
+    		</div> <!-- /field -->
+        </div>
+    </div>
+<% if(type == "model"){ %>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+<%}%>
+
+    <button class="button btn btn-primary">Save Customer</button>
+</form>
+
+<% if(type == "model"){ %>
+</div>
+</div>
+<!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<%}%>

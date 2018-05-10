@@ -53,7 +53,7 @@ module.exports = function(options, imports, register) {
             httpConnection: function(http) {
                 //list newist invocies
                 http.get('/invoices', pos.app.users.checkUserAuth(), function(req, res, next) {
-                    db.pageDocs({ /*type: req.query.type || {'$ne': "draft" }*/ }, req.query.page - 1 || 0, 2,
+                    db.pageDocs({}, req.query.page - 1 || 0, 50,
                         function(err, docs) {
                             if (!err) {
                                 req.ejs(__dirname + "/invoices.html", { pos: pos, docs: docs });

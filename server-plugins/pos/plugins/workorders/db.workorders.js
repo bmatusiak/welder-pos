@@ -4,12 +4,12 @@ module.exports = function(db) {
     
     var Schema = db.Schema;
     
-    var collectionName = "invoices";
+    var collectionName = "workorders";
     
     var taxPercentage = 0.065
     
     var modelSchema = new Schema({
-        invoiceid : { type: Number, index: true},
+        workorderid : { type: Number, index: true},
         
         // _id is a generated mongodb ObjectID
         
@@ -19,6 +19,11 @@ module.exports = function(db) {
         calculated: Boolean,
         
         type: String,
+        
+        issueData: String,
+        workCompletedData: String,
+        
+        status:String,
         
         docData: String,
         //data:VIRTUAL, gets and sets docData based on type
@@ -56,7 +61,7 @@ module.exports = function(db) {
         if(doc.locked)
             return next(new Error("Document is Locked"));
             
-        if(doc.type === "invoice")
+        if(doc.type === "workorder")
             doc.locked = true;
         
         
@@ -64,10 +69,10 @@ module.exports = function(db) {
     });
     */
     
-    var InvoiceDocs = db.model(collectionName, modelSchema);
+    var workorderDocs = db.model(collectionName, modelSchema);
     
     var getDoc = function(query,callback){
-        InvoiceDocs.findOne(query)
+        workorderDocs.findOne(query)
         .populate('customer')
         .exec(function(err, doc) {
             if(err || !doc){
@@ -82,24 +87,24 @@ module.exports = function(db) {
         docObj,
         whoCreatedLogin,
         callback){
-            //getDoc({invoiceid:docObj.invoiceid},function(err,doc){
+            //getDoc({workorderid:docObj.workorderid},function(err,doc){
                 var newDoc;
                 
-                    newDoc = new InvoiceDocs();
-                    //newDoc.parent = doc.invoiceid;
+                    newDoc = new workorderDocs();
+                    //newDoc.parent = doc.workorderid;
                     newDoc.customer = docObj.customer;
                     newDoc.data = docObj.data;
                     newDoc.created = new Date();
                     newDoc.createdBy = whoCreatedLogin;
                     db.counter(collectionName,1,function(count){
-                        newDoc.invoiceid = count;
+                        newDoc.workorderid = count;
                         save(newDoc);
                     });      
                     
                     
                 function save(newDoc){
                     newDoc.save().then(function(_doc){
-                        getDoc({invoiceid:_doc.invoiceid},function(err,__doc){
+                        getDoc({workorderid:_doc.workorderid},function(err,__doc){
                             callback(err,__doc);
                         });
                     });
@@ -109,7 +114,7 @@ module.exports = function(db) {
     };
     
     var listDocs = function(query,callback){
-        InvoiceDocs.find(query)
+        workorderDocs.find(query)
         .populate('customer')
         .exec(function(err, docs) {
             callback(err,docs);
@@ -117,13 +122,13 @@ module.exports = function(db) {
     };
     
     var pageDocs = function(query,page,perPage,callback){
-        InvoiceDocs.find(query)
+        workorderDocs.find(query)
         .populate('customer')
         .limit(perPage)
         .skip(perPage * page)
         .sort({created: 'desc'})
         .exec(function(err, docs) {
-            InvoiceDocs.count(query).exec(function(err, count) {
+            workorderDocs.count(query).exec(function(err, count) {
                 callback(null,{
                     results: docs,
                     page: page,

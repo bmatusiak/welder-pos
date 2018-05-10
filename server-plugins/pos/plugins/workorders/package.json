@@ -1,0 +1,15 @@
+{
+    "name": "pos.workorders",
+    "version": "0.0.1",
+
+    "main": "./plugin.js",
+
+    "plugin": {
+        "provides": [
+            "workorders"
+        ],
+        "consumes":[
+            "pos"
+        ]
+    }
+}

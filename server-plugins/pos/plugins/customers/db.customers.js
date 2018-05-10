@@ -14,10 +14,12 @@ module.exports = function(db) {
         city : String,
         state : String,
         zip : String,
-        email : String,
+        email : {type: String, unique:true},
         phone : String,
         
         tax : String,
+        
+        notes : String,
         
         invoices : [{ type: Schema.Types.ObjectId, ref: 'invoices' }],
         orders : [{ type: Schema.Types.ObjectId, ref: 'orders' }],
@@ -25,16 +27,16 @@ module.exports = function(db) {
         created: Date,
         createdBy: String,
     });
-    
+            
     /*
-name
-address
-city
-state
-zip
-email
-phone
-*/
+        name
+        address
+        city
+        state
+        zip
+        email
+        phone
+    */
     var Customers = db.model(collection, customerSettingSchema);
     
     var newCustomer = function(
@@ -69,8 +71,39 @@ phone
         });
     };
     
+    var editCustomer = function(
+        _id,
+        reqBody,
+        callback){
+        Customers.findOne({_id: _id}, function(err,customer){
+            if(!err && customer){
+                    customer.name = reqBody.name;
+                    customer.address = reqBody.address;
+                    customer.city = reqBody.city;
+                    customer.state = reqBody.state;
+                    customer.zip = reqBody.zip;
+                    customer.email = reqBody.email;
+                    customer.phone = reqBody.phone;
+                    customer.notes = reqBody.notes;
+                    customer.save().then(callback);
+                    
+            }else if(!err || !customer){
+                callback("Edit Failed!");
+            }
+        });
+    };
+    
     var getCustomer = function(id,callback){
         Customers.findOne({uid: id}, function(err,customer){
+            if(!err && !customer){
+                callback("not exist");
+            }else if(!err && customer !== null){
+                callback(null,customer);
+            }
+        });
+    };
+    var queryCustomer = function(query,callback){
+        Customers.findOne(query, function(err,customer){
             if(!err && !customer){
                 callback("not exist");
             }else if(!err && customer !== null){
@@ -103,7 +136,9 @@ phone
     
     return {
         newCustomer:newCustomer,
+        editCustomer:editCustomer,
         getCustomer:getCustomer,
+        queryCustomer:queryCustomer,
         listCustomer:listCustomer,
         customersPage:customersPage
     };

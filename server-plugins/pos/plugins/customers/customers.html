@@ -24,7 +24,9 @@
                                             <th>Name</th>
                                             <th>Phone</th>
                                             <th>Email</th>
+                                            <th>Edit</th>
                                             <th>New Invoice</th>
+                                            <th>New Workorder</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -33,7 +35,9 @@
                                             <td><%- customers.results[i].name %></td>
                                             <td><%- customers.results[i].phone %></td>
                                             <td><%- customers.results[i].email %></td>
+                                            <td style="text-align:center;font-size:30px;"><a href="/customers/edit/<%- customers.results[i].id %>"><i class="icon-plus-sign-alt"></i></a></td>
                                             <td style="text-align:center;font-size:30px;"><a href="/invoices/new/<%- customers.results[i].id %>"><i class="icon-plus-sign-alt"></i></a></td>
+                                            <td style="text-align:center;font-size:30px;"><a href="/workorders/new/<%- customers.results[i].id %>"><i class="icon-plus-sign"></i></a></td>
                                         </tr>
                                         <% } %>
                                     </tbody>
