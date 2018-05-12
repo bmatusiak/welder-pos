@@ -1,4 +1,4 @@
 welder-pos
 ==========
 
-this requires  mongodb server(set in config.js)
+[Documentation](./server-plugins/app/plugins/doc/documentation/index.md)
