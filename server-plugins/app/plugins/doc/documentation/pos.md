@@ -1,7 +1,7 @@
-## Welder
+## pos
 --------
 
-Welder plugin handles setting up the http side of things.
+pos plugin handles building 
 
 It allows other plugins to add there static files and middlewares.
 
@@ -10,8 +10,6 @@ order of execution is
 1. StaticFiles
 2. Middlewares
 3. RequestParsers
-
-
 
 ###[welder.http](#http) Object 
 ####[welder.http.sub](#http.sub)() Function

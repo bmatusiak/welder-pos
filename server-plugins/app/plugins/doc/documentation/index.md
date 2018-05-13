@@ -27,31 +27,31 @@
 
 > [app](app.md)
 
-> > [app.admin](app-admin.md)
+> > [app.admin](app.md)
 
-> > [app.doc](app-doc.md)
+> > [app.doc](app.md)
 
-> > [app.ejs](app-ejs.md)
+> > [app.ejs](app.md)
 
-> > [app.emailer](app-emailer.md)
+> > [app.emailer](app.md)
 
-> > [app.forms](app-forms.md)
+> > [app.forms](app.md)
 
-> > [app.groups](app-groups.md)
+> > [app.groups](app.md)
 
-> > [app.menus](app-menus.md)
+> > [app.menus](app.md)
 
-> > [app.serializer](app-serializer.md)
+> > [app.serializer](app.md)
 
-> > [app.session](app-session.md)
+> > [app.session](app.md)
 
-> > [app.settings](app-settings.md)
+> > [app.settings](app.md)
 
-> > [app.setup](app-setup.md)
+> > [app.setup](app.md)
 
-> > [app.sockets](app-sockets.md)
+> > [app.sockets](app.md)
 
-> > [app.users](app-users.md)
+> > [app.users](app.md)
 
 > [db](db.md)
 
