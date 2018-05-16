@@ -14,15 +14,15 @@
 
 > [welder](./welder.md)
 
-> > [welder.http](./welder.md#http)
+> > [welder.http](./welder.md#http) {}
 
-> > [welder.addStatic](./welder.md#addStatic)
+> > [welder.addStatic](./welder.md#addStatic) (mount, dir, listDirAlso)
 
-> > [welder.addStaticFile](./welder.md#addStaticFile)
+> > [welder.addStaticFile](./welder.md#addStaticFile) (mountFile, File)
 
-> > [welder.addMiddleWare](./welder.md#addMiddleWare)
+> > [welder.addMiddleWare](./welder.md#addMiddleWare) (fn)
 
-> > [welder.addRequestParser](./welder.md#addRequestParser)
+> > [welder.addRequestParser](./welder.md#addRequestParser) (fn)
 
 
 > [app](app.md)

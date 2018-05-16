@@ -40,7 +40,7 @@ module.exports = function(options, imports, register) {
             
             //req.ejs(app.dir.template + "/error.html", { error: "document don't exist" });
             
-            fs.writeFileSync(documents[filename],"")
+            fs.writeFileSync(documents[filename],"");
             //return;
         }else if(!documents[filename]){
             req.ejs(app.dir.template + "/error.html", { error: "document don't exist <a href='/doc/"+filename+"?edit=true'> Click here to create</a>" });
@@ -49,7 +49,7 @@ module.exports = function(options, imports, register) {
 
         if(editing && documentData){
             console.log("saving",documents[filename]);
-            fs.writeFileSync(documents[filename],documentData)
+            fs.writeFileSync(documents[filename],documentData);
             res.send("true");
             return;
         }
@@ -79,33 +79,13 @@ module.exports = function(options, imports, register) {
 
         app.welder.addRequestParser(function(http) {
             http.get('/doc', app.users.checkUserAuth(), function(req, res, next) {
-
-                runDocumentation("index.md", req, res)
-
-                //    req.ejs(__dirname + "/workorders-list.html", { pos: pos, docs: docs });
-
-                //    req.ejs(pos.app.dir.template + "/error.html", { error: err });
-
+                res.redirect("/doc/index.md");
             });
             http.get('/doc/:filename?', app.users.checkUserAuth(), function(req, res, next) {
-
-
-                runDocumentation(req.params.filename, req, res)
-
-                //    req.ejs(__dirname + "/workorders-list.html", { pos: pos, docs: docs });
-
-                //    req.ejs(pos.app.dir.template + "/error.html", { error: err });
-
+                runDocumentation(req.params.filename, req, res);
             });
             http.post('/doc/:filename?', app.users.checkUserAuth(), function(req, res, next) {
-
-
-                runDocumentation(req.params.filename, req, res, true, req.body.documentData)
-
-                //    req.ejs(__dirname + "/workorders-list.html", { pos: pos, docs: docs });
-
-                //    req.ejs(pos.app.dir.template + "/error.html", { error: err });
-
+                runDocumentation(req.params.filename, req, res, true, req.body.documentData);
             });
         });
     });

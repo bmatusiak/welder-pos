@@ -116,11 +116,11 @@ define(function(require, exports, module) {
             var actions = workorderTypeFNSetup(socket);
 
             var customerID = docData.customerid;
-
+            
             $(document).on('click', '.addAttribute', function() {
                 var unit = $(this).closest(".unit");
                 actions.createUnitAtribute(unit, ++nextUnitID);
-                autoSaveDoc();
+                // autoSaveDoc();
             });
 
             $(document).on('click', 'a.trash', function() {
@@ -132,8 +132,10 @@ define(function(require, exports, module) {
                 }
 
                 unit.remove();
-                autoSaveDoc();
+                // autoSaveDoc();
             });
+            
+            /*
             $(document).on('change', 'input', function() {
                 var unit = $(this).closest(".unit").length ? $(this).closest(".unit") : $(this).closest(".unitAttribute").length ? $(this).closest(".unitAttribute") : false;
 
@@ -144,7 +146,8 @@ define(function(require, exports, module) {
 
                 autoSaveDoc();
             });
-            $(document).find(".openworkorderBtn").click(function() {
+            */
+            /*$(document).find(".openworkorderBtn").click(function() {
                 $(".btn").addClass("disabled");
                 $("input").attr("readonly", "readonly");
                 saveDoc(function(err, doc) {
@@ -157,24 +160,24 @@ define(function(require, exports, module) {
                             document.location = "/workorders/" + newDoc.uid;
                     });
                 });
-            });
+            });*/
 
             function clearDoc(callback) {
                 $("tr[unitid]").remove();
                 nextUnitID = 0;
                 //updateMainTotals();
-                saveDoc(callback);
+                // saveDoc(callback);
             }
             $(document).find(".trashDraftBtn").click(function() {
                 $("tr[unitid]").remove();
                 nextUnitID = 0;
-                autoSaveDoc();
+                // autoSaveDoc();
             });
             $("#addBlank").click(function() {
                 actions.createUnit(++nextUnitID);
-                autoSaveDoc();
+                // autoSaveDoc();
             });
-            
+            /*
             $('#issue').bind('input propertychange', function() {
                 autoSaveDoc();
             });
@@ -184,7 +187,7 @@ define(function(require, exports, module) {
             $('#status').bind('input propertychange', function() {
                 autoSaveDoc();
             });
-
+*/
             function setValue(ele, value) {
                 if (ele[0] && ele[0].tagName == "INPUT") {
                     ele.val(value);
@@ -198,13 +201,17 @@ define(function(require, exports, module) {
                 }
                 else return ele.text();
             }
-
+            
+            var $doc;
+            
             if (!loaded) {
                 socket.emit("workorder-load", docData.workorderid, function(err, doc) {
 
                     if (!doc)
                         return;
-
+                    
+                    $doc = doc;
+                    
                     var customerInfo = [
                         "Customer: " + doc.customer.uid,
                         "<hr /> <strong >" + doc.customer.name + "</strong> <br />",
@@ -260,21 +267,29 @@ define(function(require, exports, module) {
                 });
             }
 
-            var saveIcon = $(".saveDocBtn");
-            var unsaved = false;
+            //var saveIcon = $(".saveDocBtn");
+            //var unsaved = false;
 
-            function autoSaveDoc() {
+            /*function autoSaveDoc() {
                 return saveDoc();
-            }
+            }*/
+            
+            $(document).on('click', ".viewBtn", function(e) {
+                if($doc)
+                    window.location = "/workorders/view/"+$doc.workorderid;
+            });
+            
             $(document).on('click', ".saveDocBtn", function(e) {
-                if (unsaved)
+                //if (unsaved)
                     confirm("Save Document", "Are you sure you want to save this document?", function(close) {
                         saveDoc(function() {
-                            unsaved = false;
+                            //unsaved = false;
                             close();
                         });
                     });
             });
+            
+            
 
             var saving = false;
             var savingketchup = [];

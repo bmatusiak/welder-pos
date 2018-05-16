@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+    <%- HEAD() %>
+    
+    <body>
+    
+        <style>
+            .rotate-share-alt:before {
+                /* Safari */
+                -webkit-transform: rotate(-90deg);
+                /* Firefox */
+                -moz-transform: rotate(-90deg);
+                /* IE */
+                -ms-transform: rotate(-90deg);
+                /* Opera */
+                -o-transform: rotate(-90deg);
+                /* Internet Explorer */
+                filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+            }
+            
+            
+        </style>
+        <%- NAVBAR(true) %>
+
+        <div class="main">
+            <div class="container">
+                <div class="row">
+                
+      	            <div class="span12">
+      	            
+                        <div class="widget stacked ">
+                        
+                            <div class="widget-header">
+                                <h3>Demo Setup</h3>
+                            </div>
+                            <!-- /widget-header -->
+                            <div class="widget-content">
+                                <a href="/demo/loadData" class="btn">Load Demo Data</a>
+                                
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /main -->
+        <script src="/js/libs/jquery-ui-1.10.3.custom.min.js"></script>
+        
+        <script src="/js/libs/bootstrap.min.js"></script>
+        
+    </body>
+</html>

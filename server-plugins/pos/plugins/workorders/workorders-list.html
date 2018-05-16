@@ -43,7 +43,7 @@
                                             <td><%- docs.results[i].status %></td>
                                             <td><time class="timeago" datetime="<%- docs.results[i].created.toISOString() %>"><%- docs.results[i].created %></time></td>
                                             <td><%- docs.results[i].data.total.toFixed(2) %></td>
-                                            <td><a href="/workorders/view/<%- docs.results[i].workorderid %>" style="font-size:30px;padding-top: 7px;"><i class="icon-edit"></i></a></td>
+                                            <td><a href="/workorders/edit/<%- docs.results[i].workorderid %>" style="font-size:30px;padding-top: 7px;"><i class="icon-edit"></i></a></td>
                                         </tr>
                                         <% } %>
                                     </tbody>

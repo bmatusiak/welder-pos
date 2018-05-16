@@ -21,6 +21,7 @@
                                 <table class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
+                                            <th>ID</th>
                                             <th>Name</th>
                                             <th>Phone</th>
                                             <th>Email</th>
@@ -32,6 +33,7 @@
                                     <tbody>
                                         <% for(var i in customers.results){ %>
                                         <tr>
+                                            <td><%- customers.results[i].uid %></td>
                                             <td><%- customers.results[i].name %></td>
                                             <td><%- customers.results[i].phone %></td>
                                             <td><%- customers.results[i].email %></td>
@@ -42,6 +44,46 @@
                                         <% } %>
                                     </tbody>
                                 </table>
+                                <table class="table">
+                                    <tr>
+                                        
+                                    <% if(customers.page > 1){ %>
+                                        <td><a href="/customers?page=<%- (customers.page-1) %>">Back</a></td>
+                                    <% 
+                                    }else{
+                                    %>
+                                    <td></td>
+                                    <%
+                                    }
+                                    
+                                    for (var i = 0; i < customers.pages; i++){ 
+                                    
+                                    if(customers.page == i+1){
+                                    %>
+                                        <td style="text-align: center;background-color: #c5cee29c;" class="currentpagelink"><a href="/customers?page=<%- (i+1) %>"><%- (i+1) %></a></td>
+                                    <% 
+                                    }else{
+                                    %>
+                                        <td style="text-align: center;" ><a href="/customers?page=<%- (i+1) %>"><%- (i+1) %></a></td>
+                                    <%
+                                    }
+                                    
+                                    }
+                                    
+                                    if(customers.pages >= customers.page){
+                                    %>
+                                    <td style="text-align: right;"><a href="/customers?page=<%- (1+customers.page) %>">Next</a></td>
+                                    <% 
+                                    }else{
+                                    %>
+                                    <td></td>
+                                    <%
+                                    }
+                                    %>
+                                    
+                                    </tr>
+                                </table>
+                                
                             </div>
                         </div>
                     </div>

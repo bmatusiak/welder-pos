@@ -17,7 +17,7 @@ module.exports = function(passConfig){
         
         {
             packagePath: "./db.mongoose",
-            HOST:  "mongodb://localhost:27017/welder"
+            HOST:  "mongodb://localhost:27017/welderb"
         },
         
         

@@ -30,6 +30,7 @@ module.exports = function(options, imports, register) {
                         db.customersPage(req.query.page - 1 || 0, 50,
                             function(err, customers) {
                                 if (!err) {
+                                    customers.page++;
                                     req.ejs(__dirname + "/customers.html", { customers: customers, settings: pos.app.settings });
                                 }
                                 else {

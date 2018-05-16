@@ -67,7 +67,7 @@ module.exports = function(options, imports, register) {
             httpConnection: function(http) {
                 //list newist invocies
                 http.get('/workorders', pos.app.users.checkUserAuth(), function(req, res, next) {
-                    db.pageDocs({ /*type: req.query.type || {'$ne': "draft" }*/ }, req.query.page - 1 || 0, 50,
+                    db.pageDocs({ /*type: req.query.type || {'$ne': "draft" }*/ }, req.query.page - 1 || 0, 250,
                         function(err, docs) {
                             if (!err) {
                                 req.ejs(__dirname + "/workorders-list.html", { pos: pos, docs: docs });
@@ -86,7 +86,7 @@ module.exports = function(options, imports, register) {
                             /*
                                 Generate new workorder, then redirect to /edit/workorderid
                             */
-                            db.newDoc({ data: {}, customer: req.params.workorderid }, req.session.user, function(err, doc) {
+                            db.newDoc({ data: {}, customer: req.params.workorderid, status:"New" }, req.session.user, function(err, doc) {
                                 req.ejs(__dirname + "/workorders-new.html", { pos: pos, workorderid: doc.workorderid});
                             });
 

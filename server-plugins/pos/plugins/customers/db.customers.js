@@ -122,7 +122,7 @@ module.exports = function(db) {
         Customers.find({})
         .limit(perPage)
         .skip(perPage * page)
-        .sort({date: 'desc'})
+        .sort({uid: 'desc'})
         .exec(function(err, blogs) {
             Customers.count().exec(function(err, count) {
                 callback(null,{

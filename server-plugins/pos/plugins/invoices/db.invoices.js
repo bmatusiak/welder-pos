@@ -121,7 +121,7 @@ module.exports = function(db) {
         .populate('customer')
         .limit(perPage)
         .skip(perPage * page)
-        .sort({created: 'desc'})
+        //.sort({created: 'desc'})
         .exec(function(err, docs) {
             InvoiceDocs.count(query).exec(function(err, count) {
                 callback(null,{

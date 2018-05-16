@@ -32,14 +32,14 @@ define(function(require, exports, module) {
                 for(var i in invoices){
                     var template = [
                         '<div class="row-fluid">',
-                            '<a href="/invoices/'+invoices[i]._id+'" class="pull-right" style="font-size:30px;padding-top: 7px;"><i class="icon-edit"></i></a>',
+                            '<a href="/invoices/view/'+invoices[i].invoiceid+'" class="pull-right" style="font-size:30px;padding-top: 7px;"><i class="icon-edit"></i></a>',
                             '<div class="pull-right" style="text-align:right;padding-right:10px;">',
                                 invoices[i].data.total+"<br />",
                                 '<time class="timeago" datetime="'+invoices[i].created+'">'+invoices[i].created+'</time>',
                             '</div>',
                             '<div>',
                                 invoices[i].customer.name+"<br />",
-                                invoices[i].type + " : " + invoices[i]._id,
+                                invoices[i].invoiceid,
                             '</div>',
                         '</div>',
                         '<hr style="margin:5px 0px 5px 0px;" />'
